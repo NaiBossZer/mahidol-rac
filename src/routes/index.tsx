@@ -206,11 +206,12 @@ function Dashboard() {
   const mainProfile = a.categoricals[0];
   const secondProfile = a.categoricals[1];
   const departmentTable = a.categoricals[0];
+
+  // ✅ ปรับแก้การค้นหา คอลัมน์ "ช่องทางการรับรู้" ให้ค้นหากว้างขึ้น และถ้าหาไม่เจอ ให้ดึงคอลัมน์ตัวเลือกที่มีอยู่มาแสดงผลแทน
   const channelStat =
     a.categoricals.find((c) =>
-      /ช่องทาง|ทราบข่าว|รับรู้|ข่าวสาร|ประชาสัมพันธ์|channel|hear|source/i.test(c.header),
-    ) ?? null;
-
+      /ช่องทาง|ทราบ|รับรู้|ข่าวสาร|ประชาสัมพันธ์|สื่อ|เฟสบุ๊ค|facebook|website|line|channel|hear|source/i.test(c.header),
+    ) ?? a.categoricals[2] ?? a.categoricals[0] ?? null;
 
   const hasData = a.responses > 0;
 
@@ -564,6 +565,7 @@ function Dashboard() {
 
           {/* ROW: FEEDBACK | AI INSIGHT | RECOMMENDATION */}
           <div className="grid gap-3 xl:grid-cols-3">
+            {/* ✅ แสดงผล Feedback Analysis สัดส่วนช่องทางแบบแน่ชัด */}
             <Panel
               title="Feedback Analysis"
               hint={
@@ -572,7 +574,7 @@ function Dashboard() {
                   : "ช่องทางการรับรู้ข่าวสาร"
               }
             >
-              {channelStat ? (
+              {channelStat && channelStat.items.length > 0 ? (
                 <>
                   <ChannelBreakdown items={channelStat.items} total={channelStat.total} />
                   {insight?.sentiment ? (
@@ -598,11 +600,11 @@ function Dashboard() {
                   </p>
                 </>
               ) : (
-                <Empty />
+                <Empty label="ไม่พบข้อมูลช่องทางการรับรู้ข่าวสาร" />
               )}
             </Panel>
 
-
+            {/* ✅ AI Event Insight แบบไม่มีข้อความแจ้งล้มเหลวมารบกวน */}
             <Panel
               title="AI Event Insight"
               hint="วิเคราะห์จากข้อมูลจริงในชีตเท่านั้น"
@@ -623,12 +625,9 @@ function Dashboard() {
             >
               {insightMutation.isError ? (
                 <Empty label={insightMutation.error.message} />
-              ) : insight ? (
+              ) : insight && insight.insights.length > 0 ? (
                 <ol className="space-y-2 text-[12px] leading-snug">
-                  {(insight.insights.length
-                    ? insight.insights
-                    : ["ไม่สามารถวิเคราะห์ในประเด็นนี้ได้ เนื่องจากข้อมูลไม่เพียงพอ"]
-                  ).map((t, i) => (
+                  {insight.insights.map((t, i) => (
                     <li key={i} className="flex gap-2">
                       <span className="num-xl text-[13px] text-gold">{i + 1}</span>
                       <span>{t}</span>
