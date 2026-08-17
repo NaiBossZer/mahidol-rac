@@ -17,7 +17,7 @@ export function Panel({
   action,
 }: {
   title: string;
-  hint?: string;
+  hint?: string | undefined;
   children: ReactNode;
   className?: string;
   action?: ReactNode;
