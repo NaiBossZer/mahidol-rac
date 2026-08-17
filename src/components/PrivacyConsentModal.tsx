@@ -4,7 +4,6 @@ export function PrivacyConsentModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // เช็กว่ารันอยู่ใน Browser (Client-side) หรือไม่ก่อนอ่าน localStorage
     if (typeof window !== "undefined") {
       const hasConsented = localStorage.getItem("mahidol_privacy_consent");
       if (!hasConsented) {
