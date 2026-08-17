@@ -337,3 +337,71 @@ export function WordCloud({ words }: { words: { word: string; count: number }[] 
     </div>
   );
 }
+
+const CHANNEL_RULES: { key: string; re: RegExp; color: string }[] = [
+  { key: "Facebook", re: /facebook|fb|เฟส|เพจ/i, color: "var(--color-chart-1)" },
+  { key: "LINE", re: /\bline\b|ไลน์|ไลน|line\s*oa/i, color: "var(--color-good)" },
+  { key: "Website", re: /website|web\b|เว็บ|www|เว็บไซต์/i, color: "var(--color-chart-2)" },
+  { key: "Email", re: /e-?mail|อีเมล|จดหมาย|หนังสือเชิญ|หนังสือ/i, color: "var(--color-chart-3)" },
+  { key: "Instagram / TikTok / X", re: /instagram|\big\b|tiktok|twitter|\bx\b/i, color: "var(--color-chart-4)" },
+  { key: "YouTube", re: /youtube|ยูทู/i, color: "var(--color-chart-5)" },
+  { key: "เพื่อน / คนรู้จัก", re: /เพื่อน|คนรู้จัก|บอกต่อ|ปากต่อปาก|อาจารย์|รุ่นพี่/i, color: "var(--color-chart-6)" },
+  { key: "หน่วยงาน / ต้นสังกัด", re: /หน่วยงาน|ต้นสังกัด|คณะ|ผู้บังคับบัญชา|ประกาศ/i, color: "var(--color-gold)" },
+  { key: "โปสเตอร์ / ป้าย", re: /โปสเตอร์|ป้าย|แผ่นพับ|ไวนิล|poster/i, color: "var(--color-chart-2)" },
+];
+
+export function ChannelBreakdown({
+  items,
+  total,
+}: {
+  items: { label: string; count: number; percent: number }[];
+  total: number;
+}) {
+  if (!items.length) return <Empty />;
+
+  const grouped = new Map<string, { count: number; color: string }>();
+  items.forEach((it) => {
+    const rule = CHANNEL_RULES.find((r) => r.re.test(it.label));
+    const key = rule ? rule.key : it.label.replace(/^อื่น.*$/i, "อื่น ๆ").trim() || "อื่น ๆ";
+    const color = rule ? rule.color : "var(--color-muted-foreground)";
+    const prev = grouped.get(key);
+    grouped.set(key, { count: (prev?.count ?? 0) + it.count, color: prev?.color ?? color });
+  });
+
+  const sum = total || Array.from(grouped.values()).reduce((a, b) => a + b.count, 0);
+  const rows = Array.from(grouped.entries())
+    .map(([label, v]) => ({ label, ...v, percent: sum ? (v.count / sum) * 100 : 0 }))
+    .sort((a, b) => b.count - a.count);
+  const max = rows[0]?.count ?? 1;
+
+  return (
+    <div className="space-y-2.5">
+      {rows.map((r) => (
+        <div key={r.label}>
+          <div className="mb-1 flex items-baseline justify-between gap-2 text-[11px]">
+            <span className="truncate font-medium">{r.label}</span>
+            <span className="shrink-0 text-muted-foreground">
+              <span className="num-xl text-[12px]" style={{ color: r.color }}>
+                {r.count}
+              </span>{" "}
+              · {r.percent.toFixed(1)}%
+            </span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-border/50">
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${Math.max(2, (r.count / max) * 100)}%`,
+                background: `linear-gradient(90deg, ${r.color}, ${r.color}99)`,
+                boxShadow: `0 0 8px ${r.color}55`,
+              }}
+            />
+          </div>
+        </div>
+      ))}
+      <p className="pt-1 text-[10px] text-muted-foreground">
+        รวมการเลือกช่องทางทั้งหมด {sum} ครั้ง (ตอบได้มากกว่า 1 ช่องทาง)
+      </p>
+    </div>
+  );
+}
