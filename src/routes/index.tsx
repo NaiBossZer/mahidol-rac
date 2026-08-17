@@ -206,6 +206,11 @@ function Dashboard() {
   const mainProfile = a.categoricals[0];
   const secondProfile = a.categoricals[1];
   const departmentTable = a.categoricals[0];
+  const channelStat =
+    a.categoricals.find((c) =>
+      /ช่องทาง|ทราบข่าว|รับรู้|ข่าวสาร|ประชาสัมพันธ์|channel|hear|source/i.test(c.header),
+    ) ?? null;
+
 
   const hasData = a.responses > 0;
 
