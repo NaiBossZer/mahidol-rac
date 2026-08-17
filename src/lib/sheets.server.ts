@@ -21,26 +21,49 @@ function keys() {
   return { lovableKey, connectionKey };
 }
 
-async function gatewayGet(path: string) {
+async function gatewayGet(path: string, attempt = 0): Promise<unknown> {
   const { lovableKey, connectionKey } = keys();
-  const res = await fetch(`${GATEWAY}${path}`, {
-    headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": connectionKey,
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${GATEWAY}${path}`, {
+      headers: {
+        Authorization: `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": connectionKey,
+      },
+    });
+  } catch (err) {
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
+      return gatewayGet(path, attempt + 1);
+    }
+    throw new Error(
+      `เชื่อมต่อบริการ Google Sheets ไม่ได้ชั่วคราว โปรดกด "ลองเชื่อมต่ออีกครั้ง" (${String(err)})`,
+    );
+  }
+
   if (!res.ok) {
     const body = await res.text();
     console.error(`Google Sheets gateway failed [${res.status}]: ${body}`);
+    // 429/5xx are transient upstream failures — retry with backoff.
+    if ((res.status === 429 || res.status >= 500) && attempt < 2) {
+      await new Promise((r) => setTimeout(r, 700 * 2 ** attempt));
+      return gatewayGet(path, attempt + 1);
+    }
     if (res.status === 403 || res.status === 404) {
       throw new Error(
         `ไม่สามารถเข้าถึงไฟล์ Google Sheets ได้ (HTTP ${res.status}) — โปรดแชร์ไฟล์ให้บัญชี Google ที่เชื่อมต่อไว้ (สิทธิ์ Viewer) หรือตั้งค่าเป็น "ทุกคนที่มีลิงก์"`,
+      );
+    }
+    if (res.status === 429 || res.status >= 500) {
+      throw new Error(
+        `บริการ Google Sheets ไม่พร้อมใช้งานชั่วคราว (HTTP ${res.status}) โปรดลองอีกครั้งในอีกสักครู่`,
       );
     }
     throw new Error(`Google Sheets API error [${res.status}]: ${body}`);
   }
   return res.json();
 }
+
 
 export async function fetchSheet(sheetName?: string): Promise<RawSheet> {
   const meta = (await gatewayGet(
