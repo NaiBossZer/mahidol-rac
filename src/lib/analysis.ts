@@ -131,6 +131,10 @@ function pearson(a: number[], b: number[]) {
   return num / Math.sqrt(da * db);
 }
 
+export function parseDateValue(v: string) {
+  return parseDate(v);
+}
+
 export function detectColumns(headers: string[], rows: string[][]): ColumnInfo[] {
   return headers.map((header, index) => {
     const values = rows.map((r) => r[index] ?? "").filter((v) => v.length > 0);
