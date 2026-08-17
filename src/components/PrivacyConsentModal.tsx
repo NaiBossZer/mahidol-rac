@@ -4,14 +4,19 @@ export function PrivacyConsentModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const hasConsented = localStorage.getItem("mahidol_privacy_consent");
-    if (!hasConsented) {
-      setIsOpen(true);
+    // เช็กว่ารันอยู่ใน Browser (Client-side) หรือไม่ก่อนอ่าน localStorage
+    if (typeof window !== "undefined") {
+      const hasConsented = localStorage.getItem("mahidol_privacy_consent");
+      if (!hasConsented) {
+        setIsOpen(true);
+      }
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem("mahidol_privacy_consent", "true");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("mahidol_privacy_consent", "true");
+    }
     setIsOpen(false);
   };
 
