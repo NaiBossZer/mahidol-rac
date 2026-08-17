@@ -121,8 +121,8 @@ function pearson(a: number[], b: number[]) {
   let da = 0;
   let db = 0;
   for (let i = 0; i < n; i++) {
-    const x = a[i] - ma;
-    const y = b[i] - mb;
+    const x = (a[i] ?? 0) - ma;
+    const y = (b[i] ?? 0) - mb;
     num += x * y;
     da += x * x;
     db += y * y;
@@ -207,7 +207,7 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
   const ratings: RatingStat[] = ratingCols.map((c) => {
     const pairs: { v: number; overall: number | null }[] = rows.map((r, i) => ({
       v: toNumber(r[c.index] ?? "") ?? NaN,
-      overall: respondentMeans[i],
+      overall: respondentMeans[i] ?? null,
     }));
     const valid = pairs.filter((p) => Number.isFinite(p.v));
     const values = valid.map((p) => p.v);
@@ -372,7 +372,7 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
       const b = buckets.get(key) ?? { count: 0, scores: [] };
       b.count += 1;
       const m = respondentMeans[i];
-      if (m !== null) b.scores.push(m);
+      if (m !== null && m !== undefined) b.scores.push(m);
       buckets.set(key, b);
     });
     timeline = Array.from(buckets.entries())
@@ -408,16 +408,10 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
 
   // Improvement matrix
   const matrixSource = satisfaction.filter((r) => r.n > 0);
-  const satMedian = matrixSource.length
-    ? [...matrixSource.map((r) => r.percent)].sort((a, b) => a - b)[
-        Math.floor(matrixSource.length / 2)
-      ]
-    : 0;
-  const impMedian = matrixSource.length
-    ? [...matrixSource.map((r) => r.importance)].sort((a, b) => a - b)[
-        Math.floor(matrixSource.length / 2)
-      ]
-    : 0;
+  const satSorted = [...matrixSource.map((r) => r.percent)].sort((a, b) => a - b);
+  const impSorted = [...matrixSource.map((r) => r.importance)].sort((a, b) => a - b);
+  const satMedian = satSorted[Math.floor(satSorted.length / 2)] ?? 0;
+  const impMedian = impSorted[Math.floor(impSorted.length / 2)] ?? 0;
   const matrix = matrixSource.map((r) => {
     const highSat = r.percent >= satMedian;
     const highImp = r.importance >= impMedian;
@@ -437,7 +431,7 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
     ratings,
     categoricals,
     textColumns: textCols,
-    timestampColumn,
+    ...(timestampColumn ? { timestampColumn } : {}),
     overall,
     groups: { experience, learning, satisfaction },
     learningImpactScore,
