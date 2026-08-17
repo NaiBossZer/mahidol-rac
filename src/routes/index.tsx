@@ -32,7 +32,7 @@ import {
   StackedRatingBars,
   TrendChart,
   VBarChart,
-  WordCloud,
+  ChannelBreakdown,
 } from "@/components/dashboard/charts";
 import { FilterBar, type FilterState } from "@/components/dashboard/FilterBar";
 import { exportExcel, exportPdf, exportPptx } from "@/lib/export";
@@ -206,6 +206,11 @@ function Dashboard() {
   const mainProfile = a.categoricals[0];
   const secondProfile = a.categoricals[1];
   const departmentTable = a.categoricals[0];
+  const channelStat =
+    a.categoricals.find((c) =>
+      /ช่องทาง|ทราบข่าว|รับรู้|ข่าวสาร|ประชาสัมพันธ์|channel|hear|source/i.test(c.header),
+    ) ?? null;
+
 
   const hasData = a.responses > 0;
 
@@ -559,20 +564,17 @@ function Dashboard() {
 
           {/* ROW: FEEDBACK | AI INSIGHT | RECOMMENDATION */}
           <div className="grid gap-3 xl:grid-cols-3">
-            <Panel title="Feedback Analysis" hint="Word Cloud & Top Keywords จากคำตอบปลายเปิด">
-              {a.keywords.length ? (
+            <Panel
+              title="Feedback Analysis"
+              hint={
+                channelStat
+                  ? `ช่องทางการรับรู้ข่าวสาร · ${shortLabel(channelStat.header, 40)}`
+                  : "ช่องทางการรับรู้ข่าวสาร"
+              }
+            >
+              {channelStat ? (
                 <>
-                  <WordCloud words={a.keywords} />
-                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
-                    {a.keywords.slice(0, 8).map((k, i) => (
-                      <div key={k.word} className="flex justify-between border-b border-border/40 pb-0.5">
-                        <span className="text-muted-foreground">
-                          {i + 1}. {k.word}
-                        </span>
-                        <span className="num-xl text-[12px] text-gold">{k.count}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <ChannelBreakdown items={channelStat.items} total={channelStat.total} />
                   {insight?.sentiment ? (
                     <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
                       {(
@@ -599,6 +601,7 @@ function Dashboard() {
                 <Empty />
               )}
             </Panel>
+
 
             <Panel
               title="AI Event Insight"
