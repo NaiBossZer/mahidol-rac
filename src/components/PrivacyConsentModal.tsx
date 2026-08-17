@@ -19,6 +19,15 @@ export function PrivacyConsentModal() {
     setIsOpen(false);
   };
 
+  const handleDecline = () => {
+    if (typeof window !== "undefined") {
+      // บันทึกสถานะว่าปฏิเสธ (ถ้าต้องการ)
+      localStorage.setItem("mahidol_privacy_consent", "false");
+      // เด้งออกจากเว็บไซต์ไปยัง Google หรือหน้าอื่นที่ต้องการ
+      window.location.href = "https://www.google.com";
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -28,7 +37,7 @@ export function PrivacyConsentModal() {
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
-          <h3 className="text-lg font-semibold">การยินยอมเปิดเผยและใช้งานข้อมูลข่าวสาร</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">การยินยอมเปิดเผยและใช้งานข้อมูลข่าวสาร</h3>
         </div>
 
         <p className="text-sm text-slate-600 dark:text-slate-300">
@@ -43,7 +52,7 @@ export function PrivacyConsentModal() {
 
         <div className="mt-6 flex justify-end gap-2">
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={handleDecline}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             ปฏิเสธ
