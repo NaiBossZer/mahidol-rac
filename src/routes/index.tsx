@@ -32,7 +32,7 @@ import {
   StackedRatingBars,
   TrendChart,
   VBarChart,
-  WordCloud,
+  ChannelBreakdown,
 } from "@/components/dashboard/charts";
 import { FilterBar, type FilterState } from "@/components/dashboard/FilterBar";
 import { exportExcel, exportPdf, exportPptx } from "@/lib/export";
