@@ -30,41 +30,48 @@ export function HomePage() {
               โครงการห้องการเรียนรู้ครั่งครบวงจร
             </span>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
-              ศูนย์เรียนรู้และองค์ความรู้ครั่งครบวงจร
+              ศูนย์เรียนรู้และองค์ความรู้ครั่ง
             </h1>
             <p className="text-emerald-100 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
 
             {/* TAB / Navigation Buttons */}
-            <div className="pt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
-              <Link
-                to="/survey"
-                className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
-              >
-                <span>📝</span> ทำแบบประเมินความพึงพอใจ
-              </Link>
-              <Link
-                to="/dashboard"
-                className="bg-emerald-700/80 hover:bg-emerald-600 text-white font-medium px-5 py-3 rounded-xl border border-emerald-500/40 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 shadow-md"
-              >
-                <span>📊</span> ดูสรุปผล Dashboard
-              </Link>
-              <button
-                type="button"
-                onClick={() => scrollToSection("cards-section")}
-                className="bg-emerald-900/60 hover:bg-emerald-900/90 text-emerald-100 font-medium px-5 py-3 rounded-xl border border-emerald-400/30 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
-              >
-                <span>📚</span> คลังความรู้
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollToSection("data-viz")}
-                className="bg-emerald-900/60 hover:bg-emerald-900/90 text-emerald-100 font-medium px-5 py-3 rounded-xl border border-emerald-400/30 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
-              >
-                <span>📈</span> สถิติการผลิต
-              </button>
-            </div>
+<div className="pt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
+  {/* 1. คลังความรู้ */}
+  <button
+    type="button"
+    onClick={() => scrollToSection("cards-section")}
+    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+  >
+    <span>📚</span> คลังความรู้
+  </button>
+
+  {/* 2. สถิติการผลิต */}
+  <button
+    type="button"
+    onClick={() => scrollToSection("data-viz")}
+    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+  >
+    <span>📈</span> สถิติการผลิต
+  </button>
+
+  {/* 3. ทำแบบประเมินความพึงพอใจ */}
+  <Link
+    to="/survey"
+    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
+  >
+    <span>📝</span> ทำแบบประเมินความพึงพอใจ
+  </Link>
+
+  {/* 4. ดูสรุปผล Dashboard */}
+  <Link
+    to="/dashboard"
+    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
+  >
+    <span>📊</span> ดูสรุปผล Dashboard
+  </Link>
+</div>
           </div>
         </header>
 
