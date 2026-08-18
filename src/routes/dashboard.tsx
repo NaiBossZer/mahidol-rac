@@ -62,7 +62,7 @@ const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: stri
   feedback: { title: "", category: "" },
 };
 
-const COLOR_PALETTE = ["#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#fb923c", "#4ade80"];
+const COLOR_PALETTE = ["#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#fb923c", "#4ade80", "#f59e0b"];
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
-  
+
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
   const [feedbackSearch, setFeedbackSearch] = useState<string>("");
 
@@ -179,6 +179,7 @@ export function DashboardPage() {
     return { highest, lowest, grandAvg };
   }, [itemScores, filteredData]);
 
+  // คำนวณสัดส่วนผู้เข้าร่วมจำแนกตามสังกัดพร้อมสีสำหรับ Chart วงกลม
   const affiliationBreakdown = useMemo(() => {
     const counts: Record<string, number> = {};
     filteredData.forEach((item) => {
@@ -186,10 +187,11 @@ export function DashboardPage() {
       counts[key] = (counts[key] || 0) + 1;
     });
     const total = filteredData.length || 1;
-    return Object.entries(counts).map(([name, count]) => ({
+    return Object.entries(counts).map(([name, count], idx) => ({
       name,
       count,
       percent: parseFloat(((count / total) * 100).toFixed(1)),
+      color: COLOR_PALETTE[idx % COLOR_PALETTE.length],
     }));
   }, [filteredData]);
 
@@ -206,6 +208,43 @@ export function DashboardPage() {
     if (score >= 3.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">ดีมาก</span>;
     if (score >= 2.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">ปานกลาง</span>;
     return <span className="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold border border-red-500/30">ควรปรับปรุง</span>;
+  };
+
+  // ฟังก์ชันวาด Pie / Donut Chart วงกลมด้วย SVG
+  const renderPieChart = () => {
+    if (affiliationBreakdown.length === 0) return null;
+
+    let accumulatedPercent = 0;
+    return (
+      <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
+        <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+          {affiliationBreakdown.map((item, idx) => {
+            const strokeDasharray = `${item.percent} ${100 - item.percent}`;
+            const strokeDashoffset = -accumulatedPercent;
+            accumulatedPercent += item.percent;
+
+            return (
+              <circle
+                key={idx}
+                cx="18"
+                cy="18"
+                r="15.91549430918954"
+                fill="transparent"
+                stroke={item.color}
+                strokeWidth="4.5"
+                strokeDasharray={strokeDasharray}
+                strokeDashoffset={strokeDashoffset}
+                className="transition-all duration-300 hover:opacity-80 cursor-pointer"
+              />
+            );
+          })}
+        </svg>
+        <div className="absolute text-center pointer-events-none">
+          <p className="text-xl font-black text-amber-400 font-mono">{filteredData.length}</p>
+          <p className="text-[10px] text-slate-400 uppercase tracking-wider">คนทั้งหมด</p>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -308,14 +347,14 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Custom Pure HTML/CSS Visual Chart Section */}
+        {/* Visual Chart Section (Bar Chart + Donut Chart) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Custom Horizontal Bar Chart */}
           <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               📊 คะแนนความพึงพอใจแยกรายหัวข้อ (คะแนนเต็ม 5.00)
             </h2>
-            <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-2">
+            <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-2">
               {itemScores.map((item, idx) => (
                 <div key={item.key} className="space-y-1">
                   <div className="flex justify-between text-xs">
@@ -336,27 +375,24 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* Custom สัดส่วนสังกัด */}
+          {/* Donut Chart วงกลมสำหรับสัดส่วนสังกัด */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
             </h2>
-            <div className="space-y-3 pt-2">
-              {affiliationBreakdown.map((item, idx) => (
-                <div key={item.name} className="space-y-1">
-                  <div className="flex justify-between text-xs">
+            
+            {/* แสดงกราฟวงกลม SVG */}
+            {renderPieChart()}
+
+            {/* แสดง Legend รายชื่อหน่วยงาน */}
+            <div className="space-y-2 pt-2 border-t border-slate-800 max-h-[160px] overflow-y-auto pr-1">
+              {affiliationBreakdown.map((item) => (
+                <div key={item.name} className="flex justify-between items-center text-xs">
+                  <div className="flex items-center gap-2 truncate max-w-[70%]">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></span>
                     <span className="text-slate-300 truncate">{item.name}</span>
-                    <span className="text-slate-400 font-mono">{item.count} คน ({item.percent}%)</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${item.percent}%`,
-                        backgroundColor: COLOR_PALETTE[idx % COLOR_PALETTE.length],
-                      }}
-                    ></div>
-                  </div>
+                  <span className="text-slate-400 font-mono shrink-0">{item.count} คน ({item.percent}%)</span>
                 </div>
               ))}
             </div>
