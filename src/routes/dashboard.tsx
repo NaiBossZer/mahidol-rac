@@ -5,8 +5,9 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
 
+// URL ล่าสุดจาก Deployment Version 13
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwxRYAEARUyrmDdfT-xgoAlEjPpOzs7dhXFt0RME-fNAB5uUNEyJP0XChDig0oNRgqHQA/exec";
+  "https://script.google.com/macros/s/AKfycbxIXYFkonDlYf8sb1VqTDoJXlsZ58Pd53qYSP-rxeLc-9_hiHA4kKIUVAUEM-IdcrLIkQ/exec";
 
 interface SurveyResponse {
   timestamp?: string;
@@ -35,6 +36,7 @@ export function DashboardPage() {
   const [data, setData] = useState<SurveyResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   useEffect(() => {
     fetchData();
@@ -42,21 +44,25 @@ export function DashboardPage() {
 
   const fetchData = async () => {
     setLoading(true);
+    setErrorMsg("");
     try {
-      // ใช้นวัตกรรมดึงข้อมูลผ่าน Proxy หรือ direct fetch ป้องกัน CORS issue
-      const res = await fetch(GOOGLE_SCRIPT_URL);
+      // ใช้ redirect: "follow" เพื่อป้องกันการแครชจาก Apps Script Redirect
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "GET",
+        redirect: "follow",
+      });
+
+      if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อกับ Google Apps Script ได้");
+
       const json = await res.json();
 
       if (Array.isArray(json)) {
-        // กรองแถวที่มีข้อมูลจริง โดยแปลงค่า String ให้เป็น Number อย่างปลอดภัย
+        // กรองเอาแถวที่มีข้อมูลจริง โดยไม่คัดตัวเลข 0 ออก
         const validData = json.filter((item: any) => {
           if (!item || typeof item !== "object") return false;
-          
-          // ตรวจสอบว่ามีข้อมูลอย่างน้อย 1 ช่องที่ไม่ใช่ค่าว่าง
-          const hasContent = Object.values(item).some(
-            (val) => val !== null && val !== undefined && String(val).trim() !== "" && String(val) !== "0"
+          return Object.values(item).some(
+            (val) => val !== null && val !== undefined && String(val).trim() !== ""
           );
-          return hasContent;
         });
 
         setData(validData);
@@ -71,21 +77,20 @@ export function DashboardPage() {
           .toString()
           .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
       );
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching dashboard data:", err);
+      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper สำหรับดึงค่าตัวเลขอย่างปลอดภัย
   const parseNum = (val: any): number => {
     const n = Number(val);
     return isNaN(n) ? 0 : n;
   };
 
-  // คำนวณคะแนนเฉลี่ยรวม
   const calcGlobalAverage = () => {
     if (!Array.isArray(data) || data.length === 0) return "0.00";
     const keys: (keyof SurveyResponse)[] = [
@@ -110,7 +115,6 @@ export function DashboardPage() {
     return totalCount > 0 ? (totalSum / totalCount).toFixed(2) : "0.00";
   };
 
-  // คำนวณเปอร์เซ็นต์หมวดหมู่
   const calcGroupPercentage = (keys: (keyof SurveyResponse)[]) => {
     if (!Array.isArray(data) || data.length === 0) return "0.0";
     let totalSum = 0;
@@ -161,6 +165,12 @@ export function DashboardPage() {
           </span>
         </div>
 
+        {errorMsg && (
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium">
+            ⚠️ {errorMsg}
+          </div>
+        )}
+
         {/* Main Header Banner */}
         <div className="bg-[#0f1a30] border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div className="flex items-center gap-4">
@@ -191,7 +201,7 @@ export function DashboardPage() {
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-slate-800/80 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
-                <span className={`w-2 h-2 rounded-full ${loading ? "bg-amber-400" : "bg-emerald-400"} animate-ping`}></span>
+                <span className={`w-2 h-2 rounded-full ${loading ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`}></span>
                 <span className={`text-xs font-semibold ${loading ? "text-amber-400" : "text-emerald-400"}`}>
                   {loading ? "CONNECTING..." : "LIVE / CONNECTED"}
                 </span>
