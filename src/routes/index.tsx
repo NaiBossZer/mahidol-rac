@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { InteractiveMap } from "../components/InteractiveMap";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -10,12 +9,12 @@ export function HomePage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between">
       
       <div>
-        {/* 1. Header Banner / Hero Section (ใส่ Backdrop Background) */}
+        {/* 1. Header Banner / Hero Section */}
         <header 
           className="relative bg-cover bg-center bg-no-repeat text-white py-20 px-4 text-center overflow-hidden"
           style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
         >
-          {/* Overlay ปรับให้อ่านข้อความง่ายขึ้น */}
+          {/* Overlay */}
           <div className="absolute inset-0 bg-emerald-950/75 backdrop-blur-[1px]" />
 
           <div className="relative z-10 max-w-4xl mx-auto space-y-4">
@@ -46,9 +45,32 @@ export function HomePage() {
           </div>
         </header>
 
-        {/* 2. ส่วนแผนผังอินเทอร์แอคทีฟ (Interactive Map Section) */}
+        {/* 2. ส่วนวิดีโอแนะนำห้องเรียนรู้ครั่ง (HTML5 Video จาก public) */}
         <section className="bg-white dark:bg-slate-800/50 py-12 border-b border-slate-200 dark:border-slate-800">
-          <InteractiveMap />
+          <div className="max-w-4xl mx-auto px-4 space-y-6 text-center">
+            <div className="space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                🎬 วิดีโอแนะนำห้องการเรียนรู้ครั่ง
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                รับชมวิดีโอแนะนำศูนย์เรียนรู้และกิจกรรมการเรียนรู้ครั่งครบวงจร
+              </p>
+            </div>
+
+            {/* แท็ก Video เรียกไฟล์ MP4 จากโฟลเดอร์ public */}
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 bg-black">
+              <video
+                className="w-full h-full object-cover"
+                controls
+                playsInline
+                preload="metadata"
+              >
+                {/* อ้างอิงชื่อไฟล์ตรงๆ ด้วย / ตามด้วยชื่อไฟล์ใน public */}
+                <source src="/intro-lac.mp4" type="video/mp4" />
+                เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+              </video>
+            </div>
+          </div>
         </section>
 
         {/* 3. ส่วนความรู้เกี่ยวกับครั่ง (Shellac Knowledge) */}
