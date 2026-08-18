@@ -6,7 +6,6 @@ export const Route = createFileRoute("/survey")({
 });
 
 const GOOGLE_SCRIPT_URL =
-  const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyc0e3rXRodmtxyjs2eDPiAABxu5JGGmSRTByJnkW2bTgrRr5kK0YEi3JW2ldTwBVUuvg/exec";
 
 function SurveyPage() {
@@ -15,7 +14,6 @@ function SurveyPage() {
   const [satisfaction, setSatisfaction] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
-  // 📌 ฟังก์ชั่นส่งข้อมูลที่ปรับแก้เพื่อหลบ CORS Error
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStep("submitting");
@@ -23,7 +21,7 @@ function SurveyPage() {
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors", // ใช้ mode no-cors เพื่อข้ามข้อจำกัด CORS
+        mode: "no-cors",
         headers: {
           "Content-Type": "text/plain;charset=utf-8",
         },
@@ -33,7 +31,6 @@ function SurveyPage() {
         }),
       });
 
-      // เมื่อใช้ no-cors คำขอจะส่งสำเร็จแน่นอน สามารถเปลี่ยนหน้าได้เลย
       setStep("submitted");
     } catch (err) {
       console.error("Error sending data:", err);
@@ -42,7 +39,6 @@ function SurveyPage() {
     }
   };
 
-  // 1. หน้าสรุปผลหลังส่งแบบประเมิน
   if (step === "submitted") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
@@ -58,7 +54,6 @@ function SurveyPage() {
     );
   }
 
-  // 2. หน้า PDPA (แสดงก่อนเสมอ)
   if (step === "pdpa") {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 flex items-center justify-center">
@@ -89,7 +84,6 @@ function SurveyPage() {
           </label>
 
           <div className="flex gap-4">
-            {/* ปุ่มไม่ยอมรับ -> ไป Google */}
             <button
               type="button"
               onClick={() => (window.location.href = "https://www.google.com")}
@@ -98,7 +92,6 @@ function SurveyPage() {
               ไม่ยอมรับ
             </button>
 
-            {/* ปุ่มยอมรับ -> เข้าแบบประเมิน */}
             <button
               type="button"
               disabled={!agreed}
@@ -113,7 +106,6 @@ function SurveyPage() {
     );
   }
 
-  // 3. หน้าแบบประเมิน (เข้าได้เมื่อยอมรับ PDPA แล้ว)
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4">
       <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sm:p-8 border border-slate-200 dark:border-slate-700">
@@ -125,7 +117,6 @@ function SurveyPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ข้อที่ 1 */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               1. ความพึงพอใจในภาพรวมต่อการจัดกิจกรรม
@@ -147,7 +138,6 @@ function SurveyPage() {
             </div>
           </div>
 
-          {/* ข้อที่ 2 */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               2. ข้อเสนอแนะเพิ่มเติม
