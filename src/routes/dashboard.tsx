@@ -233,7 +233,7 @@ export function DashboardPage() {
               🔄 Refresh
             </button>
 
-            {/* 🚪 ปุ่มออกจากระบบ */}
+            {/* 🚪 ปุ่มออกจากระบบ (ผูก onClick เรียบร้อยแล้ว) */}
             <button
               onClick={handleLogout}
               className="px-3.5 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
