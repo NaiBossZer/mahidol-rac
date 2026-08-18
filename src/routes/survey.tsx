@@ -515,19 +515,18 @@ export function SurveyPage() {
               {renderLikert("p4_futureReturn", p4_futureReturn, setP4_futureReturn)}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                rows={3}
-                required
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="ข้อเสนอแนะเพิ่มเติม..."
-              />
-            </div>
+           <div>
+  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+    5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
+  </label>
+  <textarea
+    rows={3}
+    value={feedback}
+    onChange={(e) => setFeedback(e.target.value)}
+    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 outline-none"
+    placeholder="ข้อเสนอแนะเพิ่มเติม..."
+  />
+</div>
           </div>
 
           <button
