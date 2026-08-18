@@ -514,8 +514,7 @@ export function SurveyPage() {
               </label>
               {renderLikert("p4_futureReturn", p4_futureReturn, setP4_futureReturn)}
             </div>
-
-           <div>
+<div>
   <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
     5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
   </label>
@@ -528,7 +527,6 @@ export function SurveyPage() {
   />
 </div>
           </div>
-
           <button
             type="submit"
             disabled={step === "submitting"}
