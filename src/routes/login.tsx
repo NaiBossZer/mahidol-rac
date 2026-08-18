@@ -1,77 +1,83 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-const DASHBOARD_PASSWORD = "ENLP2517"; 
-
 export function LoginPage() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  // ถ้าล็อกอินอยู่แล้ว ให้เด้งไปหน้า Dashboard ทันที
-  useEffect(() => {
-    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
-    if (isAuth) {
-      navigate({ to: "/dashboard", replace: true });
-    }
-  }, [navigate]);
+  const [error, setError] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (password === DASHBOARD_PASSWORD) {
+    // ใส่ Logic รหัสผ่านของคุณที่นี่ (ตัวอย่าง: admin1234)
+    if (password === "admin1234") {
       sessionStorage.setItem("dashboard_auth", "true");
-      // ใช้ replace: true เพื่อป้องกันการกด back กลับมาหน้าล็อกอิน
-      navigate({ to: "/dashboard", replace: true });
+      navigate({ to: "/dashboard" });
     } else {
-      setErrorMsg("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
+      setError("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-      <div className="max-w-md w-full bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-8 shadow-xl max-w-sm w-full space-y-6">
+        
+        {/* Header */}
+        <div className="text-center space-y-1">
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">
             เข้าสู่ระบบ Dashboard
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+          <p className="text-xs text-slate-500 font-medium">
             กรุณากรอกรหัสผ่านเพื่อเข้าชมสรุปผลแบบประเมิน
           </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700 block">
               รหัสผ่าน
             </label>
             <input
               type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="กรอกรหัสผ่านที่นี่..."
-              className="w-full p-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-500 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 text-slate-800 transition-all placeholder:text-slate-400"
+              autoFocus
             />
           </div>
 
-          {errorMsg && (
-            <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200 text-center">
-              {errorMsg}
-            </div>
+          {error && (
+            <p className="text-xs font-semibold text-red-500 text-center animate-shake">
+              {error}
+            </p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition-all cursor-pointer text-sm"
+            className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 active:scale-[0.98] transition-all cursor-pointer"
           >
             เข้าสู่ระบบ
           </button>
         </form>
+
+        {/* ปุ่มกลับสู่หน้าหลัก */}
+        <div className="pt-2 text-center border-t border-slate-100">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-emerald-600 font-semibold transition-colors py-1 px-2 rounded-lg hover:bg-slate-50"
+          >
+            ← กลับสู่หน้าหลัก
+          </Link>
+        </div>
+
       </div>
     </div>
   );
