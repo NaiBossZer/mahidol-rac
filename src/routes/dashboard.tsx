@@ -5,31 +5,30 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
 
-// ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwxRYAEARUyrmDdfT-xgoAlEjPpOzs7dhXFt0RME-fNAB5uUNEyJP0XChDig0oNRgqHQA/exec";
 
 interface SurveyResponse {
-  timestamp: string;
-  ageGroup: string;
-  affiliation: string;
-  everJoined: string;
-  channels: string;
-  p2_location: number;
-  p2_schedule: number;
-  p2_readiness: number;
-  p2_reception: number;
-  p2_overall: number;
-  p3_interest: number;
-  p3_content: number;
-  p3_clarity: number;
-  p3_benefit: number;
-  p3_application: number;
-  p4_knowledge: number;
-  p4_inspiration: number;
-  p4_communityResource: number;
-  p4_futureReturn: number;
-  feedback: string;
+  timestamp?: string;
+  ageGroup?: string;
+  affiliation?: string;
+  everJoined?: string;
+  channels?: string;
+  p2_location?: number | string;
+  p2_schedule?: number | string;
+  p2_readiness?: number | string;
+  p2_reception?: number | string;
+  p2_overall?: number | string;
+  p3_interest?: number | string;
+  p3_content?: number | string;
+  p3_clarity?: number | string;
+  p3_benefit?: number | string;
+  p3_application?: number | string;
+  p4_knowledge?: number | string;
+  p4_inspiration?: number | string;
+  p4_communityResource?: number | string;
+  p4_futureReturn?: number | string;
+  feedback?: string;
 }
 
 export function DashboardPage() {
@@ -44,25 +43,20 @@ export function DashboardPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "GET",
-        redirect: "follow",
-      });
+      // ใช้นวัตกรรมดึงข้อมูลผ่าน Proxy หรือ direct fetch ป้องกัน CORS issue
+      const res = await fetch(GOOGLE_SCRIPT_URL);
       const json = await res.json();
-      
+
       if (Array.isArray(json)) {
-        // 🛠️ Filter: กรองเอาเฉพาะแถวที่มีการกรอกข้อมูลจริง (ตัดแถวว่างใน Google Sheets ออก)
-        const validData = json.filter((item: SurveyResponse) => {
-          const hasScore =
-            Number(item.p2_overall) > 0 ||
-            Number(item.p2_location) > 0 ||
-            Number(item.p3_content) > 0;
-          const hasProfile =
-            Boolean(item.affiliation?.trim()) ||
-            Boolean(item.ageGroup?.trim()) ||
-            Boolean(item.feedback?.trim());
+        // กรองแถวที่มีข้อมูลจริง โดยแปลงค่า String ให้เป็น Number อย่างปลอดภัย
+        const validData = json.filter((item: any) => {
+          if (!item || typeof item !== "object") return false;
           
-          return Boolean(item.timestamp) && (hasScore || hasProfile);
+          // ตรวจสอบว่ามีข้อมูลอย่างน้อย 1 ช่องที่ไม่ใช่ค่าว่าง
+          const hasContent = Object.values(item).some(
+            (val) => val !== null && val !== undefined && String(val).trim() !== "" && String(val) !== "0"
+          );
+          return hasContent;
         });
 
         setData(validData);
@@ -85,6 +79,12 @@ export function DashboardPage() {
     }
   };
 
+  // Helper สำหรับดึงค่าตัวเลขอย่างปลอดภัย
+  const parseNum = (val: any): number => {
+    const n = Number(val);
+    return isNaN(n) ? 0 : n;
+  };
+
   // คำนวณคะแนนเฉลี่ยรวม
   const calcGlobalAverage = () => {
     if (!Array.isArray(data) || data.length === 0) return "0.00";
@@ -99,8 +99,8 @@ export function DashboardPage() {
 
     data.forEach((item) => {
       keys.forEach((k) => {
-        const val = Number(item[k]);
-        if (!isNaN(val) && val > 0) {
+        const val = parseNum(item[k]);
+        if (val > 0) {
           totalSum += val;
           totalCount += 1;
         }
@@ -119,7 +119,7 @@ export function DashboardPage() {
     data.forEach((item) => {
       let hasValidScore = false;
       keys.forEach((k) => {
-        const val = Number(item[k]) || 0;
+        const val = parseNum(item[k]);
         if (val > 0) {
           totalSum += val;
           hasValidScore = true;
@@ -154,7 +154,7 @@ export function DashboardPage() {
         {/* Top Navigation */}
         <div className="flex justify-between items-center text-xs text-slate-400 mb-2">
           <Link to="/" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-            ← Back to latest
+            ← Back to home
           </Link>
           <span className="text-amber-400/80 font-medium bg-amber-400/10 px-2.5 py-1 rounded-md border border-amber-400/20">
             Viewing Fixed Google Sheets
@@ -213,7 +213,6 @@ export function DashboardPage() {
 
         {/* 6 Key Stat Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
-          {/* Card 1 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90">ผู้ตอบแบบสอบถาม</p>
             <div className="mt-2 flex items-baseline gap-1.5">
@@ -223,7 +222,6 @@ export function DashboardPage() {
             <p className="text-[10px] text-slate-500 mt-1">ทั้งหมดในชีต</p>
           </div>
 
-          {/* Card 2 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90">ความพึงพอใจเฉลี่ย</p>
             <div className="mt-2 flex items-baseline gap-1">
@@ -233,7 +231,6 @@ export function DashboardPage() {
             <p className="text-[10px] text-slate-500 mt-1">คะแนนรวมเฉลี่ยทุกหัวข้อ</p>
           </div>
 
-          {/* Card 3 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90">ระดับความพึงพอใจ</p>
             <div className="mt-2">
@@ -242,7 +239,6 @@ export function DashboardPage() {
             <p className="text-[10px] text-slate-500 mt-1">จาก 14 หัวข้อประเมิน</p>
           </div>
 
-          {/* Card 4 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90 tracking-wider">LEARNING IMPACT</p>
             <div className="mt-2">
@@ -251,7 +247,6 @@ export function DashboardPage() {
             <p className="text-[10px] text-slate-500 mt-1">8 หัวข้อด้านความรู้/ครั่ง</p>
           </div>
 
-          {/* Card 5 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90 tracking-wider">EVENT EXPERIENCE</p>
             <div className="mt-2">
@@ -260,7 +255,6 @@ export function DashboardPage() {
             <p className="text-[10px] text-slate-500 mt-1">5 หัวข้อด้านการจัดงาน</p>
           </div>
 
-          {/* Card 6 */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
             <p className="text-xs font-bold text-amber-400/90 tracking-wider">FUTURE PARTICIPATION</p>
             <div className="mt-2">
@@ -272,7 +266,6 @@ export function DashboardPage() {
 
         {/* Detailed Data Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Profile Analytics */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               PARTICIPANT PROFILE (ข้อมูลผู้ตอบ)
@@ -307,7 +300,6 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* Feedback Feed */}
           <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               FEEDBACK & SUGGESTIONS (ข้อเสนอแนะ)
@@ -321,7 +313,7 @@ export function DashboardPage() {
                   .filter((d) => d.feedback?.trim())
                   .map((item, i) => (
                     <div key={i} className="p-3 rounded-lg bg-slate-900/60 border border-slate-800/60 text-xs text-slate-300">
-                      <p className="text-[10px] text-amber-400/80 font-mono mb-1">{item.timestamp}</p>
+                      <p className="text-[10px] text-amber-400/80 font-mono mb-1">{item.timestamp || "N/A"}</p>
                       <p>"{item.feedback}"</p>
                     </div>
                   ))
