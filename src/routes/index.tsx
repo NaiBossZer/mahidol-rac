@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InteractiveMap } from "../components/InteractiveMap";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -45,7 +46,12 @@ export function HomePage() {
           </div>
         </header>
 
-        {/* 2. ส่วนความรู้เกี่ยวกับครั่ง (Shellac Knowledge) */}
+        {/* 2. ส่วนแผนผังอินเทอร์แอคทีฟ (Interactive Map Section) */}
+        <section className="bg-white dark:bg-slate-800/50 py-12 border-b border-slate-200 dark:border-slate-800">
+          <InteractiveMap />
+        </section>
+
+        {/* 3. ส่วนความรู้เกี่ยวกับครั่ง (Shellac Knowledge) */}
         <main className="max-w-6xl mx-auto px-4 py-12 space-y-12">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-emerald-900 dark:text-emerald-400">
@@ -90,7 +96,7 @@ export function HomePage() {
         </main>
       </div>
 
-      {/* 3. Footer */}
+      {/* 4. Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8 text-center text-sm border-t border-slate-800 mt-12">
         <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
       </footer>
