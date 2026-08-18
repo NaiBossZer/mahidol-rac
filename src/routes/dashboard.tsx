@@ -2,19 +2,18 @@ import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-ro
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
-  // 🔒 ตรวจสอบการเข้าถึง: เช็กสิทธิ์ผ่าน sessionStorage (ปิดแท็บเมื่อไหร่ ต้องล็อกอินใหม่)
+  // 🔒 เช็กสิทธิ์ก่อนโหลด Route
   beforeLoad: () => {
-    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
-    if (!isAuth) {
-      throw redirect({
-        to: "/login",
-      });
+    if (typeof window !== "undefined") {
+      const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
+      if (!isAuth) {
+        throw redirect({ to: "/login" });
+      }
     }
   },
   component: DashboardPage,
 });
 
-// URL ล่าสุดจาก Deployment Version 13
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxIXYFkonDlYf8sb1VqTDoJXlsZ58Pd53qYSP-rxeLc-9_hiHA4kKIUVAUEM-IdcrLIkQ/exec";
 
@@ -48,14 +47,20 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
+  // 🛡️ Double Check: ตรวจสอบอีกครั้งเมื่อ Component โหลด
   useEffect(() => {
+    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
+    if (!isAuth) {
+      navigate({ to: "/login" });
+      return;
+    }
     fetchData();
-  }, []);
+  }, [navigate]);
 
-  // 🚪 ฟังก์ชันสำหรับออกจากระบบ (ลบค่าใน sessionStorage)
+  // 🚪 ออกจากระบบ (ลบ Session และเคลียร์ประวัติ)
   const handleLogout = () => {
-    sessionStorage.removeItem("dashboard_auth");
-    navigate({ to: "/login" });
+    sessionStorage.clear();
+    navigate({ to: "/login", replace: true });
   };
 
   const fetchData = async () => {
@@ -233,7 +238,6 @@ export function DashboardPage() {
               🔄 Refresh
             </button>
 
-            {/* 🚪 ปุ่มออกจากระบบ (ผูก onClick เรียบร้อยแล้ว) */}
             <button
               onClick={handleLogout}
               className="px-3.5 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
