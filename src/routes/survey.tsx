@@ -5,28 +5,85 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
-// ⚠️ ใส่ Web App URL ล่าสุดจากการ Deploy ใน Google Apps Script ตรงนี้
+// ⚠️ ใส่ Web App URL ล่าสุดของคุณที่นี่
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbw20ExaaQqaRugnuwptr5FSAWFiwmWfdgOy6y4iqSh88gLdoWX9fHNXu5Jy3-5NZxCqxQ/exec";
 
-function SurveyPage() {
+export function SurveyPage() {
   const [step, setStep] = useState<"pdpa" | "survey" | "submitting" | "submitted">("pdpa");
   const [agreed, setAgreed] = useState(false);
-  const [satisfaction, setSatisfaction] = useState<number | null>(null);
+
+  // ตอนที่ 1: ข้อมูลทั่วไป
+  const [ageGroup, setAgeGroup] = useState("");
+  const [affiliation, setAffiliation] = useState("");
+  const [affiliationOther, setAffiliationOther] = useState("");
+  const [everJoined, setEverJoined] = useState("");
+  const [channels, setChannels] = useState<string[]>([]);
+  const [channelOther, setChannelOther] = useState("");
+
+  // ตอนที่ 2: ความพึงพอใจต่อการจัดพิธีเปิด
+  const [p2_location, setP2_location] = useState<number | null>(null);
+  const [p2_schedule, setP2_schedule] = useState<number | null>(null);
+  const [p2_readiness, setP2_readiness] = useState<number | null>(null);
+  const [p2_reception, setP2_reception] = useState<number | null>(null);
+  const [p2_overall, setP2_overall] = useState<number | null>(null);
+
+  // ตอนที่ 3: ความพึงพอใจต่อห้องการเรียนรู้ครั่งครบวงจร
+  const [p3_interest, setP3_interest] = useState<number | null>(null);
+  const [p3_content, setP3_content] = useState<number | null>(null);
+  const [p3_clarity, setP3_clarity] = useState<number | null>(null);
+  const [p3_benefit, setP3_benefit] = useState<number | null>(null);
+  const [p3_application, setP3_application] = useState<number | null>(null);
+
+  // ตอนที่ 4: ผลที่ได้รับและข้อเสนอแนะ
+  const [p4_knowledge, setP4_knowledge] = useState<number | null>(null);
+  const [p4_inspiration, setP4_inspiration] = useState<number | null>(null);
+  const [p4_communityResource, setP4_communityResource] = useState<number | null>(null);
+  const [p4_futureReturn, setP4_futureReturn] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
+
+  const handleChannelChange = (val: string) => {
+    setChannels((prev) =>
+      prev.includes(val) ? prev.filter((item) => item !== val) : [...prev, val]
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStep("submitting");
 
     try {
-      // สร้าง URL Query Parameters
+      const finalAffiliation = affiliation === "อื่นๆ" ? affiliationOther : affiliation;
+      const finalChannels = channels
+        .map((c) => (c === "อื่นๆ" ? channelOther : c))
+        .join(", ");
+
       const params = new URLSearchParams({
-        satisfaction: satisfaction ? satisfaction.toString() : "",
-        feedback: feedback,
+        // ตอนที่ 1
+        ageGroup,
+        affiliation: finalAffiliation,
+        everJoined,
+        channels: finalChannels,
+        // ตอนที่ 2
+        p2_location: p2_location?.toString() || "",
+        p2_schedule: p2_schedule?.toString() || "",
+        p2_readiness: p2_readiness?.toString() || "",
+        p2_reception: p2_reception?.toString() || "",
+        p2_overall: p2_overall?.toString() || "",
+        // ตอนที่ 3
+        p3_interest: p3_interest?.toString() || "",
+        p3_content: p3_content?.toString() || "",
+        p3_clarity: p3_clarity?.toString() || "",
+        p3_benefit: p3_benefit?.toString() || "",
+        p3_application: p3_application?.toString() || "",
+        // ตอนที่ 4
+        p4_knowledge: p4_knowledge?.toString() || "",
+        p4_inspiration: p4_inspiration?.toString() || "",
+        p4_communityResource: p4_communityResource?.toString() || "",
+        p4_futureReturn: p4_futureReturn?.toString() || "",
+        feedback,
       });
 
-      // ยิงข้อมูลด้วย GET Request (หลบ CORS)
       await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
         method: "GET",
         mode: "no-cors",
@@ -40,11 +97,15 @@ function SurveyPage() {
     }
   };
 
+  // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ
   if (step === "submitted") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-        <div className="max-w-md w-full text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-          <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-emerald-50/50 dark:bg-slate-900 p-4">
+        <div className="max-w-md w-full text-center bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-emerald-100 dark:border-slate-700">
+          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+            ✓
+          </div>
+          <h2 className="text-2xl font-bold text-emerald-800 dark:text-emerald-400 mb-2">
             ขอบคุณสำหรับข้อมูล!
           </h2>
           <p className="text-slate-600 dark:text-slate-300">
@@ -55,31 +116,40 @@ function SurveyPage() {
     );
   }
 
+  // 2. หน้าข้อตกลง PDPA
   if (step === "pdpa") {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 flex items-center justify-center">
-        <div className="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sm:p-8 border border-slate-200 dark:border-slate-700">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-            ข้อตกลงความเป็นส่วนตัว (PDPA)
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-            กิจกรรมพิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
-          </p>
+      <div className="min-h-screen bg-emerald-50/40 dark:bg-slate-900 py-12 px-4 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-emerald-100 dark:border-slate-700">
+          <div className="border-b border-emerald-100 pb-4 mb-6 text-center">
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+              พิธีเปิด
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">
+              ห้องการเรียนรู้ครั่งครบวงจร
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              วันที่ 21 สิงหาคม พ.ศ.2569 ณ คณะสิ่งแวดล้อมฯ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
+            </p>
+          </div>
 
-          <div className="p-4 bg-slate-100 dark:bg-slate-900/50 rounded-lg text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed border border-slate-200 dark:border-slate-700/50">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">
+            ข้อตกลงความเป็นส่วนตัว (PDPA)
+          </h2>
+          <div className="p-4 bg-emerald-50/60 dark:bg-slate-900/50 rounded-xl text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed border border-emerald-100 dark:border-slate-700">
             ข้อมูลที่ท่านกรอกในแบบประเมินนี้จะนำไปใช้เพื่อการวิเคราะห์และปรับปรุงการจัดกิจกรรมเท่านั้น{" "}
             โดยจะได้รับการคุ้มครองตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA){" "}
             และไม่มีการเปิดเผยข้อมูลระบุตัวตนสู่สาธารณะ
           </div>
 
-          <label className="flex items-center gap-3 mb-6 cursor-pointer">
+          <label className="flex items-center gap-3 mb-6 cursor-pointer group">
             <input
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
             />
-            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">
+            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium group-hover:text-emerald-700">
               ข้าพเจ้าได้อ่านและยอมรับเงื่อนไขข้อตกลงความเป็นส่วนตัว
             </span>
           </label>
@@ -88,16 +158,15 @@ function SurveyPage() {
             <button
               type="button"
               onClick={() => (window.location.href = "https://www.google.com")}
-              className="w-1/2 rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 transition-colors"
             >
               ไม่ยอมรับ
             </button>
-
             <button
               type="button"
               disabled={!agreed}
               onClick={() => setStep("survey")}
-              className="w-1/2 rounded-lg bg-blue-600 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-colors cursor-pointer"
+              className="w-1/2 rounded-xl bg-emerald-600 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all"
             >
               ยอมรับ
             </button>
@@ -107,55 +176,312 @@ function SurveyPage() {
     );
   }
 
+  // Helper สำหรับสร้าง Scale 1-5
+  const renderLikert = (
+    value: number | null,
+    onChange: (val: number) => void,
+    leftLabel = "น้อยที่สุด",
+    rightLabel = "มากที่สุด"
+  ) => (
+    <div className="mt-3">
+      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700">
+        <span className="text-xs text-slate-500 w-20 text-left">{leftLabel}</span>
+        <div className="flex gap-2 sm:gap-6">
+          {[1, 2, 3, 4, 5].map((score) => (
+            <label key={score} className="flex flex-col items-center gap-1 cursor-pointer">
+              <input
+                type="radio"
+                required
+                checked={value === score}
+                onChange={() => onChange(score)}
+                className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+              />
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                {score}
+              </span>
+            </label>
+          ))}
+        </div>
+        <span className="text-xs text-slate-500 w-20 text-right">{rightLabel}</span>
+      </div>
+    </div>
+  );
+
+  // 3. หน้าแบบสอบถามหลัก
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4">
-      <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sm:p-8 border border-slate-200 dark:border-slate-700">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-          แบบประเมินความพึงพอใจ
-        </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-          กิจกรรมพิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
-        </p>
+    <div className="min-h-screen bg-emerald-50/30 dark:bg-slate-900 py-8 px-4">
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Header Banner Card */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-6 sm:p-8 border-t-8 border-t-emerald-600 border-x border-b border-emerald-100 dark:border-slate-700">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            แบบเก็บข้อมูลความพึงพอใจพิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
+          </h1>
+          <p className="text-sm text-emerald-700 dark:text-emerald-400 mt-2 font-medium">
+            วันศุกร์ที่ 21 สิงหาคม พ.ศ. 2569 ณ คณะสิ่งแวดล้อมฯ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              1. ความพึงพอใจในภาพรวมต่อการจัดกิจกรรม
-            </label>
-            <div className="flex gap-4">
-              {[1, 2, 3, 4, 5].map((score) => (
-                <label key={score} className="flex items-center gap-1 cursor-pointer">
+          {/* Section 1 */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+              ตอนที่ 1 ข้อมูลทั่วไปของผู้ตอบแบบสอบถาม
+            </h2>
+
+            {/* ช่วงอายุ */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                ช่วงอายุ (ปี)
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {["0 - 10 ปี", "11 - 20 ปี", "21 - 30 ปี", "31 - 40 ปี", "41 - 50 ปี", "51 - 60 ปี", "มากกว่า 60 ปี"].map((item) => (
+                  <label key={item} className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50/50 cursor-pointer text-sm text-slate-700 dark:text-slate-300">
+                    <input
+                      type="radio"
+                      name="ageGroup"
+                      required
+                      value={item}
+                      onChange={(e) => setAgeGroup(e.target.value)}
+                      className="text-emerald-600"
+                    />
+                    {item}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* หน่วยงานที่สังกัด */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                หน่วยงานที่สังกัดอยู่
+              </label>
+              <div className="space-y-2">
+                {[
+                  "หน่วยงานภาครัฐ (เช่น อบต./เทศบาล/อำเภอ)",
+                  "ภาคประชาชน/ชุมชน/ผู้นำชุมชน",
+                  "ภาคการศึกษา/สถานศึกษา",
+                  "อื่นๆ",
+                ].map((item) => (
+                  <label key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="affiliation"
+                      required
+                      value={item}
+                      onChange={(e) => setAffiliation(e.target.value)}
+                      className="text-emerald-600"
+                    />
+                    {item}
+                  </label>
+                ))}
+                {affiliation === "อื่นๆ" && (
                   <input
-                    type="radio"
-                    name="satisfaction"
-                    value={score}
+                    type="text"
                     required
-                    onChange={() => setSatisfaction(score)}
-                    className="text-blue-600"
+                    placeholder="ระบุหน่วยงานของคุณ..."
+                    value={affiliationOther}
+                    onChange={(e) => setAffiliationOther(e.target.value)}
+                    className="mt-2 w-full p-2 text-sm border border-slate-300 rounded-lg outline-none focus:border-emerald-500"
                   />
-                  <span className="text-sm text-slate-600 dark:text-slate-400">{score}</span>
-                </label>
-              ))}
+                )}
+              </div>
+            </div>
+
+            {/* เคยเข้าร่วมกิจกรรมหรือไม่ */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                ท่านเคยเข้าร่วมกิจกรรมของโครงการนี้มาก่อนหรือไม่
+              </label>
+              <div className="flex gap-6">
+                {["เคย", "ไม่เคย"].map((item) => (
+                  <label key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="everJoined"
+                      required
+                      value={item}
+                      onChange={(e) => setEverJoined(e.target.value)}
+                      className="text-emerald-600"
+                    />
+                    {item}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* ทราบข่าวสารจากช่องทางใด */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                ท่านทราบข่าวสารการจัดงานจากช่องทางใด (เลือกได้มากกว่า 1 ข้อ)
+              </label>
+              <div className="space-y-2">
+                {[
+                  "FACEBOOK",
+                  "LINE",
+                  "WEBSITE ของคณะสิ่งแวดล้อมและทรัพยากรศาสตร์ ม.มหิดล",
+                  "อื่นๆ",
+                ].map((item) => (
+                  <label key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value={item}
+                      checked={channels.includes(item)}
+                      onChange={() => handleChannelChange(item)}
+                      className="rounded text-emerald-600"
+                    />
+                    {item}
+                  </label>
+                ))}
+                {channels.includes("อื่นๆ") && (
+                  <input
+                    type="text"
+                    required
+                    placeholder="ระบุช่องทางอื่น..."
+                    value={channelOther}
+                    onChange={(e) => setChannelOther(e.target.value)}
+                    className="mt-2 w-full p-2 text-sm border border-slate-300 rounded-lg outline-none focus:border-emerald-500"
+                  />
+                )}
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              2. ข้อเสนอแนะเพิ่มเติม
-            </label>
-            <textarea
-              rows={4}
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="แสดงความคิดเห็นของคุณที่นี่..."
-            />
+          {/* Section 2 */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+              ตอนที่ 2 ความพึงพอใจต่อการจัดพิธีเปิด
+            </h2>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                1. ความเหมาะสมของสถานที่จัดงาน
+              </label>
+              {renderLikert(p2_location, setP2_location)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                2. ความเหมาะสมของกำหนดการและระยะเวลาการจัดงาน
+              </label>
+              {renderLikert(p2_schedule, setP2_schedule)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                3. ความพร้อมและความเป็นระเบียบของสถานที่
+              </label>
+              {renderLikert(p2_readiness, setP2_readiness)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                4. การต้อนรับและการอำนวยความสะดวกของเจ้าหน้าที่
+              </label>
+              {renderLikert(p2_reception, setP2_reception)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                5. ความพึงพอใจต่อการจัดพิธีเปิดโดยรวม
+              </label>
+              {renderLikert(p2_overall, setP2_overall)}
+            </div>
+          </div>
+
+          {/* Section 3 */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+              ตอนที่ 3 ความพึงพอใจต่อห้องการเรียนรู้ครั่งครบวงจร
+            </h2>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                1. ความน่าสนใจของห้องการเรียนรู้และนิทรรศการ
+              </label>
+              {renderLikert(p3_interest, setP3_interest, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                2. ความเหมาะสมและความครบถ้วนของเนื้อหา
+              </label>
+              {renderLikert(p3_content, setP3_content, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                3. ความชัดเจนและเข้าใจง่ายของสื่อการเรียนรู้
+              </label>
+              {renderLikert(p3_clarity, setP3_clarity, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                4. ประโยชน์ขององค์ความรู้ที่ได้รับ
+              </label>
+              {renderLikert(p3_benefit, setP3_benefit, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                5. ความสามารถในการนำความรู้ไปใช้หรือต่อยอด
+              </label>
+              {renderLikert(p3_application, setP3_application, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+            </div>
+          </div>
+
+          {/* Section 4 */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+              ตอนที่ 4 ผลที่ได้รับและข้อเสนอแนะ
+            </h2>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                1. ท่านได้รับความรู้และความเข้าใจเกี่ยวกับครั่งเพิ่มขึ้น
+              </label>
+              {renderLikert(p4_knowledge, setP4_knowledge)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                2. กิจกรรมสามารถสร้างแรงบันดาลใจในการอนุรักษ์และพัฒนาครั่ง
+              </label>
+              {renderLikert(p4_inspiration, setP4_inspiration)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                3. ห้องการเรียนรู้สามารถใช้เป็นแหล่งเรียนรู้สำหรับชุมชนและผู้สนใจได้
+              </label>
+              {renderLikert(p4_communityResource, setP4_communityResource)}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                4. ท่านมีความสนใจเข้าร่วมกิจกรรมหรือกลับมาใช้ห้องการเรียนรู้อีกในอนาคต
+              </label>
+              {renderLikert(p4_futureReturn, setP4_futureReturn)}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
+              </label>
+              <textarea
+                rows={3}
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                placeholder="ข้อเสนอแนะเพิ่มเติม..."
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={step === "submitting"}
-            className="w-full rounded-lg bg-blue-600 py-3 text-sm font-medium text-white hover:bg-blue-700 shadow-md transition-colors disabled:opacity-50 cursor-pointer"
+            className="w-full rounded-xl bg-emerald-600 py-3.5 text-base font-bold text-white hover:bg-emerald-700 shadow-lg transition-all disabled:opacity-50 cursor-pointer"
           >
             {step === "submitting" ? "กำลังบันทึกข้อมูล..." : "ส่งแบบประเมิน"}
           </button>
