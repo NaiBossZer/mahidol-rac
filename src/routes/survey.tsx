@@ -195,7 +195,7 @@ export function SurveyPage() {
     );
   }
 
-  // Helper สำหรับสร้าง Scale 5 -> 1 (เรียงจากมากที่สุดอยู่ซ้าย ไป น้อยที่สุดอยู่ขวา)
+  // Helper สำหรับสร้าง Scale 5 -> 1
   const renderLikert = (
     nameGroup: string,
     value: number | null,
@@ -302,7 +302,7 @@ export function SurveyPage() {
                     placeholder="ระบุหน่วยงานของคุณ..."
                     value={affiliationOther}
                     onChange={(e) => setAffiliationOther(e.target.value)}
-                    className="mt-2 w-full p-2 text-sm border border-slate-300 rounded-lg outline-none focus:border-emerald-500"
+                    className="mt-2 w-full p-2.5 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 border border-slate-300 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
                 )}
               </div>
@@ -360,7 +360,7 @@ export function SurveyPage() {
                     placeholder="ระบุช่องทางอื่น..."
                     value={channelOther}
                     onChange={(e) => setChannelOther(e.target.value)}
-                    className="mt-2 w-full p-2 text-sm border border-slate-300 rounded-lg outline-none focus:border-emerald-500"
+                    className="mt-2 w-full p-2.5 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 border border-slate-300 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
                 )}
               </div>
@@ -494,7 +494,7 @@ export function SurveyPage() {
                 required
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 outline-none"
                 placeholder="ข้อเสนอแนะเพิ่มเติม..."
               />
             </div>
