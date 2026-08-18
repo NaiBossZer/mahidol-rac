@@ -6,7 +6,8 @@ export const Route = createFileRoute("/survey")({
 });
 
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxFGQduHRyHMoBhQ4tk43SVImnH_3jJKkppygjHIReCPh_f8avS9-kNoAeWlVrbfdg/exec";
+  const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbyc0e3rXRodmtxyjs2eDPiAABxu5JGGmSRTByJnkW2bTgrRr5kK0YEi3JW2ldTwBVUuvg/exec";
 
 function SurveyPage() {
   const [step, setStep] = useState<"pdpa" | "survey" | "submitting" | "submitted">("pdpa");
