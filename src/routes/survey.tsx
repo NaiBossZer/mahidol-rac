@@ -50,6 +50,25 @@ export function SurveyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 🔴 1. เพิ่มการตรวจสอบการเลือกช่องทางข่าวสาร
+    if (channels.length === 0) {
+      alert("กรุณาเลือกช่องทางที่ท่านทราบข่าวสารอย่างน้อย 1 ช่องทาง");
+      return;
+    }
+
+    // 🔴 2. เพิ่มการตรวจสอบ Likert Scale (1-5) ให้ครบทุกข้อ
+    const ratings = [
+      p2_location, p2_schedule, p2_readiness, p2_reception, p2_overall,
+      p3_interest, p3_content, p3_clarity, p3_benefit, p3_application,
+      p4_knowledge, p4_inspiration, p4_communityResource, p4_futureReturn
+    ];
+
+    if (ratings.some((r) => r === null)) {
+      alert("กรุณาตอบแบบประเมินความพึงพอใจ (ให้คะแนน 1-5) ให้ครบทุกข้อครับ");
+      return;
+    }
+
     setStep("submitting");
 
     try {
@@ -176,8 +195,9 @@ export function SurveyPage() {
     );
   }
 
-  // Helper สำหรับสร้าง Scale 1-5
+  // Helper สำหรับสร้าง Scale 1-5 (🔴 แก้ไขโดยใส่ name ให้แยกแต่ละข้อ เพื่อให้ HTML Radio Group ทำงานถูกต้อง)
   const renderLikert = (
+    nameGroup: string,
     value: number | null,
     onChange: (val: number) => void,
     leftLabel = "น้อยที่สุด",
@@ -191,6 +211,7 @@ export function SurveyPage() {
             <label key={score} className="flex flex-col items-center gap-1 cursor-pointer">
               <input
                 type="radio"
+                name={nameGroup}
                 required
                 checked={value === score}
                 onChange={() => onChange(score)}
@@ -231,7 +252,7 @@ export function SurveyPage() {
             {/* ช่วงอายุ */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                ช่วงอายุ (ปี)
+                ช่วงอายุ (ปี) <span className="text-red-500">*</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {["0 - 10 ปี", "11 - 20 ปี", "21 - 30 ปี", "31 - 40 ปี", "41 - 50 ปี", "51 - 60 ปี", "มากกว่า 60 ปี"].map((item) => (
@@ -253,7 +274,7 @@ export function SurveyPage() {
             {/* หน่วยงานที่สังกัด */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                หน่วยงานที่สังกัดอยู่
+                หน่วยงานที่สังกัดอยู่ <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
                 {[
@@ -290,7 +311,7 @@ export function SurveyPage() {
             {/* เคยเข้าร่วมกิจกรรมหรือไม่ */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                ท่านเคยเข้าร่วมกิจกรรมของโครงการนี้มาก่อนหรือไม่
+                ท่านเคยเข้าร่วมกิจกรรมของโครงการนี้มาก่อนหรือไม่ <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-6">
                 {["เคย", "ไม่เคย"].map((item) => (
@@ -312,7 +333,7 @@ export function SurveyPage() {
             {/* ทราบข่าวสารจากช่องทางใด */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                ท่านทราบข่าวสารการจัดงานจากช่องทางใด (เลือกได้มากกว่า 1 ข้อ)
+                ท่านทราบข่าวสารการจัดงานจากช่องทางใด (เลือกได้มากกว่า 1 ข้อ) <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
                 {[
@@ -354,37 +375,37 @@ export function SurveyPage() {
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                1. ความเหมาะสมของสถานที่จัดงาน
+                1. ความเหมาะสมของสถานที่จัดงาน <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p2_location, setP2_location)}
+              {renderLikert("p2_location", p2_location, setP2_location)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                2. ความเหมาะสมของกำหนดการและระยะเวลาการจัดงาน
+                2. ความเหมาะสมของกำหนดการและระยะเวลาการจัดงาน <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p2_schedule, setP2_schedule)}
+              {renderLikert("p2_schedule", p2_schedule, setP2_schedule)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                3. ความพร้อมและความเป็นระเบียบของสถานที่
+                3. ความพร้อมและความเป็นระเบียบของสถานที่ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p2_readiness, setP2_readiness)}
+              {renderLikert("p2_readiness", p2_readiness, setP2_readiness)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                4. การต้อนรับและการอำนวยความสะดวกของเจ้าหน้าที่
+                4. การต้อนรับและการอำนวยความสะดวกของเจ้าหน้าที่ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p2_reception, setP2_reception)}
+              {renderLikert("p2_reception", p2_reception, setP2_reception)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                5. ความพึงพอใจต่อการจัดพิธีเปิดโดยรวม
+                5. ความพึงพอใจต่อการจัดพิธีเปิดโดยรวม <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p2_overall, setP2_overall)}
+              {renderLikert("p2_overall", p2_overall, setP2_overall)}
             </div>
           </div>
 
@@ -396,37 +417,37 @@ export function SurveyPage() {
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                1. ความน่าสนใจของห้องการเรียนรู้และนิทรรศการ
+                1. ความน่าสนใจของห้องการเรียนรู้และนิทรรศการ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p3_interest, setP3_interest, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_interest", p3_interest, setP3_interest, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                2. ความเหมาะสมและความครบถ้วนของเนื้อหา
+                2. ความเหมาะสมและความครบถ้วนของเนื้อหา <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p3_content, setP3_content, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_content", p3_content, setP3_content, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                3. ความชัดเจนและเข้าใจง่ายของสื่อการเรียนรู้
+                3. ความชัดเจนและเข้าใจง่ายของสื่อการเรียนรู้ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p3_clarity, setP3_clarity, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_clarity", p3_clarity, setP3_clarity, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                4. ประโยชน์ขององค์ความรู้ที่ได้รับ
+                4. ประโยชน์ขององค์ความรู้ที่ได้รับ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p3_benefit, setP3_benefit, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_benefit", p3_benefit, setP3_benefit, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                5. ความสามารถในการนำความรู้ไปใช้หรือต่อยอด
+                5. ความสามารถในการนำความรู้ไปใช้หรือต่อยอด <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p3_application, setP3_application, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_application", p3_application, setP3_application, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
             </div>
           </div>
 
@@ -438,38 +459,39 @@ export function SurveyPage() {
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                1. ท่านได้รับความรู้และความเข้าใจเกี่ยวกับครั่งเพิ่มขึ้น
+                1. ท่านได้รับความรู้และความเข้าใจเกี่ยวกับครั่งเพิ่มขึ้น <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p4_knowledge, setP4_knowledge)}
+              {renderLikert("p4_knowledge", p4_knowledge, setP4_knowledge)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                2. กิจกรรมสามารถสร้างแรงบันดาลใจในการอนุรักษ์และพัฒนาครั่ง
+                2. กิจกรรมสามารถสร้างแรงบันดาลใจในการอนุรักษ์และพัฒนาครั่ง <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p4_inspiration, setP4_inspiration)}
+              {renderLikert("p4_inspiration", p4_inspiration, setP4_inspiration)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                3. ห้องการเรียนรู้สามารถใช้เป็นแหล่งเรียนรู้สำหรับชุมชนและผู้สนใจได้
+                3. ห้องการเรียนรู้สามารถใช้เป็นแหล่งเรียนรู้สำหรับชุมชนและผู้สนใจได้ <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p4_communityResource, setP4_communityResource)}
+              {renderLikert("p4_communityResource", p4_communityResource, setP4_communityResource)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                4. ท่านมีความสนใจเข้าร่วมกิจกรรมหรือกลับมาใช้ห้องการเรียนรู้อีกในอนาคต
+                4. ท่านมีความสนใจเข้าร่วมกิจกรรมหรือกลับมาใช้ห้องการเรียนรู้อีกในอนาคต <span className="text-red-500">*</span>
               </label>
-              {renderLikert(p4_futureReturn, setP4_futureReturn)}
+              {renderLikert("p4_futureReturn", p4_futureReturn, setP4_futureReturn)}
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
+                5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม <span className="text-red-500">*</span>
               </label>
               <textarea
                 rows={3}
+                required
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
