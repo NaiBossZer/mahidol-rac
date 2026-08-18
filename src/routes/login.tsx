@@ -6,7 +6,7 @@ export const Route = createFileRoute("/login")({
 });
 
 // 🔑 ตั้งรหัสผ่านสำหรับเข้าใช้งาน Dashboard ที่นี่
-const DASHBOARD_PASSWORD = "your_secret_password"; 
+const DASHBOARD_PASSWORD = "ENLP2517"; 
 
 export function LoginPage() {
   const navigate = useNavigate();
