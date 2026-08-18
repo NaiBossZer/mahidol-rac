@@ -19,16 +19,18 @@ function SurveyPage() {
     setStep("submitting");
 
     try {
+      // ใช้ URLSearchParams เพื่อส่งข้อมูลในรูปแบบ Form Data ป้องกัน Browser สลับเป็น GET
+      const formData = new URLSearchParams();
+      formData.append("satisfaction", satisfaction ? satisfaction.toString() : "");
+      formData.append("feedback", feedback);
+
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
         headers: {
-          "Content-Type": "text/plain;charset=utf-8",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({
-          satisfaction: satisfaction,
-          feedback: feedback,
-        }),
+        body: formData.toString(),
       });
 
       setStep("submitted");
