@@ -71,8 +71,8 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  // States สำหรับ Filter ทั้ง 3 ตัว
-  const [timeRange, setTimeRange] = useState<string>("ALL"); // ALL, WEEK, MONTH, YEAR
+  // States สำหรับ Filter
+  const [timeRange, setTimeRange] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
   
@@ -121,7 +121,7 @@ export function DashboardPage() {
       );
     } catch (err: any) {
       console.error("Error fetching dashboard data:", err);
-      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณกด Refresh อีกครั้ง");
+      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
     } finally {
       setLoading(false);
@@ -133,7 +133,6 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
-  // ดึงรายการช่วงอายุที่มีในข้อมูลมาใส่ Dropdown
   const ageGroupList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => {
@@ -142,19 +141,16 @@ export function DashboardPage() {
     return Array.from(set);
   }, [data]);
 
-  // ดึงรายการสังกัดที่มีในข้อมูลมาใส่ Dropdown
   const affiliationsList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
     return Array.from(set);
   }, [data]);
 
-  // ระบบการกรองแบบ Multi-filter (ช่วงเวลา + ช่วงอายุ + สังกัด)
   const filteredData = useMemo(() => {
     const now = new Date();
 
     return data.filter((item) => {
-      // 1. กรองช่วงเวลา (Time Filter)
       if (timeRange !== "ALL" && item.timestamp) {
         const itemDate = new Date(item.timestamp);
         if (!isNaN(itemDate.getTime())) {
@@ -167,13 +163,11 @@ export function DashboardPage() {
         }
       }
 
-      // 2. กรองช่วงอายุ (Age Group Filter)
       if (selectedAge !== "ALL") {
         const itemAge = item.ageGroup?.trim() || "";
         if (itemAge !== selectedAge) return false;
       }
 
-      // 3. กรองสังกัด (Affiliation Filter)
       if (selectedAffiliation !== "ALL") {
         const itemAff = item.affiliation?.trim() || "ไม่ระบุ";
         if (itemAff !== selectedAffiliation) return false;
@@ -287,28 +281,28 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a1122] text-slate-100 p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-[#070c18] text-slate-100 p-4 sm:p-6 font-sans selection:bg-amber-500 selection:text-slate-900">
       <div className="max-w-7xl mx-auto space-y-5">
         {/* Top Navigation */}
         <div className="flex justify-between items-center text-xs text-slate-400">
-          <Link to="/" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+          <Link to="/" className="hover:text-amber-400 transition-colors flex items-center gap-1 font-medium">
             ← Back to home
           </Link>
-          <span className="text-amber-400/80 font-medium bg-amber-400/10 px-2.5 py-1 rounded-md border border-amber-400/20">
+          <span className="text-amber-300 font-medium bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30 shadow-sm backdrop-blur-sm">
             Viewing Fixed Google Sheets
           </span>
         </div>
 
         {errorMsg && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium shadow-md">
             ⚠️ {errorMsg}
           </div>
         )}
 
         {/* Header Banner */}
-        <div className="bg-[#0f1a30] border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="bg-gradient-to-r from-[#0d172e] via-[#0f1d3a] to-[#0d172e] border border-slate-700/60 rounded-2xl p-5 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 backdrop-blur-md">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-slate-800/80 border border-amber-400/30 flex items-center justify-center p-1 shadow-inner shrink-0">
+            <div className="w-14 h-14 rounded-full bg-slate-800/80 border border-amber-400/40 flex items-center justify-center p-1 shadow-lg shrink-0">
               <img
                 src="https://mahidol.ac.th/wp-content/uploads/2020/06/mahidol-logo-gold.png"
                 alt="Mahidol Logo"
@@ -318,10 +312,10 @@ export function DashboardPage() {
             </div>
             <div>
               <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">Mahidol University</p>
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
+              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5 drop-shadow-sm">
                 พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
               </h1>
-              <p className="text-xs text-slate-400 tracking-wider mt-0.5">
+              <p className="text-xs text-slate-400 tracking-wider mt-0.5 font-medium">
                 EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
               </p>
             </div>
@@ -341,79 +335,85 @@ export function DashboardPage() {
             <button
               onClick={fetchData}
               disabled={loading}
-              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-400 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm active:scale-95"
             >
               🔄 Refresh
             </button>
             <button
               onClick={handleLogout}
-              className="px-3.5 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
             >
               🚪 Logout
             </button>
           </div>
         </div>
 
-        {/* Multi-Filter Bar (ช่วงเวลา / ช่วงอายุ / สังกัด) */}
-        <div className="bg-[#0f1a30] border border-slate-800 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-4">
+        {/* 🎨 [ปรับปรุงใหม่] Multi-Filter Bar โทนสไตล์สว่างและคมชัด */}
+        <div className="bg-gradient-to-r from-[#0d162a] via-[#111e38] to-[#0d162a] border border-slate-700/70 rounded-2xl p-4 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 text-xs">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            
             {/* Filter 1: ช่วงเวลา */}
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-medium">📅 ช่วงเวลา:</span>
+            <div className="flex items-center gap-2 bg-[#142343]/80 border border-slate-600/60 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-400 transition-colors">
+              <span className="text-amber-400 font-semibold">📅 ช่วงเวลา:</span>
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+                className="bg-transparent text-slate-100 outline-none cursor-pointer font-medium text-xs"
               >
-                <option value="ALL">ทั้งหมด</option>
-                <option value="WEEK">รายสัปดาห์ (7 วันล่าสุด)</option>
-                <option value="MONTH">รายเดือน (30 วันล่าสุด)</option>
-                <option value="YEAR">รายปี (365 วันล่าสุด)</option>
+                <option value="ALL" className="bg-[#0f1d3a] text-slate-100">ทั้งหมด</option>
+                <option value="WEEK" className="bg-[#0f1d3a] text-slate-100">รายสัปดาห์ (7 วันล่าสุด)</option>
+                <option value="MONTH" className="bg-[#0f1d3a] text-slate-100">รายเดือน (30 วันล่าสุด)</option>
+                <option value="YEAR" className="bg-[#0f1d3a] text-slate-100">รายปี (365 วันล่าสุด)</option>
               </select>
             </div>
 
             {/* Filter 2: ช่วงอายุ */}
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-medium">🎂 ช่วงอายุ:</span>
+            <div className="flex items-center gap-2 bg-[#142343]/80 border border-slate-600/60 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-400 transition-colors">
+              <span className="text-amber-400 font-semibold">🎂 ช่วงอายุ:</span>
               <select
                 value={selectedAge}
                 onChange={(e) => setSelectedAge(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+                className="bg-transparent text-slate-100 outline-none cursor-pointer font-medium text-xs"
               >
-                <option value="ALL">ทุกช่วงอายุ</option>
+                <option value="ALL" className="bg-[#0f1d3a] text-slate-100">ทุกช่วงอายุ</option>
                 {ageGroupList.map((age) => (
-                  <option key={age} value={age}>{age}</option>
+                  <option key={age} value={age} className="bg-[#0f1d3a] text-slate-100">{age}</option>
                 ))}
               </select>
             </div>
 
             {/* Filter 3: สังกัด */}
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-medium">📌 กรองตามสังกัด:</span>
+            <div className="flex items-center gap-2 bg-[#142343]/80 border border-slate-600/60 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-400 transition-colors">
+              <span className="text-amber-400 font-semibold">📌 สังกัด:</span>
               <select
                 value={selectedAffiliation}
                 onChange={(e) => setSelectedAffiliation(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+                className="bg-transparent text-slate-100 outline-none cursor-pointer font-medium text-xs max-w-[180px] truncate"
               >
-                <option value="ALL">ทั้งหมด ({data.length} คน)</option>
+                <option value="ALL" className="bg-[#0f1d3a] text-slate-100">ทั้งหมด ({data.length} คน)</option>
                 {affiliationsList.map((aff) => (
-                  <option key={aff} value={aff}>{aff}</option>
+                  <option key={aff} value={aff} className="bg-[#0f1d3a] text-slate-100">{aff}</option>
                 ))}
               </select>
             </div>
+
           </div>
 
-          <p className="text-slate-400">
-            แสดงผลข้อมูลจำนวน: <span className="text-amber-400 font-bold">{filteredData.length}</span> / {data.length} รายการ
-          </p>
+          <div className="flex items-center justify-end gap-2 bg-slate-900/40 border border-slate-700/50 rounded-xl px-3 py-1.5 self-start md:self-auto">
+            <span className="text-slate-400">แสดงผลข้อมูล:</span>
+            <span className="text-amber-400 font-bold font-mono text-sm">{filteredData.length}</span>
+            <span className="text-slate-500">/ {data.length} รายการ</span>
+          </div>
         </div>
 
         {/* Executive Summary Box */}
         {executiveInsights && (
-          <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 shadow-lg flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+          <div className="bg-gradient-to-r from-amber-500/10 via-[#0f1d3a] to-[#0f1d3a] border border-amber-500/30 rounded-2xl p-4 shadow-lg flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
             <div className="space-y-1">
-              <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">💡 Executive Insight Summary</p>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs font-bold text-amber-400 tracking-wider uppercase flex items-center gap-1.5">
+                💡 Executive Insight Summary
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
                 คะแนนภาพรวมเฉลี่ยเท่ากับ <span className="text-emerald-400 font-bold text-sm">{executiveInsights.grandAvg} / 5.00</span> 
                 โดยหัวข้อที่ได้คะแนนสูงสุดคือ <span className="text-amber-300 font-semibold">"{executiveInsights.highest.title}" ({executiveInsights.highest.avg})</span> 
                 และส่วนที่ควรพัฒนาคือ <span className="text-amber-300 font-semibold">"{executiveInsights.lowest.title}" ({executiveInsights.lowest.avg})</span>
@@ -425,20 +425,20 @@ export function DashboardPage() {
         {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Custom Horizontal Bar Chart */}
-          <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
-            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+          <div className="lg:col-span-2 bg-[#0d172e] border border-slate-700/60 rounded-2xl p-5 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800/80 pb-2.5">
               📊 คะแนนความพึงพอใจแยกรายหัวข้อ (คะแนนเต็ม 5.00)
             </h2>
             <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-2">
               {itemScores.map((item, idx) => (
                 <div key={item.key} className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 truncate max-w-[80%]">{item.title}</span>
+                    <span className="text-slate-300 truncate max-w-[80%] font-medium">{item.title}</span>
                     <span className="font-mono font-bold text-amber-400">{item.avg.toFixed(2)}</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-800/80 h-2.5 rounded-full overflow-hidden border border-slate-700/50">
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-500 shadow-sm"
                       style={{
                         width: `${(item.avg / 5) * 100}%`,
                         backgroundColor: COLOR_PALETTE[idx % COLOR_PALETTE.length],
@@ -451,19 +451,19 @@ export function DashboardPage() {
           </div>
 
           {/* Donut Chart วงกลมสำหรับสัดส่วนสังกัด */}
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
-            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+          <div className="bg-[#0d172e] border border-slate-700/60 rounded-2xl p-5 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800/80 pb-2.5">
               🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
             </h2>
             
             {renderPieChart()}
 
-            <div className="space-y-2 pt-2 border-t border-slate-800 max-h-[160px] overflow-y-auto pr-1">
+            <div className="space-y-2 pt-2 border-t border-slate-800/80 max-h-[160px] overflow-y-auto pr-1">
               {affiliationBreakdown.map((item) => (
                 <div key={item.name} className="flex justify-between items-center text-xs">
                   <div className="flex items-center gap-2 truncate max-w-[70%]">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></span>
-                    <span className="text-slate-300 truncate">{item.name}</span>
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: item.color }}></span>
+                    <span className="text-slate-300 truncate font-medium">{item.name}</span>
                   </div>
                   <span className="text-slate-400 font-mono shrink-0">{item.count} คน ({item.percent}%)</span>
                 </div>
@@ -473,13 +473,13 @@ export function DashboardPage() {
         </div>
 
         {/* Detailed Scorecard Table */}
-        <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
-          <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+        <div className="bg-[#0d172e] border border-slate-700/60 rounded-2xl p-5 shadow-xl space-y-3">
+          <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800/80 pb-2.5">
             📋 ตารางคะแนนสรุปอย่างละเอียด (DETAILED SCORECARD)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/80 text-slate-400 uppercase font-mono border-b border-slate-800">
+              <thead className="bg-slate-900/90 text-slate-400 uppercase font-mono border-b border-slate-800">
                 <tr>
                   <th className="py-2.5 px-3">หมวดหมู่</th>
                   <th className="py-2.5 px-3">หัวข้อประเมิน</th>
@@ -489,7 +489,7 @@ export function DashboardPage() {
               </thead>
               <tbody className="divide-y divide-slate-800/60">
                 {itemScores.map((item) => (
-                  <tr key={item.key} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={item.key} className="hover:bg-slate-800/40 transition-colors">
                     <td className="py-2.5 px-3 font-medium text-amber-400/90">{item.category}</td>
                     <td className="py-2.5 px-3 text-slate-200">{item.title}</td>
                     <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-400 text-sm">{item.avg.toFixed(2)}</td>
@@ -502,8 +502,8 @@ export function DashboardPage() {
         </div>
 
         {/* Feedback Section */}
-        <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-lg">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-2">
+        <div className="bg-[#0d172e] border border-slate-700/60 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800/80 pb-2.5">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase">
               💬 FEEDBACK & SUGGESTIONS ({searchedFeedback.length} ข้อเสนอแนะ)
             </h2>
@@ -512,7 +512,7 @@ export function DashboardPage() {
               placeholder="🔍 ค้นหาในข้อเสนอแนะ..."
               value={feedbackSearch}
               onChange={(e) => setFeedbackSearch(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-200 outline-none focus:border-amber-400 w-full sm:w-64"
+              className="bg-[#142343] border border-slate-600/60 rounded-xl px-3 py-1.5 text-xs text-slate-100 outline-none focus:border-amber-400 w-full sm:w-64 shadow-sm transition-colors"
             />
           </div>
 
@@ -521,8 +521,8 @@ export function DashboardPage() {
               <p className="text-xs text-slate-500 py-8 text-center col-span-2">ไม่พบข้อเสนอแนะที่ตรงตามเงื่อนไข</p>
             ) : (
               searchedFeedback.map((item, i) => (
-                <div key={i} className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/60 text-xs text-slate-300 space-y-1">
-                  <div className="flex justify-between items-center text-[10px] text-amber-400/80 font-mono">
+                <div key={i} className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 space-y-1 hover:border-slate-700/80 transition-colors">
+                  <div className="flex justify-between items-center text-[10px] text-amber-400/90 font-mono">
                     <span>{item.affiliation || "ไม่ระบุสังกัด"}</span>
                     <span>{item.timestamp || "N/A"}</span>
                   </div>
