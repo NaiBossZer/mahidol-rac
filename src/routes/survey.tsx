@@ -7,7 +7,7 @@ export const Route = createFileRoute("/survey")({
 
 // ⚠️ ใส่ Web App URL ล่าสุดของคุณที่นี่
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw20ExaaQqaRugnuwptr5FSAWFiwmWfdgOy6y4iqSh88gLdoWX9fHNXu5Jy3-5NZxCqxQ/exec";
+  "https://script.google.com/macros/s/AKfycbx6MoINngMyK4Jf4JgCTQHY_B_iydnYqtqSKcT2-UbslV23ZBX__k-ez7gbeixDXq8rPQ/exec";
 
 export function SurveyPage() {
   const [step, setStep] = useState<"pdpa" | "survey" | "submitting" | "submitted">("pdpa");
