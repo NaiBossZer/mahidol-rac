@@ -1,11 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-// 🔑 ตั้งรหัสผ่านสำหรับเข้าใช้งาน Dashboard ที่นี่
 const DASHBOARD_PASSWORD = "ENLP2517"; 
 
 export function LoginPage() {
@@ -13,14 +12,21 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // ถ้าล็อกอินอยู่แล้ว ให้เด้งไปหน้า Dashboard ทันที
+  useEffect(() => {
+    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
+    if (isAuth) {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [navigate]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password === DASHBOARD_PASSWORD) {
-      // 🔄 เปลี่ยนเป็น sessionStorage เพื่อให้ล็อกเอาต์ให้อัตโนมัติเมื่อปิดแท็บ
       sessionStorage.setItem("dashboard_auth", "true");
-      // ย้ายไปหน้า Dashboard
-      navigate({ to: "/dashboard" });
+      // ใช้ replace: true เพื่อป้องกันการกด back กลับมาหน้าล็อกอิน
+      navigate({ to: "/dashboard", replace: true });
     } else {
       setErrorMsg("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
     }
