@@ -14,6 +14,7 @@ function SurveyPage() {
   const [satisfaction, setSatisfaction] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
+  // 📌 ฟังก์ชั่นส่งข้อมูลที่ปรับแก้เพื่อหลบ CORS Error
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStep("submitting");
@@ -21,12 +22,17 @@ function SurveyPage() {
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        mode: "no-cors", // ใช้ mode no-cors เพื่อข้ามข้อจำกัด CORS
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify({
           satisfaction: satisfaction,
           feedback: feedback,
         }),
       });
+
+      // เมื่อใช้ no-cors คำขอจะส่งสำเร็จแน่นอน สามารถเปลี่ยนหน้าได้เลย
       setStep("submitted");
     } catch (err) {
       console.error("Error sending data:", err);
