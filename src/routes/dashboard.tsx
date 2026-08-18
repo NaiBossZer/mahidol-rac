@@ -340,27 +340,29 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Header Banner */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center p-1.5 shadow-sm shrink-0">
-              <img
-                src="https://mahidol.ac.th/wp-content/uploads/2020/06/mahidol-logo-gold.png"
-                alt="Mahidol Logo"
-                className="w-full h-full object-contain"
-                onError={(e) => { (e.target as HTMLElement).style.display = "none"; }}
-              />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-amber-600 tracking-wider uppercase">Mahidol University</p>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
-                ห้องการเรียนรู้ครั่งครบวงจร
-              </h1>
-              <p className="text-xs text-slate-500 tracking-wider mt-0.5 font-medium">
-                EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
-              </p>
-            </div>
-          </div>
+{/* Header Banner */}
+<div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+  <div className="flex items-center gap-4">
+
+    {/* 👇 วางโค้ดรูปโลโก้ตรงจุดนี้ */}
+    <div className="w-14 h-14 rounded-full bg-amber-50/50 border border-amber-200 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden">
+      <img
+        src="/Mahidol_U.jpg"
+        alt="Mahidol Logo"
+        className="w-full h-full object-contain rounded-full"
+      />
+    </div>
+
+    <div>
+      <p className="text-xs font-bold text-amber-600 tracking-wider uppercase">Mahidol University</p>
+      <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+        พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
+      </h1>
+      <p className="text-xs text-slate-500 tracking-wider mt-0.5 font-medium">
+        EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
+      </p>
+    </div>
+  </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-slate-100 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
