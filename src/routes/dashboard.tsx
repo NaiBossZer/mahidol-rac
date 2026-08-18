@@ -2,9 +2,9 @@ import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-ro
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
-  // 🔒 ตรวจสอบการเข้าถึง: ถ้ายังไม่ได้ใส่รหัสผ่าน ให้ดีดไปหน้า /login ทันที
+  // 🔒 ตรวจสอบการเข้าถึง: เช็กสิทธิ์ผ่าน sessionStorage (ปิดแท็บเมื่อไหร่ ต้องล็อกอินใหม่)
   beforeLoad: () => {
-    const isAuth = localStorage.getItem("dashboard_auth") === "true";
+    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
     if (!isAuth) {
       throw redirect({
         to: "/login",
@@ -52,9 +52,9 @@ export function DashboardPage() {
     fetchData();
   }, []);
 
-  // 🚪 ฟังก์ชันสำหรับออกจากระบบ
+  // 🚪 ฟังก์ชันสำหรับออกจากระบบ (ลบค่าใน sessionStorage)
   const handleLogout = () => {
-    localStorage.removeItem("dashboard_auth");
+    sessionStorage.removeItem("dashboard_auth");
     navigate({ to: "/login" });
   };
 
