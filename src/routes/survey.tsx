@@ -419,35 +419,35 @@ export function SurveyPage() {
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 1. ความน่าสนใจของห้องการเรียนรู้และนิทรรศการ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_interest", p3_interest, setP3_interest, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_interest", p3_interest, setP3_interest)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 2. ความเหมาะสมและความครบถ้วนของเนื้อหา <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_content", p3_content, setP3_content, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_content", p3_content, setP3_content)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 3. ความชัดเจนและเข้าใจง่ายของสื่อการเรียนรู้ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_clarity", p3_clarity, setP3_clarity, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_clarity", p3_clarity, setP3_clarity)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 4. ประโยชน์ขององค์ความรู้ที่ได้รับ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_benefit", p3_benefit, setP3_benefit, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_benefit", p3_benefit, setP3_benefit)}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 5. ความสามารถในการนำความรู้ไปใช้หรือต่อยอด <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_application", p3_application, setP3_application, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_application", p3_application, setP3_application)}
             </div>
           </div>
 
