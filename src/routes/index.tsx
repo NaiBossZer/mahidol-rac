@@ -27,24 +27,37 @@ export function HomePage() {
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
 
-            <div className="pt-4 flex flex-wrap justify-center gap-4">
+            {/* TAB / Navigation Buttons */}
+            <div className="pt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
               <Link
                 to="/survey"
-                className="bg-white text-emerald-800 hover:bg-emerald-50 font-bold px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95"
+                className="bg-white text-emerald-800 hover:bg-emerald-50 font-bold px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl shadow-lg transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
               >
                 📝 ทำแบบประเมินความพึงพอใจ
               </Link>
               <Link
                 to="/dashboard"
-                className="bg-emerald-700/80 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl border border-emerald-500/40 backdrop-blur-sm transition-all active:scale-95"
+                className="bg-emerald-700/80 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-emerald-500/40 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
               >
                 📊 ดูสรุปผล Dashboard
               </Link>
+              <a
+                href="#cards-section"
+                className="bg-emerald-900/60 hover:bg-emerald-900/80 text-emerald-100 font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-emerald-400/30 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
+              >
+                📚 คลังความรู้
+              </a>
+              <a
+                href="#data-viz"
+                className="bg-emerald-900/60 hover:bg-emerald-900/80 text-emerald-100 font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-emerald-400/30 backdrop-blur-sm transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
+              >
+                📈 สถิติการผลิต
+              </a>
             </div>
           </div>
         </header>
 
-        {/* 2. ส่วนวิดีโอแนะนำห้องเรียนรู้ครั่ง (HTML5 Video จาก public) */}
+        {/* 2. Video Section */}
         <section className="bg-white dark:bg-slate-800/50 py-12 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-4xl mx-auto px-4 space-y-6 text-center">
             <div className="space-y-2">
@@ -70,55 +83,21 @@ export function HomePage() {
           </div>
         </section>
 
-        {/* 3. ส่วน Data Visualization */}
-        <LacDataVisualization />
+        {/* 3. Cards Grid Section */}
+        <div id="cards-section">
+          <LacKnowledgeCards />
+        </div>
 
-        {/* 4. ส่วนความรู้เกี่ยวกับครั่ง (Shellac Knowledge) */}
-        <main className="max-w-6xl mx-auto px-4 py-12 space-y-12">
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-emerald-900 dark:text-emerald-400">
-              องค์ความรู้เกี่ยวกับครั่ง (Lac & Shellac)
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm">
-              ทรัพยากรธรรมชาติที่มีคุณค่าทางเศรษฐกิจและการอนุรักษ์สิ่งแวดล้อมอย่างยั่งยืน
-            </p>
-          </div>
+        {/* 4. Data Visualization Section */}
+        <div id="data-viz">
+          <LacDataVisualization />
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-xl flex items-center justify-center text-xl font-bold">
-                🌱
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">ครั่งคืออะไร?</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                ยางธรรมชาติที่ขับออกมาจากแมลงครั่ง (Laccifer lacca) ซึ่งอาศัยอยู่ตามกิ่งไม้ของต้นไม้โฮสต์ เช่น ต้นก้ามปู (จามจุรี) และต้นพะยูง
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-xl flex items-center justify-center text-xl font-bold">
-                🏭
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">การนำไปใช้ประโยชน์</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                นำไปแปรรูปเป็น Shellac ใช้ในอุตสาหกรรมเคลือบเงาไม้ สารเคลือบผิวผลไม้ เคลือบยาเม็ด เคลือบลูกอม และอุตสาหกรรมสี
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-xl flex items-center justify-center text-xl font-bold">
-                🏛️
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">ห้องเรียนรู้ครั่งครบวงจร</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                แหล่งถ่ายทอดเทคโนโลยีและการส่งเสริมการเลี้ยงครั่งอย่างมีมาตรฐาน เพื่อสร้างอาชีพและรายได้ที่ยั่งยืนให้แก่ชุมชน อ.สบปราบ
-              </p>
-            </div>
-          </div>
-        </main>
+        {/* 5. Accordion Section */}
+        <LacKnowledgeAccordion />
       </div>
 
-      {/* 5. Footer */}
+      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8 text-center text-sm border-t border-slate-800 mt-12">
         <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
       </footer>
@@ -126,7 +105,86 @@ export function HomePage() {
   );
 }
 
-{/* Component Data Visualization */}
+// --- COMPONENT: Cards Grid ---
+function LacKnowledgeCards() {
+  const cards = [
+    {
+      icon: "🐞",
+      title: "ครั่งคืออะไร & ถิ่นกำเนิด",
+      desc: "ยางธรรมชาติจากแมลงครั่ง (Laccifer lacca) สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
+      tag: "พื้นฐานครั่ง",
+      bgColor: "bg-rose-50 dark:bg-rose-950/30",
+      borderColor: "border-rose-200 dark:border-rose-800",
+      badgeColor: "bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200",
+    },
+    {
+      icon: "🌳",
+      title: "พืชอาศัย & นิเวศวิทยา",
+      desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี (ก้ามปู) ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
+      tag: "นิเวศวิทยา",
+      bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+      borderColor: "border-emerald-200 dark:border-emerald-800",
+      badgeColor: "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200",
+    },
+    {
+      icon: "📅",
+      title: "การเพาะเลี้ยง & การจัดการ",
+      desc: "เทคนิคการคัดแม่พันธุ์ รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) อัตราปล่อยพันธุ์ และการดูแลป้องกันศัตรูครั่ง",
+      tag: "คู่มือเกษตรกร",
+      bgColor: "bg-amber-50 dark:bg-amber-950/30",
+      borderColor: "border-amber-200 dark:border-amber-800",
+      badgeColor: "bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200",
+    },
+    {
+      icon: "🧪",
+      title: "ผลิตภัณฑ์ & การแปรรูป",
+      desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่งบำรุงดิน",
+      tag: "นวัตกรรม & มูลค่า",
+      bgColor: "bg-sky-50 dark:bg-sky-950/30",
+      borderColor: "border-sky-200 dark:border-sky-800",
+      badgeColor: "bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200",
+    },
+  ];
+
+  return (
+    <section className="max-w-6xl mx-auto px-4 py-12">
+      <div className="text-center mb-8 space-y-2">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          📚 หมวดหมู่องค์ความรู้เรื่องครั่ง
+        </h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          เจาะลึกข้อมูลทางนิเวศวิทยา การเพาะเลี้ยง และอุตสาหกรรมแปรรูปครั่ง
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cards.map((card, index) => (
+          <div
+            key={index}
+            className={`${card.bgColor} ${card.borderColor} border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4`}
+          >
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-3xl">{card.icon}</span>
+                <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${card.badgeColor}`}>
+                  {card.tag}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                {card.title}
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                {card.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// --- COMPONENT: Data Visualization ---
 function LacDataVisualization() {
   const [activeTab, setActiveTab] = useState<"farmers" | "efficiency">("farmers");
 
@@ -288,6 +346,148 @@ function LacDataVisualization() {
             ))}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// --- COMPONENT: Accordion ---
+function LacKnowledgeAccordion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const accordions = [
+    {
+      title: "🗓️ ปฏิทินและเทคนิคการเพาะเลี้ยงครั่ง (ฤดูกาล & การคัดพันธุ์)",
+      content: (
+        <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-xl border border-amber-200 dark:border-amber-900">
+              <p className="font-bold text-amber-900 dark:text-amber-200 mb-2">☀️ รอบฤดูร้อน</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li><b>ปล่อยครั่ง:</b> พฤศจิกายน - ธันวาคม</li>
+                <li><b>เก็บเกี่ยว:</b> พฤษภาคม - มิถุนายน</li>
+              </ul>
+            </div>
+            <div className="bg-sky-50 dark:bg-sky-950/20 p-4 rounded-xl border border-sky-200 dark:border-sky-900">
+              <p className="font-bold text-sky-900 dark:text-sky-200 mb-2">🌧️ รอบฤดูฝน</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li><b>ปล่อยครั่ง:</b> พฤษภาคม - มิถุนายน</li>
+                <li><b>เก็บเกี่ยว:</b> พฤศจิกายน - ธันวาคม (ปีถัดไป)</li>
+              </ul>
+            </div>
+          </div>
+          <div className="space-y-2 border-t pt-3 border-slate-200 dark:border-slate-700">
+            <p className="font-bold text-slate-900 dark:text-white">📌 เทคนิคการคัดเลือกและปล่อยครั่งพันธุ์:</p>
+            <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+              <li>คัดรังครั่งสมบูรณ์ หนา เกาะติดกิ่งดี ไม่มีร่องรอยศัตรูพืชทำลาย</li>
+              <li>ตัดครั่งพันธุ์ความยาว 15 ซม. (หนัก 40-50 กรัม) ผูกติดกิ่งพืชอาศัยห่างกันช่วงละ 3-4 เมตร</li>
+              <li><b>การดูแลหลังปล่อย:</b> เก็บครั่งพันธุ์ออกภายใน 3 สัปดาห์ หรือเมื่อตัวอ่อนลงเกาะหมดแล้ว</li>
+            </ul>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "🌿 รายชื่อพืชอาศัยยอดนิยม และลักษณะต้นไม้ที่เหมาะสม",
+      content: (
+        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <p><b>คุณลักษณะต้นไม้ที่เหมาะแก่การเลี้ยงครั่ง:</b> เรือนยอดโปร่ง ได้รับแสงแดดพอเหมาะ อากาศถ่ายเทสะดวก แตกกิ่งได้ตลอดปี และเติบโตเร็ว</p>
+          <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl">
+            <p className="font-bold text-slate-900 dark:text-white mb-2">ตัวอย่างพืชอาศัย (Host Trees):</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "ต้นจามจุรี (ก้ามปู) - Top 1",
+                "ต้นปลัก",
+                "ต้นสีเสียด",
+                "ต้นปันแก",
+                "กระถินเทพา",
+                "ต้นลำไย",
+                "ต้นลิ้นจี่",
+                "ต้นพุทรา",
+                "มะขามเทศ",
+                "มะกอกเกลื้อน",
+              ].map((tree, idx) => (
+                <span key={idx} className="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 text-xs font-medium">
+                  🌱 {tree}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "🏭 ผลิตภัณฑ์และการแปรรูปจากครั่ง สู่ประโยชน์รอบตัว",
+      content: (
+        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/20 rounded-xl border border-rose-100 dark:border-rose-900">
+              <p className="font-bold text-rose-800 dark:text-rose-300">🎨 สีสกัดธรรมชาติ</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-400">ใช้ย้อมผ้าสีแดงธรรมชาติ และแปรรูปเป็นสีผสมอาหาร</p>
+            </div>
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-100 dark:border-amber-900">
+              <p className="font-bold text-amber-800 dark:text-amber-300">✨ สารเคลือบสารพัดประโยชน์</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-400">ทำเชลแลกทาเงาไม้ เคลือบผิวผลไม้ เคลือบยาเม็ด ลูกอม และลิปสติก</p>
+            </div>
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900">
+              <p className="font-bold text-emerald-800 dark:text-emerald-300">🌱 น้ำล้างครั่งรักษ์โลก</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-400">น้ำจากการล้างครั่งดิบนำมาใช้เป็นสารบำรุงดิน ช่วยให้พืชผักเติบโตเร็วขึ้น</p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "🌡️ ผลกระทบจากสภาวะโลกร้อน (Climate Change) ต่อการเลี้ยงครั่ง",
+      content: (
+        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900 space-y-2">
+            <p className="font-bold text-red-900 dark:text-red-200">⚠️ ปัจจัยความเสี่ยงที่ต้องระวัง:</p>
+            <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+              <li><b>อุณหภูมิสูงขึ้น:</b> ทำให้แมลงครั่งอ่อนแอ เมตาบอลิซึมผิดปกติ ตัวแมลงตายง่าย ผลผลิตลดลง</li>
+              <li><b>ฝนตกผิดฤดูกาล:</b> ส่งผลต่อการเกาะของตัวอ่อน ครั่งหลุดร่วงง่าย และเกิดเชื้อราในรังครั่ง</li>
+            </ul>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <section className="max-w-4xl mx-auto px-4 py-12">
+      <div className="text-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+          ❓ เจาะลึกรายละเอียด (FAQ & Accordion)
+        </h2>
+      </div>
+
+      <div className="space-y-3">
+        {accordions.map((item, index) => (
+          <div
+            key={index}
+            className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm"
+          >
+            <button
+              onClick={() => toggleAccordion(index)}
+              className="w-full flex justify-between items-center p-4 sm:p-5 text-left font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all text-sm sm:text-base"
+            >
+              <span>{item.title}</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold ml-2">
+                {openIndex === index ? "➖" : "➕"}
+              </span>
+            </button>
+
+            {openIndex === index && (
+              <div className="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/50">
+                {item.content}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   );
