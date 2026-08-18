@@ -14,32 +14,30 @@ function SurveyPage() {
   const [satisfaction, setSatisfaction] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep("submitting");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setStep("submitting");
 
-    try {
-      // ใช้ URLSearchParams ในการจัดส่งข้อมูลแบบ Form Data
-      const formData = new URLSearchParams();
-      formData.append("satisfaction", satisfaction ? satisfaction.toString() : "");
-      formData.append("feedback", feedback);
+  try {
+    // สร้าง URL พร้อม Query Parameters
+    const params = new URLSearchParams({
+      satisfaction: satisfaction ? satisfaction.toString() : "",
+      feedback: feedback,
+    });
 
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
+    // ยิงแบบ GET Request
+    await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
+      method: "GET",
+      mode: "no-cors",
+    });
 
-      setStep("submitted");
-    } catch (err) {
-      console.error("Error sending data:", err);
-      alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
-      setStep("survey");
-    }
-  };
+    setStep("submitted");
+  } catch (err) {
+    console.error("Error sending data:", err);
+    alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
+    setStep("survey");
+  }
+};
 
   if (step === "submitted") {
     return (
