@@ -7,7 +7,7 @@ export const Route = createFileRoute("/dashboard")({
 
 // ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbx6MoINngMyK4Jf4JgCTQHY_B_iydnYqtqSKcT2-UbslV23ZBX__k-ez7gbeixDXq8rPQ/exec";
+  "https://script.google.com/macros/s/AKfycbwxRYAEARUyrmDdfT-xgoAlEjPpOzs7dhXFt0RME-fNAB5uUNEyJP0XChDig0oNRgqHQA/exec";
 
 interface SurveyResponse {
   timestamp: string;
