@@ -17,8 +17,8 @@ export function LoginPage() {
     e.preventDefault();
 
     if (password === DASHBOARD_PASSWORD) {
-      // ถ้ารหัสถูก ให้บันทึกการ Login ไว้
-      localStorage.setItem("dashboard_auth", "true");
+      // 🔄 เปลี่ยนเป็น sessionStorage เพื่อให้ล็อกเอาต์ให้อัตโนมัติเมื่อปิดแท็บ
+      sessionStorage.setItem("dashboard_auth", "true");
       // ย้ายไปหน้า Dashboard
       navigate({ to: "/dashboard" });
     } else {
