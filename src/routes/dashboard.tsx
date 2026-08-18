@@ -51,7 +51,21 @@ export function DashboardPage() {
       const json = await res.json();
       
       if (Array.isArray(json)) {
-        setData(json);
+        // 🛠️ Filter: กรองเอาเฉพาะแถวที่มีการกรอกข้อมูลจริง (ตัดแถวว่างใน Google Sheets ออก)
+        const validData = json.filter((item: SurveyResponse) => {
+          const hasScore =
+            Number(item.p2_overall) > 0 ||
+            Number(item.p2_location) > 0 ||
+            Number(item.p3_content) > 0;
+          const hasProfile =
+            Boolean(item.affiliation?.trim()) ||
+            Boolean(item.ageGroup?.trim()) ||
+            Boolean(item.feedback?.trim());
+          
+          return Boolean(item.timestamp) && (hasScore || hasProfile);
+        });
+
+        setData(validData);
       } else {
         setData([]);
       }
@@ -100,14 +114,21 @@ export function DashboardPage() {
   const calcGroupPercentage = (keys: (keyof SurveyResponse)[]) => {
     if (!Array.isArray(data) || data.length === 0) return "0.0";
     let totalSum = 0;
-    let totalMax = data.length * keys.length * 5;
+    let validRespondentCount = 0;
 
     data.forEach((item) => {
+      let hasValidScore = false;
       keys.forEach((k) => {
-        totalSum += Number(item[k]) || 0;
+        const val = Number(item[k]) || 0;
+        if (val > 0) {
+          totalSum += val;
+          hasValidScore = true;
+        }
       });
+      if (hasValidScore) validRespondentCount++;
     });
 
+    const totalMax = validRespondentCount * keys.length * 5;
     return totalMax > 0 ? ((totalSum / totalMax) * 100).toFixed(1) : "0.0";
   };
 
@@ -264,7 +285,7 @@ export function DashboardPage() {
               ) : (
                 Object.entries(
                   data.reduce((acc, curr) => {
-                    const key = curr.affiliation || "ไม่ระบุ";
+                    const key = curr.affiliation?.trim() || "ไม่ระบุ";
                     acc[key] = (acc[key] || 0) + 1;
                     return acc;
                   }, {} as Record<string, number>)
