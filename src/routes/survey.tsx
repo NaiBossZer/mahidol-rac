@@ -19,19 +19,18 @@ function SurveyPage() {
     setStep("submitting");
 
     try {
-      // ส่ง payload เป็น JSON Stringify โดยใช้ Header text/plain เพื่อเลี่ยงการถูกบล็อก CORS
-      const payload = JSON.stringify({
-        satisfaction: satisfaction,
-        feedback: feedback,
-      });
+      // ใช้ URLSearchParams ในการจัดส่งข้อมูลแบบ Form Data
+      const formData = new URLSearchParams();
+      formData.append("satisfaction", satisfaction ? satisfaction.toString() : "");
+      formData.append("feedback", feedback);
 
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
         headers: {
-          "Content-Type": "text/plain",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: payload,
+        body: formData.toString(),
       });
 
       setStep("submitted");
