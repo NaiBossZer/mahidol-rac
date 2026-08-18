@@ -13,7 +13,7 @@ export function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // ใส่ Logic รหัสผ่านของคุณที่นี่ (ตัวอย่าง: admin1234)
-    if (password === "admin1234") {
+    if (password === "ENLP2517") {
       sessionStorage.setItem("dashboard_auth", "true");
       navigate({ to: "/dashboard" });
     } else {
