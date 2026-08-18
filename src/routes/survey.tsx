@@ -5,6 +5,7 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
+// ⚠️ ใส่ Web App URL ล่าสุดจากการ Deploy ใน Google Apps Script ตรงนี้
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyc0e3rXRodmtxyjs2eDPiAABxu5JGGmSRTByJnkW2bTgrRr5kK0YEi3JW2ldTwBVUuvg/exec";
 
@@ -14,30 +15,30 @@ function SurveyPage() {
   const [satisfaction, setSatisfaction] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setStep("submitting");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep("submitting");
 
-  try {
-    // สร้าง URL พร้อม Query Parameters
-    const params = new URLSearchParams({
-      satisfaction: satisfaction ? satisfaction.toString() : "",
-      feedback: feedback,
-    });
+    try {
+      // สร้าง URL Query Parameters
+      const params = new URLSearchParams({
+        satisfaction: satisfaction ? satisfaction.toString() : "",
+        feedback: feedback,
+      });
 
-    // ยิงแบบ GET Request
-    await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
-      method: "GET",
-      mode: "no-cors",
-    });
+      // ยิงข้อมูลด้วย GET Request (หลบ CORS)
+      await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
+        method: "GET",
+        mode: "no-cors",
+      });
 
-    setStep("submitted");
-  } catch (err) {
-    console.error("Error sending data:", err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
-    setStep("survey");
-  }
-};
+      setStep("submitted");
+    } catch (err) {
+      console.error("Error sending data:", err);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
+      setStep("survey");
+    }
+  };
 
   if (step === "submitted") {
     return (
