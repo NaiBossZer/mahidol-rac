@@ -247,7 +247,7 @@ export function DashboardPage() {
             <div>
               <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">Mahidol University</p>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
-                พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
+                ห้องการเรียนรู้ครั่งครบวงจร
               </h1>
               <p className="text-xs text-slate-400 tracking-wider mt-0.5">
                 EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
