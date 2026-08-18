@@ -9,29 +9,35 @@ export function HomePage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between">
       
       <div>
-        {/* 1. Header Banner / Hero Section */}
-        <header className="bg-gradient-to-b from-emerald-800 to-emerald-600 text-white py-16 px-4 text-center relative overflow-hidden">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <span className="bg-emerald-500/30 text-emerald-100 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
+        {/* 1. Header Banner / Hero Section (ใส่ Backdrop Background) */}
+        <header 
+          className="relative bg-cover bg-center bg-no-repeat text-white py-20 px-4 text-center overflow-hidden"
+          style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
+        >
+          {/* Overlay ปรับให้อ่านข้อความง่ายขึ้น */}
+          <div className="absolute inset-0 bg-emerald-950/75 backdrop-blur-[1px]" />
+
+          <div className="relative z-10 max-w-4xl mx-auto space-y-4">
+            <span className="bg-emerald-500/30 text-emerald-100 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30 backdrop-blur-sm">
               โครงการห้องการเรียนรู้ครั่งครบวงจร
             </span>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white drop-shadow-md">
               ศูนย์เรียนรู้และองค์ความรู้ "ครั่ง"
             </h1>
-            <p className="text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto font-light">
+            <p className="text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto font-light drop-shadow">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
             
             <div className="pt-4 flex flex-wrap justify-center gap-4">
               <Link
                 to="/survey"
-                className="bg-white text-emerald-800 hover:bg-emerald-50 font-bold px-6 py-3 rounded-xl shadow-lg transition-all"
+                className="bg-white text-emerald-800 hover:bg-emerald-50 font-bold px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95"
               >
                 📝 ทำแบบประเมินความพึงพอใจ
               </Link>
               <Link
                 to="/dashboard"
-                className="bg-emerald-700/80 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl border border-emerald-500/40 transition-all"
+                className="bg-emerald-700/80 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl border border-emerald-500/40 backdrop-blur-sm transition-all active:scale-95"
               >
                 📊 ดูสรุปผล Dashboard
               </Link>
