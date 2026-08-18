@@ -176,8 +176,10 @@ export function SurveyPage() {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => (window.location.href = "https://www.google.com")}
-              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 transition-colors"
+              onClick={() => {
+                window.location.href = "/";
+              }}
+              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               ไม่ยอมรับ
             </button>
@@ -185,7 +187,7 @@ export function SurveyPage() {
               type="button"
               disabled={!agreed}
               onClick={() => setStep("survey")}
-              className="w-1/2 rounded-xl bg-emerald-600 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all"
+              className="w-1/2 rounded-xl bg-emerald-600 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all cursor-pointer"
             >
               ยอมรับ
             </button>
