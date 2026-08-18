@@ -160,7 +160,6 @@ export function SurveyPage() {
               <input
                 type="radio"
                 name={nameGroup}
-                required
                 checked={value === score}
                 onChange={() => onChange(score)}
                 className="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
@@ -176,7 +175,7 @@ export function SurveyPage() {
     </div>
   );
 
-  // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ (ใส่ Backdrop Background)
+  // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ
   if (step === "submitted") {
     return (
       <div 
@@ -200,14 +199,13 @@ export function SurveyPage() {
     );
   }
 
-  // 2. หน้าข้อตกลง PDPA (ใส่ Backdrop Background)
+  // 2. หน้าข้อตกลง PDPA
   if (step === "pdpa") {
     return (
       <div 
         className="min-h-screen relative py-12 px-4 flex items-center justify-center bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
       >
-        {/* Dark Overlay ช่วยให้ตัวหนังสืออ่านง่ายและไม่โดนภาพแย่งสายตา */}
         <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]" />
 
         <div className="relative z-10 max-w-2xl w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/50 dark:border-slate-700">
@@ -514,19 +512,21 @@ export function SurveyPage() {
               </label>
               {renderLikert("p4_futureReturn", p4_futureReturn, setP4_futureReturn)}
             </div>
-<div>
-  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-    5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
-  </label>
-  <textarea
-    rows={3}
-    value={feedback}
-    onChange={(e) => setFeedback(e.target.value)}
-    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 outline-none"
-    placeholder="ข้อเสนอแนะเพิ่มเติม..."
-  />
-</div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                5. ข้อเสนอแนะ/ความคิดเห็นเพิ่มเติม
+              </label>
+              <textarea
+                rows={3}
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 outline-none"
+                placeholder="ข้อเสนอแนะเพิ่มเติม..."
+              />
+            </div>
           </div>
+
           <button
             type="submit"
             disabled={step === "submitting"}
