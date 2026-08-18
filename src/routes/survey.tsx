@@ -176,11 +176,16 @@ export function SurveyPage() {
     </div>
   );
 
-  // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ
+  // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ (ใส่ Backdrop Background)
   if (step === "submitted") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50/50 dark:bg-slate-900 p-4">
-        <div className="max-w-md w-full text-center bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-emerald-100 dark:border-slate-700">
+      <div 
+        className="min-h-screen relative flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
+      >
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]" />
+
+        <div className="relative z-10 max-w-md w-full text-center bg-white/95 dark:bg-slate-800/95 p-8 rounded-2xl shadow-2xl border border-white/40 dark:border-slate-700 backdrop-blur-md">
           <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
             ✓
           </div>
@@ -195,19 +200,25 @@ export function SurveyPage() {
     );
   }
 
-  // 2. หน้าข้อตกลง PDPA
+  // 2. หน้าข้อตกลง PDPA (ใส่ Backdrop Background)
   if (step === "pdpa") {
     return (
-      <div className="min-h-screen bg-emerald-50/40 dark:bg-slate-900 py-12 px-4 flex items-center justify-center">
-        <div className="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-emerald-100 dark:border-slate-700">
+      <div 
+        className="min-h-screen relative py-12 px-4 flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
+      >
+        {/* Dark Overlay ช่วยให้ตัวหนังสืออ่านง่ายและไม่โดนภาพแย่งสายตา */}
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]" />
+
+        <div className="relative z-10 max-w-2xl w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/50 dark:border-slate-700">
           <div className="border-b border-emerald-100 dark:border-slate-700 pb-4 mb-6 text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-full">
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-100/80 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
               พิธีเปิด
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-3">
               ห้องการเรียนรู้ครั่งครบวงจร
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
               วันที่ 21 สิงหาคม พ.ศ.2569 ณ คณะสิ่งแวดล้อมฯ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
           </div>
@@ -215,7 +226,7 @@ export function SurveyPage() {
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">
             ข้อตกลงความเป็นส่วนตัว (PDPA)
           </h2>
-          <div className="p-4 bg-emerald-50/60 dark:bg-slate-900/50 rounded-xl text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed border border-emerald-100 dark:border-slate-700">
+          <div className="p-4 bg-emerald-50/80 dark:bg-slate-900/60 rounded-xl text-sm text-slate-700 dark:text-slate-300 mb-6 leading-relaxed border border-emerald-100/80 dark:border-slate-700">
             ข้อมูลที่ท่านกรอกในแบบประเมินนี้จะนำไปใช้เพื่อการวิเคราะห์และปรับปรุงการจัดกิจกรรมเท่านั้น{" "}
             โดยจะได้รับการคุ้มครองตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA){" "}
             และไม่มีการเปิดเผยข้อมูลระบุตัวตนสู่สาธารณะ
@@ -239,7 +250,7 @@ export function SurveyPage() {
               onClick={() => {
                 window.location.href = "/";
               }}
-              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
               ไม่ยอมรับ
             </button>
