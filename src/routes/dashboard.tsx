@@ -1,8 +1,11 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
+  PieChart, Pie, Legend
+} from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
-  // 🔒 เช็กสิทธิ์ก่อนโหลด Route
   beforeLoad: () => {
     if (typeof window !== "undefined") {
       const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
@@ -40,14 +43,43 @@ interface SurveyResponse {
   feedback?: string;
 }
 
+// นิยามชื่อหัวข้อและ Key
+const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: string }> = {
+  p2_location: { title: "ความเหมาะสมของสถานที่", category: "การจัดงาน" },
+  p2_schedule: { title: "ความเหมาะสมของระยะเวลา", category: "การจัดงาน" },
+  p2_readiness: { title: "ความพร้อมของอุปกรณ์/สื่อ", category: "การจัดงาน" },
+  p2_reception: { title: "การต้อนรับและการอำนวยความสะดวก", category: "การจัดงาน" },
+  p2_overall: { title: "ภาพรวมการจัดกิจกรรม", category: "การจัดงาน" },
+  p3_interest: { title: "ความน่าสนใจของเนื้อหา", category: "เนื้อหา/การเรียนรู้" },
+  p3_content: { title: "ความสมบูรณ์ครบถ้วนของเนื้อหา", category: "เนื้อหา/การเรียนรู้" },
+  p3_clarity: { title: "ความชัดเจนในการถ่ายทอด", category: "เนื้อหา/การเรียนรู้" },
+  p3_benefit: { title: "ประโยชน์ที่ได้รับ", category: "เนื้อหา/การเรียนรู้" },
+  p3_application: { title: "การนำไปประยุกต์ใช้", category: "เนื้อหา/การเรียนรู้" },
+  p4_knowledge: { title: "ความรู้ความเข้าใจที่เพิ่มขึ้น", category: "ผลกระทบ" },
+  p4_inspiration: { title: "แรงบันดาลใจในการต่อยอด", category: "ผลกระทบ" },
+  p4_communityResource: { title: "การเป็นแหล่งเรียนรู้ของชุมชน", category: "ผลกระทบ" },
+  p4_futureReturn: { title: "ความสนใจเข้าร่วมอีกในอนาคต", category: "ผลกระทบ" },
+  timestamp: { title: "", category: "" },
+  ageGroup: { title: "", category: "" },
+  affiliation: { title: "", category: "" },
+  everJoined: { title: "", category: "" },
+  channels: { title: "", category: "" },
+  feedback: { title: "", category: "" },
+};
+
+const COLOR_PALETTE = ["#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#fb923c", "#4ade80"];
+
 export function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<SurveyResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  
+  // State สำหรับ Interactive Filter
+  const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
+  const [feedbackSearch, setFeedbackSearch] = useState<string>("");
 
-  // 🛡️ Double Check: ตรวจสอบอีกครั้งเมื่อ Component โหลด
   useEffect(() => {
     const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
     if (!isAuth) {
@@ -57,7 +89,6 @@ export function DashboardPage() {
     fetchData();
   }, [navigate]);
 
-  // 🚪 ออกจากระบบ (ลบ Session และเคลียร์ประวัติ)
   const handleLogout = () => {
     sessionStorage.clear();
     navigate({ to: "/login", replace: true });
@@ -67,13 +98,8 @@ export function DashboardPage() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const res = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "GET",
-        redirect: "follow",
-      });
-
+      const res = await fetch(GOOGLE_SCRIPT_URL, { method: "GET", redirect: "follow" });
       if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อกับ Google Apps Script ได้");
-
       const json = await res.json();
 
       if (Array.isArray(json)) {
@@ -83,7 +109,6 @@ export function DashboardPage() {
             (val) => val !== null && val !== undefined && String(val).trim() !== ""
           );
         });
-
         setData(validData);
       } else {
         setData([]);
@@ -110,72 +135,90 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
-  const calcGlobalAverage = () => {
-    if (!Array.isArray(data) || data.length === 0) return "0.00";
-    const keys: (keyof SurveyResponse)[] = [
-      "p2_location", "p2_schedule", "p2_readiness", "p2_reception", "p2_overall",
-      "p3_interest", "p3_content", "p3_clarity", "p3_benefit", "p3_application",
-      "p4_knowledge", "p4_inspiration", "p4_communityResource", "p4_futureReturn"
-    ];
+  // ข้อมูลที่ผ่านการ Filter
+  const filteredData = useMemo(() => {
+    if (selectedAffiliation === "ALL") return data;
+    return data.filter(
+      (item) => (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation
+    );
+  }, [data, selectedAffiliation]);
 
-    let totalSum = 0;
-    let totalCount = 0;
+  // สรุปสถิติต่างๆ
+  const affiliationsList = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
+    return Array.from(set);
+  }, [data]);
 
-    data.forEach((item) => {
-      keys.forEach((k) => {
-        const val = parseNum(item[k]);
+  const itemScores = useMemo(() => {
+    const keys = Object.keys(QUESTION_MAP).filter(
+      (k) => QUESTION_MAP[k as keyof SurveyResponse].title !== ""
+    ) as (keyof SurveyResponse)[];
+
+    return keys.map((key) => {
+      let sum = 0;
+      let count = 0;
+      filteredData.forEach((item) => {
+        const val = parseNum(item[key]);
         if (val > 0) {
-          totalSum += val;
-          totalCount += 1;
+          sum += val;
+          count++;
         }
       });
+      const avg = count > 0 ? parseFloat((sum / count).toFixed(2)) : 0;
+      return {
+        key,
+        title: QUESTION_MAP[key].title,
+        category: QUESTION_MAP[key].category,
+        avg,
+      };
     });
+  }, [filteredData]);
 
-    return totalCount > 0 ? (totalSum / totalCount).toFixed(2) : "0.00";
-  };
+  // คำนวณอันดับคะแนนสูงสุด-ต่ำสุดสำหรับ Executive Summary
+  const executiveInsights = useMemo(() => {
+    if (itemScores.length === 0 || filteredData.length === 0) return null;
+    const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
+    const highest = sorted[0];
+    const lowest = sorted[sorted.length - 1];
+    const grandAvg = (
+      itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length
+    ).toFixed(2);
 
-  const calcGroupPercentage = (keys: (keyof SurveyResponse)[]) => {
-    if (!Array.isArray(data) || data.length === 0) return "0.0";
-    let totalSum = 0;
-    let validRespondentCount = 0;
+    return { highest, lowest, grandAvg };
+  }, [itemScores, filteredData]);
 
-    data.forEach((item) => {
-      let hasValidScore = false;
-      keys.forEach((k) => {
-        const val = parseNum(item[k]);
-        if (val > 0) {
-          totalSum += val;
-          hasValidScore = true;
-        }
-      });
-      if (hasValidScore) validRespondentCount++;
+  // Data สำหรับ Pie Chart - สัดส่วนสังกัด
+  const affiliationPieData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    filteredData.forEach((item) => {
+      const key = item.affiliation?.trim() || "ไม่ระบุ";
+      counts[key] = (counts[key] || 0) + 1;
     });
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [filteredData]);
 
-    const totalMax = validRespondentCount * keys.length * 5;
-    return totalMax > 0 ? ((totalSum / totalMax) * 100).toFixed(1) : "0.0";
+  // Feedback ที่ผ่านการ Search
+  const searchedFeedback = useMemo(() => {
+    return filteredData.filter(
+      (d) =>
+        d.feedback?.trim() &&
+        d.feedback.toLowerCase().includes(feedbackSearch.toLowerCase())
+    );
+  }, [filteredData, feedbackSearch]);
+
+  const getScoreBadge = (score: number) => {
+    if (score >= 4.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">ดีมากที่สุด</span>;
+    if (score >= 3.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">ดีมาก</span>;
+    if (score >= 2.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">ปานกลาง</span>;
+    return <span className="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold border border-red-500/30">ควรปรับปรุง</span>;
   };
-
-  const totalRespondents = Array.isArray(data) ? data.length : 0;
-  const overallAvg = calcGlobalAverage();
-  const satisfactionPct = calcGroupPercentage([
-    "p2_location", "p2_schedule", "p2_readiness", "p2_reception", "p2_overall",
-    "p3_interest", "p3_content", "p3_clarity", "p3_benefit", "p3_application",
-    "p4_knowledge", "p4_inspiration", "p4_communityResource", "p4_futureReturn"
-  ]);
-  const learningImpactPct = calcGroupPercentage([
-    "p3_interest", "p3_content", "p3_clarity", "p3_benefit", "p3_application",
-    "p4_knowledge", "p4_inspiration", "p4_communityResource"
-  ]);
-  const eventExpPct = calcGroupPercentage([
-    "p2_location", "p2_schedule", "p2_readiness", "p2_reception", "p2_overall"
-  ]);
-  const futurePartPct = calcGroupPercentage(["p4_futureReturn"]);
 
   return (
     <div className="min-h-screen bg-[#0a1122] text-slate-100 p-4 sm:p-6 font-sans">
-      <div className="max-w-7xl mx-auto space-y-4">
+      <div className="max-w-7xl mx-auto space-y-5">
         {/* Top Navigation */}
-        <div className="flex justify-between items-center text-xs text-slate-400 mb-2">
+        <div className="flex justify-between items-center text-xs text-slate-400">
           <Link to="/" className="hover:text-amber-400 transition-colors flex items-center gap-1">
             ← Back to home
           </Link>
@@ -190,7 +233,7 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Main Header Banner */}
+        {/* Header Banner */}
         <div className="bg-[#0f1a30] border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-slate-800/80 border border-amber-400/30 flex items-center justify-center p-1 shadow-inner shrink-0">
@@ -198,25 +241,20 @@ export function DashboardPage() {
                 src="https://mahidol.ac.th/wp-content/uploads/2020/06/mahidol-logo-gold.png"
                 alt="Mahidol Logo"
                 className="w-full h-full object-contain"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
-                }}
+                onError={(e) => { (e.target as HTMLElement).style.display = "none"; }}
               />
             </div>
             <div>
-              <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">
-                Mahidol University
-              </p>
+              <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">Mahidol University</p>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
                 พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
               </h1>
               <p className="text-xs text-slate-400 tracking-wider mt-0.5">
-                SATISFACTION & EVENT INSIGHT DASHBOARD
+                EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
               </p>
             </div>
           </div>
 
-          {/* Action Bar */}
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-slate-800/80 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
@@ -225,19 +263,16 @@ export function DashboardPage() {
                   {loading ? "CONNECTING..." : "LIVE / CONNECTED"}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Last Updated: {lastUpdated || "กำลังโหลด..."}
-              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Last Updated: {lastUpdated || "กำลังโหลด..."}</p>
             </div>
 
             <button
               onClick={fetchData}
               disabled={loading}
-              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               🔄 Refresh
             </button>
-
             <button
               onClick={handleLogout}
               className="px-3.5 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
@@ -247,114 +282,152 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* 6 Key Stat Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90">ผู้ตอบแบบสอบถาม</p>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-3xl font-extrabold text-white">{totalRespondents}</span>
-              <span className="text-xs text-slate-400 font-medium">คน</span>
+        {/* Filter Bar */}
+        <div className="bg-[#0f1a30] border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 font-medium">📌 กรองตามสังกัด:</span>
+            <select
+              value={selectedAffiliation}
+              onChange={(e) => setSelectedAffiliation(e.target.value)}
+              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-slate-200 outline-none focus:border-amber-400"
+            >
+              <option value="ALL">ทั้งหมด ({data.length} คน)</option>
+              {affiliationsList.map((aff) => (
+                <option key={aff} value={aff}>{aff}</option>
+              ))}
+            </select>
+          </div>
+          <p className="text-slate-400">แสดงผลข้อมูลจำนวน: <span className="text-amber-400 font-bold">{filteredData.length}</span> รายการ</p>
+        </div>
+
+        {/* Executive Summary Box */}
+        {executiveInsights && (
+          <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 shadow-lg flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div className="space-y-1">
+              <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">💡 Executive Insight Summary</p>
+              <p className="text-xs text-slate-300">
+                คะแนนภาพรวมเฉลี่ยเท่ากับ <span className="text-emerald-400 font-bold text-sm">{executiveInsights.grandAvg} / 5.00</span> 
+                โดยหัวข้อที่ได้คะแนนสูงสุดคือ <span className="text-amber-300 font-semibold">"{executiveInsights.highest.title}" ({executiveInsights.highest.avg})</span> 
+                และส่วนที่ควรพัฒนาคือ <span className="text-amber-300 font-semibold">"{executiveInsights.lowest.title}" ({executiveInsights.lowest.avg})</span>
+              </p>
             </div>
-            <p className="text-[10px] text-slate-500 mt-1">ทั้งหมดในชีต</p>
+          </div>
+        )}
+
+        {/* Visual Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Bar Chart: คะแนนเฉลี่ยทุกหัวข้อ */}
+          <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
+            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+              📊 คะแนนความพึงพอใจแยกรายหัวข้อ (คะแนนเต็ม 5.00)
+            </h2>
+            <div className="h-[280px] w-full pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={itemScores} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
+                  <XAxis dataKey="title" interval={0} angle={-35} textAnchor="end" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "#0f1a30", borderColor: "#334155", borderRadius: "8px", fontSize: "12px", color: "#fff" }}
+                    formatter={(val: any) => [`${val} คะแนน`, "คะแนนเฉลี่ย"]}
+                  />
+                  <Bar dataKey="avg" radius={[4, 4, 0, 0]}>
+                    {itemScores.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLOR_PALETTE[index % COLOR_PALETTE.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90">ความพึงพอใจเฉลี่ย</p>
-            <div className="mt-2 flex items-baseline gap-1">
-              <span className="text-3xl font-extrabold text-emerald-400">{overallAvg}</span>
-              <span className="text-xs text-slate-400">/ 5.00</span>
+          {/* Pie Chart: สัดส่วนผู้ตอบตามสังกัด */}
+          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
+            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+              🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
+            </h2>
+            <div className="h-[280px] w-full flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={affiliationPieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="45%"
+                    outerRadius={75}
+                    innerRadius={40}
+                    paddingAngle={3}
+                  >
+                    {affiliationPieData.map((_, index) => (
+                      <Cell key={`pie-cell-${index}`} fill={COLOR_PALETTE[index % COLOR_PALETTE.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: "#0f1a30", borderColor: "#334155", borderRadius: "8px", fontSize: "11px", color: "#fff" }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: "11px", color: "#94a3b8" }} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-            <p className="text-[10px] text-slate-500 mt-1">คะแนนรวมเฉลี่ยทุกหัวข้อ</p>
-          </div>
-
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90">ระดับความพึงพอใจ</p>
-            <div className="mt-2">
-              <span className="text-3xl font-extrabold text-emerald-400">{satisfactionPct}%</span>
-            </div>
-            <p className="text-[10px] text-slate-500 mt-1">จาก 14 หัวข้อประเมิน</p>
-          </div>
-
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90 tracking-wider">LEARNING IMPACT</p>
-            <div className="mt-2">
-              <span className="text-3xl font-extrabold text-emerald-400">{learningImpactPct}%</span>
-            </div>
-            <p className="text-[10px] text-slate-500 mt-1">8 หัวข้อด้านความรู้/ครั่ง</p>
-          </div>
-
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90 tracking-wider">EVENT EXPERIENCE</p>
-            <div className="mt-2">
-              <span className="text-3xl font-extrabold text-cyan-400">{eventExpPct}%</span>
-            </div>
-            <p className="text-[10px] text-slate-500 mt-1">5 หัวข้อด้านการจัดงาน</p>
-          </div>
-
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-xl p-4 shadow-lg hover:border-slate-700 transition-all">
-            <p className="text-xs font-bold text-amber-400/90 tracking-wider">FUTURE PARTICIPATION</p>
-            <div className="mt-2">
-              <span className="text-3xl font-extrabold text-amber-400">{futurePartPct}%</span>
-            </div>
-            <p className="text-[10px] text-slate-500 mt-1 truncate">ความสนใจเข้าร่วมอีกในอนาคต</p>
           </div>
         </div>
 
-        {/* Detailed Data Analytics Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
-              PARTICIPANT PROFILE (ข้อมูลผู้ตอบ)
+        {/* Detailed Scorecard Table */}
+        <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
+          <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
+            📋 ตารางคะแนนสรุปอย่างละเอียด (DETAILED SCORECARD)
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="bg-slate-900/80 text-slate-400 uppercase font-mono border-b border-slate-800">
+                <tr>
+                  <th className="py-2.5 px-3">หมวดหมู่</th>
+                  <th className="py-2.5 px-3">หัวข้อประเมิน</th>
+                  <th className="py-2.5 px-3 text-center">คะแนนเฉลี่ย (5.00)</th>
+                  <th className="py-2.5 px-3 text-center">ระดับคุณภาพ</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {itemScores.map((item) => (
+                  <tr key={item.key} className="hover:bg-slate-800/30 transition-colors">
+                    <td className="py-2.5 px-3 font-medium text-amber-400/90">{item.category}</td>
+                    <td className="py-2.5 px-3 text-slate-200">{item.title}</td>
+                    <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-400 text-sm">{item.avg.toFixed(2)}</td>
+                    <td className="py-2.5 px-3 text-center">{getScoreBadge(item.avg)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Feedback Section with Search */}
+        <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-lg">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-2">
+            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase">
+              💬 FEEDBACK & SUGGESTIONS ({searchedFeedback.length} ข้อเสนอแนะ)
             </h2>
-            
-            <div className="space-y-3">
-              <p className="text-xs font-semibold text-slate-300">สัดส่วนหน่วยงานที่สังกัด</p>
-              {!Array.isArray(data) || data.length === 0 ? (
-                <p className="text-xs text-slate-500 py-4 text-center">ยังไม่มีข้อมูล</p>
-              ) : (
-                Object.entries(
-                  data.reduce((acc, curr) => {
-                    const key = curr.affiliation?.trim() || "ไม่ระบุ";
-                    acc[key] = (acc[key] || 0) + 1;
-                    return acc;
-                  }, {} as Record<string, number>)
-                ).map(([label, count]) => {
-                  const pct = totalRespondents ? Math.round((count / totalRespondents) * 100) : 0;
-                  return (
-                    <div key={label} className="space-y-1">
-                      <div className="flex justify-between text-xs text-slate-400">
-                        <span className="truncate max-w-[250px]">{label}</span>
-                        <span className="text-slate-200 font-mono">{count} คน ({pct}%)</span>
-                      </div>
-                      <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                        <div className="bg-amber-400 h-full rounded-full" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+            <input
+              type="text"
+              placeholder="🔍 ค้นหาในข้อเสนอแนะ..."
+              value={feedbackSearch}
+              onChange={(e) => setFeedbackSearch(e.target.value)}
+              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-200 outline-none focus:border-amber-400 w-full sm:w-64"
+            />
           </div>
 
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
-              FEEDBACK & SUGGESTIONS (ข้อเสนอแนะ)
-            </h2>
-
-            <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
-              {!Array.isArray(data) || data.filter((d) => d.feedback?.trim()).length === 0 ? (
-                <p className="text-xs text-slate-500 py-8 text-center">ยังไม่มีข้อเสนอแนะ</p>
-              ) : (
-                data
-                  .filter((d) => d.feedback?.trim())
-                  .map((item, i) => (
-                    <div key={i} className="p-3 rounded-lg bg-slate-900/60 border border-slate-800/60 text-xs text-slate-300">
-                      <p className="text-[10px] text-amber-400/80 font-mono mb-1">{item.timestamp || "N/A"}</p>
-                      <p>"{item.feedback}"</p>
-                    </div>
-                  ))
-              )}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+            {searchedFeedback.length === 0 ? (
+              <p className="text-xs text-slate-500 py-8 text-center col-span-2">ไม่พบข้อเสนอแนะที่ตรงตามเงื่อนไข</p>
+            ) : (
+              searchedFeedback.map((item, i) => (
+                <div key={i} className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/60 text-xs text-slate-300 space-y-1">
+                  <div className="flex justify-between items-center text-[10px] text-amber-400/80 font-mono">
+                    <span>{item.affiliation || "ไม่ระบุสังกัด"}</span>
+                    <span>{item.timestamp || "N/A"}</span>
+                  </div>
+                  <p className="text-slate-200 italic">"{item.feedback}"</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
