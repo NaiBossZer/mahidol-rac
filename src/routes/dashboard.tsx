@@ -44,10 +44,18 @@ export function DashboardPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(GOOGLE_SCRIPT_URL);
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "GET",
+        redirect: "follow",
+      });
       const json = await res.json();
-      setData(json);
       
+      if (Array.isArray(json)) {
+        setData(json);
+      } else {
+        setData([]);
+      }
+
       const now = new Date();
       setLastUpdated(
         `${now.getDate()} ส.ค. ${now.getFullYear() + 543} ${now
@@ -57,6 +65,7 @@ export function DashboardPage() {
       );
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -64,7 +73,7 @@ export function DashboardPage() {
 
   // คำนวณคะแนนเฉลี่ยรวม
   const calcGlobalAverage = () => {
-    if (data.length === 0) return "0.00";
+    if (!Array.isArray(data) || data.length === 0) return "0.00";
     const keys: (keyof SurveyResponse)[] = [
       "p2_location", "p2_schedule", "p2_readiness", "p2_reception", "p2_overall",
       "p3_interest", "p3_content", "p3_clarity", "p3_benefit", "p3_application",
@@ -89,7 +98,7 @@ export function DashboardPage() {
 
   // คำนวณเปอร์เซ็นต์หมวดหมู่
   const calcGroupPercentage = (keys: (keyof SurveyResponse)[]) => {
-    if (data.length === 0) return "0.0";
+    if (!Array.isArray(data) || data.length === 0) return "0.0";
     let totalSum = 0;
     let totalMax = data.length * keys.length * 5;
 
@@ -99,10 +108,10 @@ export function DashboardPage() {
       });
     });
 
-    return ((totalSum / totalMax) * 100).toFixed(1);
+    return totalMax > 0 ? ((totalSum / totalMax) * 100).toFixed(1) : "0.0";
   };
 
-  const totalRespondents = data.length;
+  const totalRespondents = Array.isArray(data) ? data.length : 0;
   const overallAvg = calcGlobalAverage();
   const satisfactionPct = calcGroupPercentage([
     "p2_location", "p2_schedule", "p2_readiness", "p2_reception", "p2_overall",
@@ -161,8 +170,10 @@ export function DashboardPage() {
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-slate-800/80 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span className="text-xs font-semibold text-emerald-400">LIVE / CONNECTED</span>
+                <span className={`w-2 h-2 rounded-full ${loading ? "bg-amber-400" : "bg-emerald-400"} animate-ping`}></span>
+                <span className={`text-xs font-semibold ${loading ? "text-amber-400" : "text-emerald-400"}`}>
+                  {loading ? "CONNECTING..." : "LIVE / CONNECTED"}
+                </span>
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">
                 Last Updated: {lastUpdated || "กำลังโหลด..."}
@@ -171,7 +182,8 @@ export function DashboardPage() {
 
             <button
               onClick={fetchData}
-              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5"
+              disabled={loading}
+              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
             >
               🔄 Refresh
             </button>
@@ -247,26 +259,30 @@ export function DashboardPage() {
             
             <div className="space-y-3">
               <p className="text-xs font-semibold text-slate-300">สัดส่วนหน่วยงานที่สังกัด</p>
-              {Object.entries(
-                data.reduce((acc, curr) => {
-                  const key = curr.affiliation || "ไม่ระบุ";
-                  acc[key] = (acc[key] || 0) + 1;
-                  return acc;
-                }, {} as Record<string, number>)
-              ).map(([label, count]) => {
-                const pct = totalRespondents ? Math.round((count / totalRespondents) * 100) : 0;
-                return (
-                  <div key={label} className="space-y-1">
-                    <div className="flex justify-between text-xs text-slate-400">
-                      <span className="truncate max-w-[250px]">{label}</span>
-                      <span className="text-slate-200 font-mono">{count} คน ({pct}%)</span>
+              {!Array.isArray(data) || data.length === 0 ? (
+                <p className="text-xs text-slate-500 py-4 text-center">ยังไม่มีข้อมูล</p>
+              ) : (
+                Object.entries(
+                  data.reduce((acc, curr) => {
+                    const key = curr.affiliation || "ไม่ระบุ";
+                    acc[key] = (acc[key] || 0) + 1;
+                    return acc;
+                  }, {} as Record<string, number>)
+                ).map(([label, count]) => {
+                  const pct = totalRespondents ? Math.round((count / totalRespondents) * 100) : 0;
+                  return (
+                    <div key={label} className="space-y-1">
+                      <div className="flex justify-between text-xs text-slate-400">
+                        <span className="truncate max-w-[250px]">{label}</span>
+                        <span className="text-slate-200 font-mono">{count} คน ({pct}%)</span>
+                      </div>
+                      <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div className="bg-amber-400 h-full rounded-full" style={{ width: `${pct}%` }} />
+                      </div>
                     </div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                      <div className="bg-amber-400 h-full rounded-full" style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -277,7 +293,7 @@ export function DashboardPage() {
             </h2>
 
             <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
-              {data.filter((d) => d.feedback?.trim()).length === 0 ? (
+              {!Array.isArray(data) || data.filter((d) => d.feedback?.trim()).length === 0 ? (
                 <p className="text-xs text-slate-500 py-8 text-center">ยังไม่มีข้อเสนอแนะ</p>
               ) : (
                 data
