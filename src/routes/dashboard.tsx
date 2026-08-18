@@ -1,9 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
-  PieChart, Pie, Legend
-} from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: () => {
@@ -43,7 +39,6 @@ interface SurveyResponse {
   feedback?: string;
 }
 
-// นิยามชื่อหัวข้อและ Key
 const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: string }> = {
   p2_location: { title: "ความเหมาะสมของสถานที่", category: "การจัดงาน" },
   p2_schedule: { title: "ความเหมาะสมของระยะเวลา", category: "การจัดงาน" },
@@ -76,7 +71,6 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
   
-  // State สำหรับ Interactive Filter
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
   const [feedbackSearch, setFeedbackSearch] = useState<string>("");
 
@@ -135,7 +129,6 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
-  // ข้อมูลที่ผ่านการ Filter
   const filteredData = useMemo(() => {
     if (selectedAffiliation === "ALL") return data;
     return data.filter(
@@ -143,7 +136,6 @@ export function DashboardPage() {
     );
   }, [data, selectedAffiliation]);
 
-  // สรุปสถิติต่างๆ
   const affiliationsList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
@@ -175,7 +167,6 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
-  // คำนวณอันดับคะแนนสูงสุด-ต่ำสุดสำหรับ Executive Summary
   const executiveInsights = useMemo(() => {
     if (itemScores.length === 0 || filteredData.length === 0) return null;
     const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
@@ -188,17 +179,20 @@ export function DashboardPage() {
     return { highest, lowest, grandAvg };
   }, [itemScores, filteredData]);
 
-  // Data สำหรับ Pie Chart - สัดส่วนสังกัด
-  const affiliationPieData = useMemo(() => {
+  const affiliationBreakdown = useMemo(() => {
     const counts: Record<string, number> = {};
     filteredData.forEach((item) => {
       const key = item.affiliation?.trim() || "ไม่ระบุ";
       counts[key] = (counts[key] || 0) + 1;
     });
-    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+    const total = filteredData.length || 1;
+    return Object.entries(counts).map(([name, count]) => ({
+      name,
+      count,
+      percent: parseFloat(((count / total) * 100).toFixed(1)),
+    }));
   }, [filteredData]);
 
-  // Feedback ที่ผ่านการ Search
   const searchedFeedback = useMemo(() => {
     return filteredData.filter(
       (d) =>
@@ -247,7 +241,7 @@ export function DashboardPage() {
             <div>
               <p className="text-xs font-bold text-amber-400 tracking-wider uppercase">Mahidol University</p>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
-                ห้องการเรียนรู้ครั่งครบวงจร
+                พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
               </h1>
               <p className="text-xs text-slate-400 tracking-wider mt-0.5">
                 EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
@@ -314,58 +308,57 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Visual Charts Section */}
+        {/* Custom Pure HTML/CSS Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Bar Chart: คะแนนเฉลี่ยทุกหัวข้อ */}
-          <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
+          {/* Custom Horizontal Bar Chart */}
+          <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               📊 คะแนนความพึงพอใจแยกรายหัวข้อ (คะแนนเต็ม 5.00)
             </h2>
-            <div className="h-[280px] w-full pt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={itemScores} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                  <XAxis dataKey="title" interval={0} angle={-35} textAnchor="end" tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: "#0f1a30", borderColor: "#334155", borderRadius: "8px", fontSize: "12px", color: "#fff" }}
-                    formatter={(val: any) => [`${val} คะแนน`, "คะแนนเฉลี่ย"]}
-                  />
-                  <Bar dataKey="avg" radius={[4, 4, 0, 0]}>
-                    {itemScores.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLOR_PALETTE[index % COLOR_PALETTE.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-2">
+              {itemScores.map((item, idx) => (
+                <div key={item.key} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-300 truncate max-w-[80%]">{item.title}</span>
+                    <span className="font-mono font-bold text-amber-400">{item.avg.toFixed(2)}</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(item.avg / 5) * 100}%`,
+                        backgroundColor: COLOR_PALETTE[idx % COLOR_PALETTE.length],
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Pie Chart: สัดส่วนผู้ตอบตามสังกัด */}
-          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-3">
+          {/* Custom สัดส่วนสังกัด */}
+          <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-2">
               🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
             </h2>
-            <div className="h-[280px] w-full flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={affiliationPieData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="45%"
-                    outerRadius={75}
-                    innerRadius={40}
-                    paddingAngle={3}
-                  >
-                    {affiliationPieData.map((_, index) => (
-                      <Cell key={`pie-cell-${index}`} fill={COLOR_PALETTE[index % COLOR_PALETTE.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "#0f1a30", borderColor: "#334155", borderRadius: "8px", fontSize: "11px", color: "#fff" }} />
-                  <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: "11px", color: "#94a3b8" }} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="space-y-3 pt-2">
+              {affiliationBreakdown.map((item, idx) => (
+                <div key={item.name} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-300 truncate">{item.name}</span>
+                    <span className="text-slate-400 font-mono">{item.count} คน ({item.percent}%)</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${item.percent}%`,
+                        backgroundColor: COLOR_PALETTE[idx % COLOR_PALETTE.length],
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
