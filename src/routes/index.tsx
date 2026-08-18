@@ -22,7 +22,7 @@ export function HomePage() {
               โครงการห้องการเรียนรู้ครั่งครบวงจร
             </span>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
-              ศูนย์เรียนรู้และองค์ความรู้ "ครั่ง"
+              ศูนย์เรียนรู้และองค์ความรู้ครั่งครบวงจร
             </h1>
             <p className="text-emerald-100 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
