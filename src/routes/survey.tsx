@@ -5,9 +5,34 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
-// ⚠️ ใส่ Web App URL ล่าสุดของคุณที่นี่
+// ⚠️ Web App URL ล่าสุดสำหรับรับข้อมูล
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbx6MoINngMyK4Jf4JgCTQHY_B_iydnYqtqSKcT2-UbslV23ZBX__k-ez7gbeixDXq8rPQ/exec";
+
+// ตัวเลือกสำหรับแบบสอบถาม
+const AGE_GROUPS = [
+  "0 - 10 ปี",
+  "11 - 20 ปี",
+  "21 - 30 ปี",
+  "31 - 40 ปี",
+  "41 - 50 ปี",
+  "51 - 60 ปี",
+  "มากกว่า 60 ปี",
+];
+
+const AFFILIATIONS = [
+  "หน่วยงานภาครัฐ (เช่น อบต./เทศบาล/อำเภอ)",
+  "ภาคประชาชน/ชุมชน/ผู้นำชุมชน",
+  "ภาคการศึกษา/สถานศึกษา",
+  "อื่นๆ",
+];
+
+const CHANNEL_OPTIONS = [
+  "FACEBOOK",
+  "LINE",
+  "WEBSITE ของคณะสิ่งแวดล้อมและทรัพยากรศาสตร์ ม.มหิดล",
+  "อื่นๆ",
+];
 
 export function SurveyPage() {
   const [step, setStep] = useState<"pdpa" | "survey" | "submitting" | "submitted">("pdpa");
@@ -42,12 +67,14 @@ export function SurveyPage() {
   const [p4_futureReturn, setP4_futureReturn] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
+  // จัดการการเลือกช่องทางข่าวสาร (Checkbox)
   const handleChannelChange = (val: string) => {
     setChannels((prev) =>
       prev.includes(val) ? prev.filter((item) => item !== val) : [...prev, val]
     );
   };
 
+  // จัดการการส่งแบบฟอร์ม
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -61,7 +88,7 @@ export function SurveyPage() {
     const ratings = [
       p2_location, p2_schedule, p2_readiness, p2_reception, p2_overall,
       p3_interest, p3_content, p3_clarity, p3_benefit, p3_application,
-      p4_knowledge, p4_inspiration, p4_communityResource, p4_futureReturn
+      p4_knowledge, p4_inspiration, p4_communityResource, p4_futureReturn,
     ];
 
     if (ratings.some((r) => r === null)) {
@@ -116,6 +143,39 @@ export function SurveyPage() {
     }
   };
 
+  // Component ย่อยสำหรับสร้าง Likert Scale 5 -> 1
+  const renderLikert = (
+    nameGroup: string,
+    value: number | null,
+    onChange: (val: number) => void,
+    leftLabel = "มากที่สุด",
+    rightLabel = "น้อยที่สุด"
+  ) => (
+    <div className="mt-3">
+      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700">
+        <span className="text-xs text-slate-500 w-20 text-left select-none">{leftLabel}</span>
+        <div className="flex gap-2 sm:gap-6">
+          {[5, 4, 3, 2, 1].map((score) => (
+            <label key={score} className="flex flex-col items-center gap-1 cursor-pointer select-none">
+              <input
+                type="radio"
+                name={nameGroup}
+                required
+                checked={value === score}
+                onChange={() => onChange(score)}
+                className="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                {score}
+              </span>
+            </label>
+          ))}
+        </div>
+        <span className="text-xs text-slate-500 w-20 text-right select-none">{rightLabel}</span>
+      </div>
+    </div>
+  );
+
   // 1. หน้าจอเมื่อส่งข้อมูลสำเร็จ
   if (step === "submitted") {
     return (
@@ -140,8 +200,8 @@ export function SurveyPage() {
     return (
       <div className="min-h-screen bg-emerald-50/40 dark:bg-slate-900 py-12 px-4 flex items-center justify-center">
         <div className="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-emerald-100 dark:border-slate-700">
-          <div className="border-b border-emerald-100 pb-4 mb-6 text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+          <div className="border-b border-emerald-100 dark:border-slate-700 pb-4 mb-6 text-center">
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-full">
               พิธีเปิด
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">
@@ -161,14 +221,14 @@ export function SurveyPage() {
             และไม่มีการเปิดเผยข้อมูลระบุตัวตนสู่สาธารณะ
           </div>
 
-          <label className="flex items-center gap-3 mb-6 cursor-pointer group">
+          <label className="flex items-center gap-3 mb-6 cursor-pointer group select-none">
             <input
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+              className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
             />
-            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium group-hover:text-emerald-700">
+            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium group-hover:text-emerald-700 transition-colors">
               ข้าพเจ้าได้อ่านและยอมรับเงื่อนไขข้อตกลงความเป็นส่วนตัว
             </span>
           </label>
@@ -179,7 +239,7 @@ export function SurveyPage() {
               onClick={() => {
                 window.location.href = "/";
               }}
-              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 bg-transparent py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
               ไม่ยอมรับ
             </button>
@@ -196,39 +256,6 @@ export function SurveyPage() {
       </div>
     );
   }
-
-  // Helper สำหรับสร้าง Scale 5 -> 1
-  const renderLikert = (
-    nameGroup: string,
-    value: number | null,
-    onChange: (val: number) => void,
-    leftLabel = "มากที่สุด",
-    rightLabel = "น้อยที่สุด"
-  ) => (
-    <div className="mt-3">
-      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700">
-        <span className="text-xs text-slate-500 w-20 text-left">{leftLabel}</span>
-        <div className="flex gap-2 sm:gap-6">
-          {[5, 4, 3, 2, 1].map((score) => (
-            <label key={score} className="flex flex-col items-center gap-1 cursor-pointer">
-              <input
-                type="radio"
-                name={nameGroup}
-                required
-                checked={value === score}
-                onChange={() => onChange(score)}
-                className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
-              />
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                {score}
-              </span>
-            </label>
-          ))}
-        </div>
-        <span className="text-xs text-slate-500 w-20 text-right">{rightLabel}</span>
-      </div>
-    </div>
-  );
 
   // 3. หน้าแบบสอบถามหลัก
   return (
@@ -247,7 +274,7 @@ export function SurveyPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Section 1 */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
-            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-700 pb-2">
               ตอนที่ 1 ข้อมูลทั่วไปของผู้ตอบแบบสอบถาม
             </h2>
 
@@ -257,15 +284,15 @@ export function SurveyPage() {
                 ช่วงอายุ (ปี) <span className="text-red-500">*</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {["0 - 10 ปี", "11 - 20 ปี", "21 - 30 ปี", "31 - 40 ปี", "41 - 50 ปี", "51 - 60 ปี", "มากกว่า 60 ปี"].map((item) => (
-                  <label key={item} className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50/50 cursor-pointer text-sm text-slate-700 dark:text-slate-300">
+                {AGE_GROUPS.map((item) => (
+                  <label key={item} className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50/50 dark:hover:bg-slate-700/50 cursor-pointer text-sm text-slate-700 dark:text-slate-300 transition-colors">
                     <input
                       type="radio"
                       name="ageGroup"
                       required
                       value={item}
                       onChange={(e) => setAgeGroup(e.target.value)}
-                      className="text-emerald-600"
+                      className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                     />
                     {item}
                   </label>
@@ -279,12 +306,7 @@ export function SurveyPage() {
                 หน่วยงานที่สังกัดอยู่ <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
-                {[
-                  "หน่วยงานภาครัฐ (เช่น อบต./เทศบาล/อำเภอ)",
-                  "ภาคประชาชน/ชุมชน/ผู้นำชุมชน",
-                  "ภาคการศึกษา/สถานศึกษา",
-                  "อื่นๆ",
-                ].map((item) => (
+                {AFFILIATIONS.map((item) => (
                   <label key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
                     <input
                       type="radio"
@@ -292,7 +314,7 @@ export function SurveyPage() {
                       required
                       value={item}
                       onChange={(e) => setAffiliation(e.target.value)}
-                      className="text-emerald-600"
+                      className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                     />
                     {item}
                   </label>
@@ -324,7 +346,7 @@ export function SurveyPage() {
                       required
                       value={item}
                       onChange={(e) => setEverJoined(e.target.value)}
-                      className="text-emerald-600"
+                      className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                     />
                     {item}
                   </label>
@@ -338,19 +360,14 @@ export function SurveyPage() {
                 ท่านทราบข่าวสารการจัดงานจากช่องทางใด (เลือกได้มากกว่า 1 ข้อ) <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
-                {[
-                  "FACEBOOK",
-                  "LINE",
-                  "WEBSITE ของคณะสิ่งแวดล้อมและทรัพยากรศาสตร์ ม.มหิดล",
-                  "อื่นๆ",
-                ].map((item) => (
+                {CHANNEL_OPTIONS.map((item) => (
                   <label key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
                     <input
                       type="checkbox"
                       value={item}
                       checked={channels.includes(item)}
                       onChange={() => handleChannelChange(item)}
-                      className="rounded text-emerald-600"
+                      className="rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                     />
                     {item}
                   </label>
@@ -371,7 +388,7 @@ export function SurveyPage() {
 
           {/* Section 2 */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
-            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-700 pb-2">
               ตอนที่ 2 ความพึงพอใจต่อการจัดพิธีเปิด
             </h2>
 
@@ -413,7 +430,7 @@ export function SurveyPage() {
 
           {/* Section 3 */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
-            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-700 pb-2">
               ตอนที่ 3 ความพึงพอใจต่อห้องการเรียนรู้ครั่งครบวงจร
             </h2>
 
@@ -455,7 +472,7 @@ export function SurveyPage() {
 
           {/* Section 4 */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 space-y-5">
-            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 pb-2">
+            <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-700 pb-2">
               ตอนที่ 4 ผลที่ได้รับและข้อเสนอแนะ
             </h2>
 
