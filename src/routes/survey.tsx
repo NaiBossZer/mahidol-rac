@@ -51,13 +51,13 @@ export function SurveyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔴 1. เพิ่มการตรวจสอบการเลือกช่องทางข่าวสาร
+    // 1. ตรวจสอบการเลือกช่องทางข่าวสาร
     if (channels.length === 0) {
       alert("กรุณาเลือกช่องทางที่ท่านทราบข่าวสารอย่างน้อย 1 ช่องทาง");
       return;
     }
 
-    // 🔴 2. เพิ่มการตรวจสอบ Likert Scale (1-5) ให้ครบทุกข้อ
+    // 2. ตรวจสอบ Likert Scale (1-5) ให้ครบทุกข้อ
     const ratings = [
       p2_location, p2_schedule, p2_readiness, p2_reception, p2_overall,
       p3_interest, p3_content, p3_clarity, p3_benefit, p3_application,
@@ -195,19 +195,19 @@ export function SurveyPage() {
     );
   }
 
-  // Helper สำหรับสร้าง Scale 1-5 (🔴 แก้ไขโดยใส่ name ให้แยกแต่ละข้อ เพื่อให้ HTML Radio Group ทำงานถูกต้อง)
+  // Helper สำหรับสร้าง Scale 5 -> 1 (เรียงจากมากที่สุดอยู่ซ้าย ไป น้อยที่สุดอยู่ขวา)
   const renderLikert = (
     nameGroup: string,
     value: number | null,
     onChange: (val: number) => void,
-    leftLabel = "น้อยที่สุด",
-    rightLabel = "มากที่สุด"
+    leftLabel = "มากที่สุด",
+    rightLabel = "น้อยที่สุด"
   ) => (
     <div className="mt-3">
       <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700">
         <span className="text-xs text-slate-500 w-20 text-left">{leftLabel}</span>
         <div className="flex gap-2 sm:gap-6">
-          {[1, 2, 3, 4, 5].map((score) => (
+          {[5, 4, 3, 2, 1].map((score) => (
             <label key={score} className="flex flex-col items-center gap-1 cursor-pointer">
               <input
                 type="radio"
@@ -419,35 +419,35 @@ export function SurveyPage() {
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 1. ความน่าสนใจของห้องการเรียนรู้และนิทรรศการ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_interest", p3_interest, setP3_interest, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_interest", p3_interest, setP3_interest, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 2. ความเหมาะสมและความครบถ้วนของเนื้อหา <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_content", p3_content, setP3_content, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_content", p3_content, setP3_content, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 3. ความชัดเจนและเข้าใจง่ายของสื่อการเรียนรู้ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_clarity", p3_clarity, setP3_clarity, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_clarity", p3_clarity, setP3_clarity, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 4. ประโยชน์ขององค์ความรู้ที่ได้รับ <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_benefit", p3_benefit, setP3_benefit, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_benefit", p3_benefit, setP3_benefit, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
             </div>
 
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 5. ความสามารถในการนำความรู้ไปใช้หรือต่อยอด <span className="text-red-500">*</span>
               </label>
-              {renderLikert("p3_application", p3_application, setP3_application, "ไม่เห็นด้วยอย่างยิ่ง", "เห็นด้วยอย่างยิ่ง")}
+              {renderLikert("p3_application", p3_application, setP3_application, "เห็นด้วยอย่างยิ่ง", "ไม่เห็นด้วยอย่างยิ่ง")}
             </div>
           </div>
 
