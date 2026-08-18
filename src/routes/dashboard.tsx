@@ -1,7 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
+  // 🔒 ตรวจสอบการเข้าถึง: ถ้ายังไม่ได้ใส่รหัสผ่าน ให้ดีดไปหน้า /login ทันที
+  beforeLoad: () => {
+    const isAuth = localStorage.getItem("dashboard_auth") === "true";
+    if (!isAuth) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+  },
   component: DashboardPage,
 });
 
@@ -33,6 +42,7 @@ interface SurveyResponse {
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<SurveyResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -42,11 +52,16 @@ export function DashboardPage() {
     fetchData();
   }, []);
 
+  // 🚪 ฟังก์ชันสำหรับออกจากระบบ
+  const handleLogout = () => {
+    localStorage.removeItem("dashboard_auth");
+    navigate({ to: "/login" });
+  };
+
   const fetchData = async () => {
     setLoading(true);
     setErrorMsg("");
     try {
-      // ใช้ redirect: "follow" เพื่อป้องกันการแครชจาก Apps Script Redirect
       const res = await fetch(GOOGLE_SCRIPT_URL, {
         method: "GET",
         redirect: "follow",
@@ -57,7 +72,6 @@ export function DashboardPage() {
       const json = await res.json();
 
       if (Array.isArray(json)) {
-        // กรองเอาแถวที่มีข้อมูลจริง โดยไม่คัดตัวเลข 0 ออก
         const validData = json.filter((item: any) => {
           if (!item || typeof item !== "object") return false;
           return Object.values(item).some(
@@ -214,9 +228,17 @@ export function DashboardPage() {
             <button
               onClick={fetchData}
               disabled={loading}
-              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
+              className="px-3.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
             >
               🔄 Refresh
+            </button>
+
+            {/* 🚪 ปุ่มออกจากระบบ */}
+            <button
+              onClick={handleLogout}
+              className="px-3.5 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              🚪 Logout
             </button>
           </div>
         </div>
