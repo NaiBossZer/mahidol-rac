@@ -64,6 +64,11 @@ const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: stri
 
 const COLOR_PALETTE = ["#0284c7", "#6366f1", "#a855f7", "#ec4899", "#f97316", "#10b981", "#f59e0b"];
 
+const MONTH_NAMES = [
+  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+];
+
 export function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<SurveyResponse[]>([]);
@@ -71,7 +76,9 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const [timeRange, setTimeRange] = useState<string>("ALL");
+  // States สำหรับ Filter แบบเป็นขั้นๆ
+  const [selectedYear, setSelectedYear] = useState<string>("ALL");
+  const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
   
@@ -132,6 +139,37 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
+  // ดึงรายการปีทั้งหมดที่มีในข้อมูล
+  const availableYears = useMemo(() => {
+    const yearSet = new Set<string>();
+    data.forEach((item) => {
+      if (item.timestamp) {
+        const d = new Date(item.timestamp);
+        if (!isNaN(d.getTime())) {
+          yearSet.add(d.getFullYear().toString());
+        }
+      }
+    });
+    return Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
+  }, [data]);
+
+  // ดึงรายการเดือนที่มีเฉพาะในปีที่เลือก
+  const availableMonths = useMemo(() => {
+    const monthSet = new Set<number>();
+    data.forEach((item) => {
+      if (item.timestamp) {
+        const d = new Date(item.timestamp);
+        if (!isNaN(d.getTime())) {
+          if (selectedYear === "ALL" || d.getFullYear().toString() === selectedYear) {
+            monthSet.add(d.getMonth());
+          }
+        }
+      }
+    });
+    return Array.from(monthSet).sort((a, b) => a - b);
+  }, [data, selectedYear]);
+
+  // ดึงรายการช่วงอายุ
   const ageGroupList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => {
@@ -140,33 +178,36 @@ export function DashboardPage() {
     return Array.from(set);
   }, [data]);
 
+  // ดึงรายการสังกัด
   const affiliationsList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
     return Array.from(set);
   }, [data]);
 
+  // ระบบกรองข้อมูลตามเงื่อนไขทั้งหมด
   const filteredData = useMemo(() => {
-    const now = new Date();
-
     return data.filter((item) => {
-      if (timeRange !== "ALL" && item.timestamp) {
+      // 1. กรองปีและเดือน
+      if (item.timestamp) {
         const itemDate = new Date(item.timestamp);
         if (!isNaN(itemDate.getTime())) {
-          const diffTime = Math.abs(now.getTime() - itemDate.getTime());
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (timeRange === "WEEK" && diffDays > 7) return false;
-          if (timeRange === "MONTH" && diffDays > 30) return false;
-          if (timeRange === "YEAR" && diffDays > 365) return false;
+          if (selectedYear !== "ALL" && itemDate.getFullYear().toString() !== selectedYear) {
+            return false;
+          }
+          if (selectedMonth !== "ALL" && itemDate.getMonth().toString() !== selectedMonth) {
+            return false;
+          }
         }
       }
 
+      // 2. กรองช่วงอายุ
       if (selectedAge !== "ALL") {
         const itemAge = item.ageGroup?.trim() || "";
         if (itemAge !== selectedAge) return false;
       }
 
+      // 3. กรองสังกัด
       if (selectedAffiliation !== "ALL") {
         const itemAff = item.affiliation?.trim() || "ไม่ระบุ";
         if (itemAff !== selectedAffiliation) return false;
@@ -174,7 +215,7 @@ export function DashboardPage() {
 
       return true;
     });
-  }, [data, timeRange, selectedAge, selectedAffiliation]);
+  }, [data, selectedYear, selectedMonth, selectedAge, selectedAffiliation]);
 
   const itemScores = useMemo(() => {
     const keys = Object.keys(QUESTION_MAP).filter(
@@ -299,7 +340,7 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Header Banner - โทนขาวสว่าง ขอบทองอ่อน */}
+        {/* Header Banner */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center p-1.5 shadow-sm shrink-0">
@@ -348,32 +389,54 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* 🎨 Multi-Filter Bar - โทนขาวสว่าง สะอาดตา */}
+        {/* 🎨 Multi-Filter Bar (กรองแบบเป็นขั้น: ปี -> เดือน -> อายุ -> สังกัด) */}
         <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             
-            {/* Filter 1: ช่วงเวลา */}
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">📅 ช่วงเวลา:</span>
+            {/* Step 1: กรองปี */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+              <span className="text-amber-700 font-bold">📅 ปี:</span>
               <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-medium text-xs"
+                value={selectedYear}
+                onChange={(e) => {
+                  setSelectedYear(e.target.value);
+                  setSelectedMonth("ALL"); // รีเซ็ตเดือนเมื่อเปลี่ยนปี
+                }}
+                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
               >
-                <option value="ALL">ทั้งหมด</option>
-                <option value="WEEK">รายสัปดาห์ (7 วันล่าสุด)</option>
-                <option value="MONTH">รายเดือน (30 วันล่าสุด)</option>
-                <option value="YEAR">รายปี (365 วันล่าสุด)</option>
+                <option value="ALL">ทุกปี</option>
+                {availableYears.map((year) => (
+                  <option key={year} value={year}>
+                    พ.ศ. {Number(year) + 543} ({year})
+                  </option>
+                ))}
               </select>
             </div>
 
-            {/* Filter 2: ช่วงอายุ */}
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">🎂 ช่วงอายุ:</span>
+            {/* Step 2: กรองเดือน */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+              <span className="text-amber-700 font-bold">🗓️ เดือน:</span>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+              >
+                <option value="ALL">ทุกเดือน</option>
+                {availableMonths.map((mIdx) => (
+                  <option key={mIdx} value={mIdx.toString()}>
+                    {MONTH_NAMES[mIdx]}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Step 3: ช่วงอายุ */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+              <span className="text-amber-700 font-bold">🎂 อายุ:</span>
               <select
                 value={selectedAge}
                 onChange={(e) => setSelectedAge(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-medium text-xs"
+                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
               >
                 <option value="ALL">ทุกช่วงอายุ</option>
                 {ageGroupList.map((age) => (
@@ -382,15 +445,15 @@ export function DashboardPage() {
               </select>
             </div>
 
-            {/* Filter 3: สังกัด */}
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+            {/* Step 4: สังกัด */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
               <span className="text-amber-700 font-bold">📌 สังกัด:</span>
               <select
                 value={selectedAffiliation}
                 onChange={(e) => setSelectedAffiliation(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-medium text-xs max-w-[180px] truncate"
+                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs max-w-[150px] truncate"
               >
-                <option value="ALL">ทั้งหมด ({data.length} คน)</option>
+                <option value="ALL">ทั้งหมด</option>
                 {affiliationsList.map((aff) => (
                   <option key={aff} value={aff}>{aff}</option>
                 ))}
@@ -399,14 +462,14 @@ export function DashboardPage() {
 
           </div>
 
-          <div className="flex items-center justify-end gap-2 bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 self-start md:self-auto font-medium">
-            <span className="text-slate-500">แสดงผลข้อมูล:</span>
+          <div className="flex items-center justify-end gap-1.5 bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 self-start md:self-auto font-medium">
+            <span className="text-slate-500">แสดงผล:</span>
             <span className="text-amber-600 font-bold font-mono text-sm">{filteredData.length}</span>
             <span className="text-slate-400">/ {data.length} รายการ</span>
           </div>
         </div>
 
-        {/* Executive Summary Box - กล่องไฮไลต์โทนทอง/ส้มสว่าง */}
+        {/* Executive Summary Box */}
         {executiveInsights && (
           <div className="bg-gradient-to-r from-amber-50 via-amber-50/50 to-white border border-amber-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
             <div className="space-y-1">
