@@ -71,7 +71,11 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
+  // States สำหรับ Filter ทั้ง 3 ตัว
+  const [timeRange, setTimeRange] = useState<string>("ALL"); // ALL, WEEK, MONTH, YEAR
+  const [selectedAge, setSelectedAge] = useState<string>("ALL");
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
+  
   const [feedbackSearch, setFeedbackSearch] = useState<string>("");
 
   useEffect(() => {
@@ -117,7 +121,7 @@ export function DashboardPage() {
       );
     } catch (err: any) {
       console.error("Error fetching dashboard data:", err);
-      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
+      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณกด Refresh อีกครั้ง");
       setData([]);
     } finally {
       setLoading(false);
@@ -129,18 +133,55 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
-  const filteredData = useMemo(() => {
-    if (selectedAffiliation === "ALL") return data;
-    return data.filter(
-      (item) => (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation
-    );
-  }, [data, selectedAffiliation]);
+  // ดึงรายการช่วงอายุที่มีในข้อมูลมาใส่ Dropdown
+  const ageGroupList = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((item) => {
+      if (item.ageGroup?.trim()) set.add(item.ageGroup.trim());
+    });
+    return Array.from(set);
+  }, [data]);
 
+  // ดึงรายการสังกัดที่มีในข้อมูลมาใส่ Dropdown
   const affiliationsList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
     return Array.from(set);
   }, [data]);
+
+  // ระบบการกรองแบบ Multi-filter (ช่วงเวลา + ช่วงอายุ + สังกัด)
+  const filteredData = useMemo(() => {
+    const now = new Date();
+
+    return data.filter((item) => {
+      // 1. กรองช่วงเวลา (Time Filter)
+      if (timeRange !== "ALL" && item.timestamp) {
+        const itemDate = new Date(item.timestamp);
+        if (!isNaN(itemDate.getTime())) {
+          const diffTime = Math.abs(now.getTime() - itemDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          if (timeRange === "WEEK" && diffDays > 7) return false;
+          if (timeRange === "MONTH" && diffDays > 30) return false;
+          if (timeRange === "YEAR" && diffDays > 365) return false;
+        }
+      }
+
+      // 2. กรองช่วงอายุ (Age Group Filter)
+      if (selectedAge !== "ALL") {
+        const itemAge = item.ageGroup?.trim() || "";
+        if (itemAge !== selectedAge) return false;
+      }
+
+      // 3. กรองสังกัด (Affiliation Filter)
+      if (selectedAffiliation !== "ALL") {
+        const itemAff = item.affiliation?.trim() || "ไม่ระบุ";
+        if (itemAff !== selectedAffiliation) return false;
+      }
+
+      return true;
+    });
+  }, [data, timeRange, selectedAge, selectedAffiliation]);
 
   const itemScores = useMemo(() => {
     const keys = Object.keys(QUESTION_MAP).filter(
@@ -179,7 +220,6 @@ export function DashboardPage() {
     return { highest, lowest, grandAvg };
   }, [itemScores, filteredData]);
 
-  // คำนวณสัดส่วนผู้เข้าร่วมจำแนกตามสังกัดพร้อมสีสำหรับ Chart วงกลม
   const affiliationBreakdown = useMemo(() => {
     const counts: Record<string, number> = {};
     filteredData.forEach((item) => {
@@ -210,7 +250,6 @@ export function DashboardPage() {
     return <span className="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 font-bold border border-red-500/30">ควรปรับปรุง</span>;
   };
 
-  // ฟังก์ชันวาด Pie / Donut Chart วงกลมด้วย SVG
   const renderPieChart = () => {
     if (affiliationBreakdown.length === 0) return null;
 
@@ -315,22 +354,58 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Filter Bar */}
-        <div className="bg-[#0f1a30] border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-medium">📌 กรองตามสังกัด:</span>
-            <select
-              value={selectedAffiliation}
-              onChange={(e) => setSelectedAffiliation(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-slate-200 outline-none focus:border-amber-400"
-            >
-              <option value="ALL">ทั้งหมด ({data.length} คน)</option>
-              {affiliationsList.map((aff) => (
-                <option key={aff} value={aff}>{aff}</option>
-              ))}
-            </select>
+        {/* Multi-Filter Bar (ช่วงเวลา / ช่วงอายุ / สังกัด) */}
+        <div className="bg-[#0f1a30] border border-slate-800 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-4 text-xs">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Filter 1: ช่วงเวลา */}
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400 font-medium">📅 ช่วงเวลา:</span>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+              >
+                <option value="ALL">ทั้งหมด</option>
+                <option value="WEEK">รายสัปดาห์ (7 วันล่าสุด)</option>
+                <option value="MONTH">รายเดือน (30 วันล่าสุด)</option>
+                <option value="YEAR">รายปี (365 วันล่าสุด)</option>
+              </select>
+            </div>
+
+            {/* Filter 2: ช่วงอายุ */}
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400 font-medium">🎂 ช่วงอายุ:</span>
+              <select
+                value={selectedAge}
+                onChange={(e) => setSelectedAge(e.target.value)}
+                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+              >
+                <option value="ALL">ทุกช่วงอายุ</option>
+                {ageGroupList.map((age) => (
+                  <option key={age} value={age}>{age}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filter 3: สังกัด */}
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400 font-medium">📌 กรองตามสังกัด:</span>
+              <select
+                value={selectedAffiliation}
+                onChange={(e) => setSelectedAffiliation(e.target.value)}
+                className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 outline-none focus:border-amber-400 cursor-pointer"
+              >
+                <option value="ALL">ทั้งหมด ({data.length} คน)</option>
+                {affiliationsList.map((aff) => (
+                  <option key={aff} value={aff}>{aff}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <p className="text-slate-400">แสดงผลข้อมูลจำนวน: <span className="text-amber-400 font-bold">{filteredData.length}</span> รายการ</p>
+
+          <p className="text-slate-400">
+            แสดงผลข้อมูลจำนวน: <span className="text-amber-400 font-bold">{filteredData.length}</span> / {data.length} รายการ
+          </p>
         </div>
 
         {/* Executive Summary Box */}
@@ -347,7 +422,7 @@ export function DashboardPage() {
           </div>
         )}
 
-        {/* Visual Chart Section (Bar Chart + Donut Chart) */}
+        {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Custom Horizontal Bar Chart */}
           <div className="lg:col-span-2 bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
@@ -381,10 +456,8 @@ export function DashboardPage() {
               🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
             </h2>
             
-            {/* แสดงกราฟวงกลม SVG */}
             {renderPieChart()}
 
-            {/* แสดง Legend รายชื่อหน่วยงาน */}
             <div className="space-y-2 pt-2 border-t border-slate-800 max-h-[160px] overflow-y-auto pr-1">
               {affiliationBreakdown.map((item) => (
                 <div key={item.name} className="flex justify-between items-center text-xs">
@@ -428,7 +501,7 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Feedback Section with Search */}
+        {/* Feedback Section */}
         <div className="bg-[#0f1a30] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-lg">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-2">
             <h2 className="text-xs font-bold text-amber-400 tracking-wider uppercase">
