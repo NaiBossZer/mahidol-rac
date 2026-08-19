@@ -238,6 +238,7 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
+  // จัดกลุ่มคะแนนตามหมวดหมู่ + เรียงลำดับจากคะแนนมากที่สุดไปน้อยที่สุด (Descending Order)
   const categoryGroupedScores = useMemo(() => {
     const groups: Record<string, { category: string; avg: number; items: typeof itemScores }> = {};
 
@@ -248,12 +249,22 @@ export function DashboardPage() {
       groups[item.category].items.push(item);
     });
 
-    Object.values(groups).forEach((group) => {
+    const resultList = Object.values(groups).map((group) => {
       const total = group.items.reduce((sum, i) => sum + i.avg, 0);
-      group.avg = group.items.length > 0 ? parseFloat((total / group.items.length).toFixed(2)) : 0;
+      const avg = group.items.length > 0 ? parseFloat((total / group.items.length).toFixed(2)) : 0;
+      
+      // เรียงหัวข้อย่อยภายในหมวดหมู่จากคะแนนมากไปน้อย
+      const sortedItems = [...group.items].sort((a, b) => b.avg - a.avg);
+
+      return {
+        ...group,
+        avg,
+        items: sortedItems,
+      };
     });
 
-    return Object.values(groups);
+    // เรียงหมวดหมู่ใหญ่จากคะแนนเฉลี่ยมากไปน้อย
+    return resultList.sort((a, b) => b.avg - a.avg);
   }, [itemScores]);
 
   const cardMetrics = useMemo(() => {
@@ -262,44 +273,15 @@ export function DashboardPage() {
     const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
     const highest = sorted[0];
     const lowest = sorted[sorted.length - 1];
-    
-    const grandAvg = parseFloat(
-      (itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length).toFixed(2)
-    );
 
-    let totalFiveRatings = 0;
-    let totalRatingsCount = 0;
-    let returnInterestCount = 0;
-
-    filteredData.forEach((item) => {
-      itemScores.forEach((scoreObj) => {
-        const val = parseNum(item[scoreObj.key]);
-        if (val > 0) {
-          totalRatingsCount++;
-          if (val === 5) totalFiveRatings++;
-        }
-      });
-
-      const returnVal = parseNum(item.p4_futureReturn);
-      if (returnVal >= 4) returnInterestCount++;
-    });
-
-    const satLevel5Percent = totalRatingsCount > 0 
-      ? Math.round((totalFiveRatings / totalRatingsCount) * 100) 
-      : 0;
-
-    const returnPercent = filteredData.length > 0 
-      ? Math.round((returnInterestCount / filteredData.length) * 100) 
-      : 0;
+    const rawGrandAvg = itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length;
+    const grandAvgPercent = Math.round((rawGrandAvg / 5) * 100);
 
     return {
       highest,
       lowest,
-      grandAvg,
-      satLevel5Percent,
-      returnPercent,
-      returnCount: returnInterestCount,
-      totalQuestions: itemScores.length
+      grandAvgPercent,
+      totalQuestions: itemScores.length,
     };
   }, [itemScores, filteredData]);
 
@@ -597,99 +579,79 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Executive Insight Summary Cards */}
+        {/* Executive Summary Cards (ปรับเหลือ 4 CARD ตามต้องการ) */}
         {cardMetrics && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
-              <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-sm mb-2 font-bold">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            
+            {/* Card 1: จำนวนคนประเมิน */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm mb-2 font-bold">
                 📋
               </div>
               <div>
-                <p className="text-[11px] text-slate-500 font-semibold">แบบประเมินที่แสดง</p>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-xl font-black text-slate-800 font-mono">{filteredData.length}</span>
+                <p className="text-xs text-slate-500 font-semibold">จำนวนคนประเมิน</p>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-black text-slate-800 font-mono">{filteredData.length}</span>
                   <span className="text-xs text-slate-400 font-medium">คน</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1 truncate">จากทั้งหมด {data.length} รายการ</p>
+                <p className="text-[11px] text-slate-400 mt-1 truncate">จากทั้งหมด {data.length} รายการ</p>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-2 font-bold">
-                🤩
-              </div>
-              <div>
-                <p className="text-[11px] text-slate-500 font-semibold">ความพึงพอใจรวม (ระดับ 5)</p>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-xl font-black text-emerald-600 font-mono">{cardMetrics.satLevel5Percent}%</span>
-                </div>
-                <p className="text-[10px] text-slate-400 mt-1 truncate">สัดส่วนผู้ให้คะแนนเต็ม</p>
-              </div>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            {/* Card 2: คะแนนเฉลี่ยรวม คิดเป็นร้อยละ */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm mb-2 font-bold">
                 ⭐
               </div>
               <div>
-                <p className="text-[11px] text-slate-500 font-semibold">คะแนนเฉลี่ยรวม</p>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-xl font-black text-amber-600 font-mono">{cardMetrics.grandAvg}</span>
-                  <span className="text-xs text-slate-400">/ 5</span>
+                <p className="text-xs text-slate-500 font-semibold">คะแนนเฉลี่ยรวม</p>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-black text-amber-600 font-mono">{cardMetrics.grandAvgPercent}%</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1 truncate">เฉลี่ย {cardMetrics.totalQuestions} หัวข้อ</p>
+                <p className="text-[11px] text-slate-400 mt-1 truncate">คำนวณจาก {cardMetrics.totalQuestions} หัวข้อประเมิน</p>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm mb-2 font-bold">
-                🔄
-              </div>
-              <div>
-                <p className="text-[11px] text-slate-500 font-semibold">สนใจเข้าร่วมอีก</p>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-xl font-black text-blue-600 font-mono">{cardMetrics.returnPercent}%</span>
-                </div>
-                <p className="text-[10px] text-slate-400 mt-1 truncate">{cardMetrics.returnCount} คน จาก {filteredData.length} คน</p>
-              </div>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            {/* Card 3: หมวดคะแนนสูงสุด คิดเต็ม 5 */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🏅
               </div>
               <div>
-                <p className="text-[11px] text-slate-500 font-semibold">หมวดคะแนนสูงสุด</p>
-                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-0.5">{cardMetrics.highest.title}</p>
+                <p className="text-xs text-slate-500 font-semibold">หมวดคะแนนสูงสุด</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.highest.title}</p>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-sm font-black text-purple-600 font-mono">{cardMetrics.highest.avg}</span>
-                  <span className="text-[10px] text-slate-400">/ 5</span>
+                  <span className="text-xl font-black text-purple-600 font-mono">{cardMetrics.highest.avg.toFixed(2)}</span>
+                  <span className="text-xs text-slate-400">/ 5</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            {/* Card 4: หมวดที่ควรปรับปรุง คิดเต็ม 5 */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🛠️
               </div>
               <div>
-                <p className="text-[11px] text-slate-500 font-semibold">หมวดที่ควรปรับปรุง</p>
-                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-0.5">{cardMetrics.lowest.title}</p>
+                <p className="text-xs text-slate-500 font-semibold">หมวดที่ควรปรับปรุง</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.lowest.title}</p>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-sm font-black text-rose-600 font-mono">{cardMetrics.lowest.avg}</span>
-                  <span className="text-[10px] text-slate-400">/ 5</span>
+                  <span className="text-xl font-black text-rose-600 font-mono">{cardMetrics.lowest.avg.toFixed(2)}</span>
+                  <span className="text-xs text-slate-400">/ 5</span>
                 </div>
               </div>
             </div>
+
           </div>
         )}
 
         {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           
+          {/* คะแนนความพึงพอใจเรียงตามหมวดหมู่ (เรียงจากมากไปน้อย) */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5 flex items-center gap-1.5">
-              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (คะแนนเต็ม 5.00)
+              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (เรียงตามคะแนนสูงสุด-ต่ำสุด)
             </h2>
             
             <div className="space-y-5 max-h-[420px] overflow-y-auto pr-2">
