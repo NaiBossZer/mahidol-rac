@@ -76,7 +76,7 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  // States สำหรับ Filter แบบเป็นขั้นๆ
+  // States สำหรับ Filter
   const [selectedYear, setSelectedYear] = useState<string>("ALL");
   const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
@@ -96,6 +96,13 @@ export function DashboardPage() {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate({ to: "/login", replace: true });
+  };
+
+  const handleResetFilter = () => {
+    setSelectedYear("ALL");
+    setSelectedMonth("ALL");
+    setSelectedAge("ALL");
+    setSelectedAffiliation("ALL");
   };
 
   const fetchData = async () => {
@@ -129,7 +136,7 @@ export function DashboardPage() {
       console.error("Error fetching dashboard data:", err);
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
-    } finally {
+    } font-medium: finally {
       setLoading(false);
     }
   };
@@ -139,7 +146,6 @@ export function DashboardPage() {
     return isNaN(n) ? 0 : n;
   };
 
-  // ดึงรายการปีทั้งหมดที่มีในข้อมูล
   const availableYears = useMemo(() => {
     const yearSet = new Set<string>();
     data.forEach((item) => {
@@ -153,7 +159,6 @@ export function DashboardPage() {
     return Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
   }, [data]);
 
-  // ดึงรายการเดือนที่มีเฉพาะในปีที่เลือก
   const availableMonths = useMemo(() => {
     const monthSet = new Set<number>();
     data.forEach((item) => {
@@ -169,7 +174,6 @@ export function DashboardPage() {
     return Array.from(monthSet).sort((a, b) => a - b);
   }, [data, selectedYear]);
 
-  // ดึงรายการช่วงอายุ
   const ageGroupList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => {
@@ -178,17 +182,14 @@ export function DashboardPage() {
     return Array.from(set);
   }, [data]);
 
-  // ดึงรายการสังกัด
   const affiliationsList = useMemo(() => {
     const set = new Set<string>();
     data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
     return Array.from(set);
   }, [data]);
 
-  // ระบบกรองข้อมูลตามเงื่อนไขทั้งหมด
   const filteredData = useMemo(() => {
     return data.filter((item) => {
-      // 1. กรองปีและเดือน
       if (item.timestamp) {
         const itemDate = new Date(item.timestamp);
         if (!isNaN(itemDate.getTime())) {
@@ -201,13 +202,11 @@ export function DashboardPage() {
         }
       }
 
-      // 2. กรองช่วงอายุ
       if (selectedAge !== "ALL") {
         const itemAge = item.ageGroup?.trim() || "";
         if (itemAge !== selectedAge) return false;
       }
 
-      // 3. กรองสังกัด
       if (selectedAffiliation !== "ALL") {
         const itemAff = item.affiliation?.trim() || "ไม่ระบุ";
         if (itemAff !== selectedAffiliation) return false;
@@ -242,16 +241,55 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
-  const executiveInsights = useMemo(() => {
+  // คำนวณค่าสำหรับ Executive Insight Cards
+  const cardMetrics = useMemo(() => {
     if (itemScores.length === 0 || filteredData.length === 0) return null;
+
     const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
     const highest = sorted[0];
     const lowest = sorted[sorted.length - 1];
-    const grandAvg = (
-      itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length
-    ).toFixed(2);
+    
+    const grandAvg = parseFloat(
+      (itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length).toFixed(2)
+    );
 
-    return { highest, lowest, grandAvg };
+    // คำนวณ % คนที่ตอบระดับ 5 (ความพึงพอใจสูงสุด) จากทุกข้อประเมิน
+    let totalFiveRatings = 0;
+    let totalRatingsCount = 0;
+    
+    // คำนวณ % การกลับมาใช้บริการ/เข้าร่วมอีก (p4_futureReturn >= 4)
+    let returnInterestCount = 0;
+
+    filteredData.forEach((item) => {
+      itemScores.forEach((scoreObj) => {
+        const val = parseNum(item[scoreObj.key]);
+        if (val > 0) {
+          totalRatingsCount++;
+          if (val === 5) totalFiveRatings++;
+        }
+      });
+
+      const returnVal = parseNum(item.p4_futureReturn);
+      if (returnVal >= 4) returnInterestCount++;
+    });
+
+    const satLevel5Percent = totalRatingsCount > 0 
+      ? Math.round((totalFiveRatings / totalRatingsCount) * 100) 
+      : 0;
+
+    const returnPercent = filteredData.length > 0 
+      ? Math.round((returnInterestCount / filteredData.length) * 100) 
+      : 0;
+
+    return {
+      highest,
+      lowest,
+      grandAvg,
+      satLevel5Percent,
+      returnPercent,
+      returnCount: returnInterestCount,
+      totalQuestions: itemScores.length
+    };
   }, [itemScores, filteredData]);
 
   const affiliationBreakdown = useMemo(() => {
@@ -340,29 +378,27 @@ export function DashboardPage() {
           </div>
         )}
 
-{/* Header Banner */}
-<div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-  <div className="flex items-center gap-4">
+        {/* Header Banner */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-amber-50/50 border border-amber-200 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden">
+              <img
+                src="/Mahidol_U.jpg"
+                alt="Mahidol Logo"
+                className="w-full h-full object-contain rounded-full"
+              />
+            </div>
 
-    {/* 👇 วางโค้ดรูปโลโก้ตรงจุดนี้ */}
-    <div className="w-14 h-14 rounded-full bg-amber-50/50 border border-amber-200 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden">
-      <img
-        src="/Mahidol_U.jpg"
-        alt="Mahidol Logo"
-        className="w-full h-full object-contain rounded-full"
-      />
-    </div>
-
-    <div>
-      <p className="text-xs font-bold text-amber-600 tracking-wider uppercase">Mahidol University</p>
-      <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
-        พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
-      </h1>
-      <p className="text-xs text-slate-500 tracking-wider mt-0.5 font-medium">
-        EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
-      </p>
-    </div>
-  </div>
+            <div>
+              <p className="text-xs font-bold text-amber-600 tracking-wider uppercase">Mahidol University</p>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+                พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
+              </h1>
+              <p className="text-xs text-slate-500 tracking-wider mt-0.5 font-medium">
+                EXECUTIVE ANALYTICS & SATISFACTION INSIGHT
+              </p>
+            </div>
+          </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-slate-100 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
@@ -391,98 +427,191 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* 🎨 Multi-Filter Bar (กรองแบบเป็นขั้น: ปี -> เดือน -> อายุ -> สังกัด) */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            
-            {/* Step 1: กรองปี */}
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">📅 ปี:</span>
-              <select
-                value={selectedYear}
-                onChange={(e) => {
-                  setSelectedYear(e.target.value);
-                  setSelectedMonth("ALL"); // รีเซ็ตเดือนเมื่อเปลี่ยนปี
-                }}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
-              >
-                <option value="ALL">ทุกปี</option>
-                {availableYears.map((year) => (
-                  <option key={year} value={year}>
-                    พ.ศ. {Number(year) + 543} ({year})
-                  </option>
-                ))}
-              </select>
+        {/* 🎨 Multi-Filter Bar + ล้างตัวกรอง */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3 text-xs">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-indigo-50 text-indigo-600 text-sm">🎛️</span>
+              <span className="font-bold text-slate-800 text-sm">ปรับเลือกข้อมูลที่ต้องการดู</span>
+              <span className="text-[11px] text-slate-400 hidden sm:inline">— เลือกตัวกรองได้หลายเงื่อนไขพร้อมกัน</span>
             </div>
-
-            {/* Step 2: กรองเดือน */}
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">🗓️ เดือน:</span>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
-              >
-                <option value="ALL">ทุกเดือน</option>
-                {availableMonths.map((mIdx) => (
-                  <option key={mIdx} value={mIdx.toString()}>
-                    {MONTH_NAMES[mIdx]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Step 3: ช่วงอายุ */}
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">🎂 อายุ:</span>
-              <select
-                value={selectedAge}
-                onChange={(e) => setSelectedAge(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
-              >
-                <option value="ALL">ทุกช่วงอายุ</option>
-                {ageGroupList.map((age) => (
-                  <option key={age} value={age}>{age}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Step 4: สังกัด */}
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-              <span className="text-amber-700 font-bold">📌 สังกัด:</span>
-              <select
-                value={selectedAffiliation}
-                onChange={(e) => setSelectedAffiliation(e.target.value)}
-                className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs max-w-[150px] truncate"
-              >
-                <option value="ALL">ทั้งหมด</option>
-                {affiliationsList.map((aff) => (
-                  <option key={aff} value={aff}>{aff}</option>
-                ))}
-              </select>
-            </div>
-
+            <button
+              onClick={handleResetFilter}
+              className="text-slate-500 hover:text-red-600 font-semibold flex items-center gap-1 text-xs transition-colors cursor-pointer bg-slate-50 hover:bg-red-50 px-2.5 py-1 rounded-lg border border-slate-200 hover:border-red-200"
+            >
+              ✕ ล้างตัวกรอง
+            </button>
           </div>
 
-          <div className="flex items-center justify-end gap-1.5 bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 self-start md:self-auto font-medium">
-            <span className="text-slate-500">แสดงผล:</span>
-            <span className="text-amber-600 font-bold font-mono text-sm">{filteredData.length}</span>
-            <span className="text-slate-400">/ {data.length} รายการ</span>
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+              
+              {/* Step 1: กรองปี */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+                <span className="text-amber-700 font-bold">📅 ปี:</span>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    setSelectedMonth("ALL");
+                  }}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                >
+                  <option value="ALL">ทุกปี</option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={year}>
+                      พ.ศ. {Number(year) + 543} ({year})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Step 2: กรองเดือน */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+                <span className="text-amber-700 font-bold">🗓️ เดือน:</span>
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                >
+                  <option value="ALL">ทุกเดือน</option>
+                  {availableMonths.map((mIdx) => (
+                    <option key={mIdx} value={mIdx.toString()}>
+                      {MONTH_NAMES[mIdx]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Step 3: ช่วงอายุ */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+                <span className="text-amber-700 font-bold">🎂 อายุ:</span>
+                <select
+                  value={selectedAge}
+                  onChange={(e) => setSelectedAge(e.target.value)}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                >
+                  <option value="ALL">ทุกช่วงอายุ</option>
+                  {ageGroupList.map((age) => (
+                    <option key={age} value={age}>{age}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Step 4: สังกัด */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+                <span className="text-amber-700 font-bold">📌 สังกัด:</span>
+                <select
+                  value={selectedAffiliation}
+                  onChange={(e) => setSelectedAffiliation(e.target.value)}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs max-w-[150px] truncate"
+                >
+                  <option value="ALL">ทั้งหมด</option>
+                  {affiliationsList.map((aff) => (
+                    <option key={aff} value={aff}>{aff}</option>
+                  ))}
+                </select>
+              </div>
+
+            </div>
+
+            <div className="flex items-center justify-end gap-1.5 bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 self-start md:self-auto font-medium">
+              <span className="text-slate-500">แสดงผล:</span>
+              <span className="text-amber-600 font-bold font-mono text-sm">{filteredData.length}</span>
+              <span className="text-slate-400">/ {data.length} รายการ</span>
+            </div>
           </div>
         </div>
 
-        {/* Executive Summary Box */}
-        {executiveInsights && (
-          <div className="bg-gradient-to-r from-amber-50 via-amber-50/50 to-white border border-amber-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-            <div className="space-y-1">
-              <p className="text-xs font-bold text-amber-700 tracking-wider uppercase flex items-center gap-1.5">
-                💡 Executive Insight Summary
-              </p>
-              <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                คะแนนภาพรวมเฉลี่ยเท่ากับ <span className="text-emerald-600 font-bold text-sm">{executiveInsights.grandAvg} / 5.00</span> 
-                โดยหัวข้อที่ได้คะแนนสูงสุดคือ <span className="text-amber-800 font-bold">"{executiveInsights.highest.title}" ({executiveInsights.highest.avg})</span> 
-                และส่วนที่ควรพัฒนาคือ <span className="text-amber-800 font-bold">"{executiveInsights.lowest.title}" ({executiveInsights.lowest.avg})</span>
-              </p>
+        {/* 📊 Executive Insight Summary (6 Metric Cards Layout) */}
+        {cardMetrics && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {/* Card 1: แบบประเมินที่แสดง */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-sm mb-2 font-bold">
+                📋
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">แบบประเมินที่แสดง</p>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-xl font-black text-slate-800 font-mono">{filteredData.length}</span>
+                  <span className="text-xs text-slate-400 font-medium">คน</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1 truncate">จากทั้งหมด {data.length} รายการ</p>
+              </div>
+            </div>
+
+            {/* Card 2: ความพึงพอใจรวม (ระดับ 5) */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-2 font-bold">
+                🤩
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">ความพึงพอใจรวม (ระดับ 5)</p>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-xl font-black text-emerald-600 font-mono">{cardMetrics.satLevel5Percent}%</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1 truncate">สัดส่วนผู้ให้คะแนนเต็ม</p>
+              </div>
+            </div>
+
+            {/* Card 3: คะแนนเฉลี่ยรวม */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm mb-2 font-bold">
+                ⭐
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">คะแนนเฉลี่ยรวม</p>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-xl font-black text-amber-600 font-mono">{cardMetrics.grandAvg}</span>
+                  <span className="text-xs text-slate-400">/ 5</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1 truncate">เฉลี่ย {cardMetrics.totalQuestions} หัวข้อ</p>
+              </div>
+            </div>
+
+            {/* Card 4: สนใจ เข้าร่วมอีก */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm mb-2 font-bold">
+                🔄
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">สนใจเข้าร่วมอีก</p>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-xl font-black text-blue-600 font-mono">{cardMetrics.returnPercent}%</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1 truncate">{cardMetrics.returnCount} คน จาก {filteredData.length} คน</p>
+              </div>
+            </div>
+
+            {/* Card 5: หมวดคะแนนสูงสุด */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-2 font-bold">
+                🏅
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">หมวดคะแนนสูงสุด</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-0.5">{cardMetrics.highest.title}</p>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-sm font-black text-purple-600 font-mono">{cardMetrics.highest.avg}</span>
+                  <span className="text-[10px] text-slate-400">/ 5</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 6: หมวดที่ควรปรับปรุง */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm mb-2 font-bold">
+                🛠️
+              </div>
+              <div>
+                <p className="text-[11px] text-slate-500 font-semibold">หมวดที่ควรปรับปรุง</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-0.5">{cardMetrics.lowest.title}</p>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-sm font-black text-rose-600 font-mono">{cardMetrics.lowest.avg}</span>
+                  <span className="text-[10px] text-slate-400">/ 5</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
