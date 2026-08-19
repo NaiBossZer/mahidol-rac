@@ -81,8 +81,6 @@ export function DashboardPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
-  
-  const [feedbackSearch, setFeedbackSearch] = useState<string>("");
 
   useEffect(() => {
     const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
@@ -136,7 +134,8 @@ export function DashboardPage() {
       console.error("Error fetching dashboard data:", err);
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
-    } finally {
+    } font-medium
+    finally {
       setLoading(false);
     }
   };
@@ -241,7 +240,7 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
-  // จัดกลุ่มคะแนนตามหมวดหมู่ (Category Grouping)
+  // จัดกลุ่มคะแนนตามหมวดหมู่
   const categoryGroupedScores = useMemo(() => {
     const groups: Record<string, { category: string; avg: number; items: typeof itemScores }> = {};
 
@@ -260,7 +259,7 @@ export function DashboardPage() {
     return Object.values(groups);
   }, [itemScores]);
 
-  // คำนวณค่าสำหรับ Executive Insight Cards
+  // Executive Insight Metrics
   const cardMetrics = useMemo(() => {
     if (itemScores.length === 0 || filteredData.length === 0) return null;
 
@@ -323,19 +322,90 @@ export function DashboardPage() {
     }));
   }, [filteredData]);
 
-  const searchedFeedback = useMemo(() => {
-    return filteredData.filter(
-      (d) =>
-        d.feedback?.trim() &&
-        d.feedback.toLowerCase().includes(feedbackSearch.toLowerCase())
-    );
-  }, [filteredData, feedbackSearch]);
+  // ฟังก์ชันวิเคราะห์ประเด็นข้อเสนอแนะพร้อมจัดระดับความสำคัญและหมวดหมู่
+  const feedbackAnalysis = useMemo(() => {
+    const rawFeedbacks = filteredData
+      .filter((d) => d.feedback && d.feedback.trim() !== "")
+      .map((d) => ({
+        text: d.feedback!.trim(),
+        affiliation: d.affiliation || "ไม่ระบุ",
+        timestamp: d.timestamp || "N/A",
+      }));
 
+    let positiveCount = 0;
+    let followUpCount = 0;
+    let urgentCount = 0;
+    let generalCount = 0;
+
+    const topicCounts: Record<string, number> = {
+      "การให้บริการ": 0,
+      "กิจกรรม/การเรียนรู้": 0,
+      "สิ่งแวดล้อม/สถานที่": 0,
+      "อุปกรณ์/สื่อ": 0,
+    };
+
+    const parsedList = rawFeedbacks.map((item) => {
+      const t = item.text.toLowerCase();
+      let status: "positive" | "followup" | "urgent" | "general" = "positive";
+      let tag = "ทั่วไป";
+
+      // จำแนกความเร่งด่วน / ประเภทสี
+      if (t.includes("ด่วน") || t.includes("ปรับปรุง") || t.includes("แย่") || t.includes("เสีย") || t.includes("ช้า")) {
+        status = "urgent";
+        urgentCount++;
+      } else if (t.includes("ควร") || t.includes("อยากให้") || t.includes("ติดตาม") || t.includes("เพิ่ม")) {
+        status = "followup";
+        followUpCount++;
+      } else if (t.includes("ดี") || t.includes("ประทับใจ") || t.includes("ชอบ") || t.includes("เยี่ยม") || t.includes("ขอบคุณ")) {
+        status = "positive";
+        positiveCount++;
+      } else {
+        status = "general";
+        generalCount++;
+      }
+
+      // จำแนกหมวดหมู่ประเด็น
+      if (t.includes("บริการ") || t.includes("พนักงาน") || t.includes("ต้อนรับ") || t.includes("เจ้าหน้าที่")) {
+        tag = "การให้บริการ";
+        topicCounts["การให้บริการ"]++;
+      } else if (t.includes("จอดรถ") || t.includes("สถานที่") || t.includes("ห้อง") || t.includes("แอร์") || t.includes("สะอาด")) {
+        tag = "สิ่งแวดล้อม/สถานที่";
+        topicCounts["สิ่งแวดล้อม/สถานที่"]++;
+      } else if (t.includes("อุปกรณ์") || t.includes("สื่อ") || t.includes("ไมค์") || t.includes("สไลด์")) {
+        tag = "อุปกรณ์/สื่อ";
+        topicCounts["อุปกรณ์/สื่อ"]++;
+      } else {
+        tag = "กิจกรรม/การเรียนรู้";
+        topicCounts["กิจกรรม/การเรียนรู้"]++;
+      }
+
+      return {
+        ...item,
+        status,
+        tag,
+      };
+    });
+
+    const maxTopicCount = Math.max(...Object.values(topicCounts), 1);
+
+    return {
+      total: rawFeedbacks.length,
+      positiveCount,
+      followUpCount,
+      urgentCount,
+      generalCount,
+      topicCounts,
+      maxTopicCount,
+      latestList: parsedList.slice(0, 5),
+    };
+  }, [filteredData]);
+
+  // Badge ระดับคุณภาพพร้อมสีสื่อความหมาย
   const getScoreBadge = (score: number) => {
-    if (score >= 4.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">ดีมากที่สุด</span>;
-    if (score >= 3.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold border border-blue-200">ดีมาก</span>;
-    if (score >= 2.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">ปานกลาง</span>;
-    return <span className="px-2 py-0.5 rounded text-[10px] bg-red-100 text-red-800 font-bold border border-red-200">ควรปรับปรุง</span>;
+    if (score >= 4.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">🟢 ดีมากที่สุด</span>;
+    if (score >= 3.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold border border-blue-200">🔵 ดีมาก</span>;
+    if (score >= 2.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">🟡 ปานกลาง</span>;
+    return <span className="px-2 py-0.5 rounded text-[10px] bg-red-100 text-red-800 font-bold border border-red-200">🔴 ควรปรับปรุง</span>;
   };
 
   const renderPieChart = () => {
@@ -462,7 +532,6 @@ export function DashboardPage() {
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               
-              {/* Step 1: กรองปี */}
               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
                 <span className="text-amber-700 font-bold">📅 ปี:</span>
                 <select
@@ -482,7 +551,6 @@ export function DashboardPage() {
                 </select>
               </div>
 
-              {/* Step 2: กรองเดือน */}
               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
                 <span className="text-amber-700 font-bold">🗓️ เดือน:</span>
                 <select
@@ -499,7 +567,6 @@ export function DashboardPage() {
                 </select>
               </div>
 
-              {/* Step 3: ช่วงอายุ */}
               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
                 <span className="text-amber-700 font-bold">🎂 อายุ:</span>
                 <select
@@ -514,7 +581,6 @@ export function DashboardPage() {
                 </select>
               </div>
 
-              {/* Step 4: สังกัด */}
               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
                 <span className="text-amber-700 font-bold">📌 สังกัด:</span>
                 <select
@@ -629,15 +695,15 @@ export function DashboardPage() {
         {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           
-          {/* กราฟแท่งจัดกลุ่มตามหมวดหมู่ (Category Horizontal Bar Chart) */}
+          {/* กราฟแท่งจัดกลุ่มตามหมวดหมู่ พร้อม Badge ระดับคุณภาพในตัว */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5 flex items-center gap-1.5">
               <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (คะแนนเต็ม 5.00)
             </h2>
             
-            <div className="space-y-5 max-h-[380px] overflow-y-auto pr-2">
+            <div className="space-y-5 max-h-[420px] overflow-y-auto pr-2">
               {categoryGroupedScores.map((catGroup, groupIdx) => (
-                <div key={catGroup.category} className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3 space-y-3">
+                <div key={catGroup.category} className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3.5 space-y-3">
                   
                   {/* หัวข้อหมวดหมู่ + คะแนนเฉลี่ยประจำหมวด */}
                   <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
@@ -655,19 +721,22 @@ export function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* แท่งกราฟของรายการย่อยในหมวดหมู่นี้ */}
-                  <div className="space-y-2.5 pl-1">
+                  {/* รายการย่อยในหมวดหมู่ พร้อม Badge คุณภาพด้านขวา */}
+                  <div className="space-y-3 pl-1">
                     {catGroup.items.map((item, itemIdx) => {
                       const globalIdx = groupIdx * 3 + itemIdx;
                       return (
                         <div key={item.key} className="space-y-1">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-700 truncate max-w-[80%] font-medium">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-700 truncate max-w-[65%] font-medium">
                               {item.title}
                             </span>
-                            <span className="font-mono font-bold text-slate-700">
-                              {item.avg.toFixed(2)}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-slate-800">
+                                {item.avg.toFixed(2)}
+                              </span>
+                              {getScoreBadge(item.avg)}
+                            </div>
                           </div>
                           <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
                             <div
@@ -696,7 +765,7 @@ export function DashboardPage() {
             
             {renderPieChart()}
 
-            <div className="space-y-2 pt-2 border-t border-slate-100 max-h-[160px] overflow-y-auto pr-1">
+            <div className="space-y-2 pt-2 border-t border-slate-100 max-h-[180px] overflow-y-auto pr-1">
               {affiliationBreakdown.map((item) => (
                 <div key={item.name} className="flex justify-between items-center text-xs">
                   <div className="flex items-center gap-2 truncate max-w-[70%]">
@@ -710,66 +779,131 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Detailed Scorecard Table */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
-          <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5">
-            📋 ตารางคะแนนสรุปอย่างละเอียด (DETAILED SCORECARD)
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-700">
-              <thead className="bg-slate-50 text-slate-500 uppercase font-mono border-b border-slate-200">
-                <tr>
-                  <th className="py-2.5 px-3">หมวดหมู่</th>
-                  <th className="py-2.5 px-3">หัวข้อประเมิน</th>
-                  <th className="py-2.5 px-3 text-center">คะแนนเฉลี่ย (5.00)</th>
-                  <th className="py-2.5 px-3 text-center">ระดับคุณภาพ</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {itemScores.map((item) => (
-                  <tr key={item.key} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2.5 px-3 font-semibold text-amber-700">{item.category}</td>
-                    <td className="py-2.5 px-3 text-slate-800 font-medium">{item.title}</td>
-                    <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-600 text-sm">{item.avg.toFixed(2)}</td>
-                    <td className="py-2.5 px-3 text-center">{getScoreBadge(item.avg)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Feedback Section */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-2.5">
-            <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase">
-              💬 FEEDBACK & SUGGESTIONS ({searchedFeedback.length} ข้อเสนอแนะ)
-            </h2>
-            <input
-              type="text"
-              placeholder="🔍 ค้นหาในข้อเสนอแนะ..."
-              value={feedbackSearch}
-              onChange={(e) => setFeedbackSearch(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-amber-500 w-full sm:w-64 shadow-sm transition-colors"
-            />
+        {/* FEEDBACK & SUGGESTIONS SECTION (ออกแบบใหม่พร้อมสีสื่อความหมาย) */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-5">
+          
+          {/* Section Header */}
+          <div className="flex justify-between items-start sm:items-center border-b border-slate-100 pb-3">
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>💬</span> FEEDBACK & SUGGESTIONS
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">ภาพรวมความคิดเห็นและข้อเสนอแนะ</p>
+            </div>
+            <button className="text-xs text-amber-600 hover:text-amber-700 font-bold flex items-center gap-1 cursor-pointer hover:underline">
+              ดูทั้งหมด →
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
-            {searchedFeedback.length === 0 ? (
-              <p className="text-xs text-slate-400 py-8 text-center col-span-2">ไม่พบข้อเสนอแนะที่ตรงตามเงื่อนไข</p>
-            ) : (
-              searchedFeedback.map((item, i) => (
-                <div key={i} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700 space-y-1 hover:border-amber-300 transition-colors">
-                  <div className="flex justify-between items-center text-[10px] text-amber-700 font-mono font-semibold">
-                    <span>{item.affiliation || "ไม่ระบุสังกัด"}</span>
-                    <span>{item.timestamp || "N/A"}</span>
-                  </div>
-                  <p className="text-slate-800 italic">"{item.feedback}"</p>
-                </div>
-              ))
-            )}
+          {/* 4 Stat Cards พร้อมสีสื่อความหมาย */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            
+            {/* Card 1: ความคิดเห็นทั้งหมด (สีฟ้า/ทั่วไป) */}
+            <div className="bg-blue-50/60 border border-blue-200/80 rounded-xl p-3.5 text-center">
+              <p className="text-2xl font-black text-blue-700 font-mono">{feedbackAnalysis.total}</p>
+              <p className="text-xs font-bold text-blue-900 mt-0.5">🔵 ความคิดเห็น</p>
+              <p className="text-[10px] text-blue-600/80 mt-0.5">รวมทุกหมวด</p>
+            </div>
+
+            {/* Card 2: เชิงบวก (สีเขียว) */}
+            <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-3.5 text-center">
+              <p className="text-2xl font-black text-emerald-700 font-mono">{feedbackAnalysis.positiveCount}</p>
+              <p className="text-xs font-bold text-emerald-900 mt-0.5">🟢 เชิงบวก / ปกติ</p>
+              <p className="text-[10px] text-emerald-600/80 mt-0.5">ชื่นชมกิจกรรม</p>
+            </div>
+
+            {/* Card 3: ต้องติดตาม (สีเหลือง/ส้ม) */}
+            <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3.5 text-center">
+              <p className="text-2xl font-black text-amber-700 font-mono">{feedbackAnalysis.followUpCount}</p>
+              <p className="text-xs font-bold text-amber-900 mt-0.5">🟡 ควรติดตาม</p>
+              <p className="text-[10px] text-amber-600/80 mt-0.5">ข้อเสนอแนะพัฒนา</p>
+            </div>
+
+            {/* Card 4: เร่งด่วน (สีแดง) */}
+            <div className="bg-rose-50/60 border border-rose-200/80 rounded-xl p-3.5 text-center">
+              <p className="text-2xl font-black text-rose-700 font-mono">{feedbackAnalysis.urgentCount}</p>
+              <p className="text-xs font-bold text-rose-900 mt-0.5">🔴 เร่งด่วน</p>
+              <p className="text-[10px] text-rose-600/80 mt-0.5">ควรปรับปรุงทันที</p>
+            </div>
+
           </div>
+
+          {/* Bottom Grid: ฝั่งซ้ายประเด็นสำคัญ / ฝั่งขวาข้อเสนอแนะล่าสุด */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+            
+            {/* ฝั่งซ้าย: 🔎 ประเด็นสำคัญ */}
+            <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-200/70">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                <span>🔎</span> ประเด็นสำคัญจำแนกตามเรื่อง
+              </h3>
+              
+              <div className="space-y-3 pt-1">
+                {Object.entries(feedbackAnalysis.topicCounts).map(([topic, count]) => {
+                  const percent = Math.round((count / feedbackAnalysis.maxTopicCount) * 100);
+                  return (
+                    <div key={topic} className="space-y-1">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-medium text-slate-700">{topic}</span>
+                        <span className="font-mono font-bold text-slate-900">{count} เรื่อง</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-amber-500 rounded-full transition-all duration-500"
+                          style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ฝั่งขวา: 🕐 ข้อเสนอแนะล่าสุด พร้อม Tag ความหมายของสี */}
+            <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-200/70">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                <span>🕐</span> ข้อเสนอแนะล่าสุด
+              </h3>
+
+              <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                {feedbackAnalysis.latestList.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-6 text-center">ไม่มีข้อเสนอแนะเพิ่มเติม</p>
+                ) : (
+                  feedbackAnalysis.latestList.map((item, idx) => {
+                    // กำหนดสไตล์ของ Badge ตามสีสื่อความหมาย
+                    const statusBadges = {
+                      positive: { bg: "bg-emerald-100 text-emerald-800 border-emerald-200", text: "🟢 ปกติ/เชิงบวก" },
+                      followup: { bg: "bg-amber-100 text-amber-800 border-amber-200", text: "🟡 ควรติดตาม" },
+                      urgent: { bg: "bg-rose-100 text-rose-800 border-rose-200", text: "🔴 เร่งด่วน" },
+                      general: { bg: "bg-blue-100 text-blue-800 border-blue-200", text: "🔵 ข้อมูลทั่วไป" },
+                    };
+
+                    const statusStyle = statusBadges[item.status];
+
+                    return (
+                      <div key={idx} className="bg-white border border-slate-200 rounded-lg p-2.5 text-xs space-y-1.5 shadow-2xs">
+                        <p className="text-slate-800 font-medium leading-relaxed">"{item.text}"</p>
+                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-slate-100 text-slate-700 border border-slate-200 font-medium">
+                            [{item.tag}]
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${statusStyle.bg}`}>
+                            {statusStyle.text}
+                          </span>
+                          <span className="text-[10px] text-slate-400 ml-auto font-mono">
+                            {item.affiliation}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+          </div>
+
         </div>
+
       </div>
     </div>
   );
