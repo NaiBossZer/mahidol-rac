@@ -132,7 +132,7 @@ export function DashboardPage() {
           .toString()
           .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
       );
-  } catch (err: any) {
+    } catch (err: any) {
       console.error("Error fetching dashboard data:", err);
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
@@ -241,6 +241,25 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
+  // จัดกลุ่มคะแนนตามหมวดหมู่ (Category Grouping)
+  const categoryGroupedScores = useMemo(() => {
+    const groups: Record<string, { category: string; avg: number; items: typeof itemScores }> = {};
+
+    itemScores.forEach((item) => {
+      if (!groups[item.category]) {
+        groups[item.category] = { category: item.category, avg: 0, items: [] };
+      }
+      groups[item.category].items.push(item);
+    });
+
+    Object.values(groups).forEach((group) => {
+      const total = group.items.reduce((sum, i) => sum + i.avg, 0);
+      group.avg = group.items.length > 0 ? parseFloat((total / group.items.length).toFixed(2)) : 0;
+    });
+
+    return Object.values(groups);
+  }, [itemScores]);
+
   // คำนวณค่าสำหรับ Executive Insight Cards
   const cardMetrics = useMemo(() => {
     if (itemScores.length === 0 || filteredData.length === 0) return null;
@@ -253,11 +272,8 @@ export function DashboardPage() {
       (itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length).toFixed(2)
     );
 
-    // คำนวณ % คนที่ตอบระดับ 5 (ความพึงพอใจสูงสุด) จากทุกข้อประเมิน
     let totalFiveRatings = 0;
     let totalRatingsCount = 0;
-    
-    // คำนวณ % การกลับมาใช้บริการ/เข้าร่วมอีก (p4_futureReturn >= 4)
     let returnInterestCount = 0;
 
     filteredData.forEach((item) => {
@@ -427,7 +443,7 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* 🎨 Multi-Filter Bar + ล้างตัวกรอง */}
+        {/* Multi-Filter Bar */}
         <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3 text-xs">
           <div className="flex justify-between items-center border-b border-slate-100 pb-2">
             <div className="flex items-center gap-2">
@@ -523,10 +539,9 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* 📊 Executive Insight Summary (6 Metric Cards Layout) */}
+        {/* Executive Insight Summary Cards */}
         {cardMetrics && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {/* Card 1: แบบประเมินที่แสดง */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-sm mb-2 font-bold">
                 📋
@@ -541,7 +556,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Card 2: ความพึงพอใจรวม (ระดับ 5) */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🤩
@@ -555,7 +569,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Card 3: คะแนนเฉลี่ยรวม */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm mb-2 font-bold">
                 ⭐
@@ -570,7 +583,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Card 4: สนใจ เข้าร่วมอีก */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🔄
@@ -584,7 +596,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Card 5: หมวดคะแนนสูงสุด */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🏅
@@ -599,7 +610,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Card 6: หมวดที่ควรปรับปรุง */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between relative overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm mb-2 font-bold">
                 🛠️
@@ -618,27 +628,61 @@ export function DashboardPage() {
 
         {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Custom Horizontal Bar Chart */}
+          
+          {/* กราฟแท่งจัดกลุ่มตามหมวดหมู่ (Category Horizontal Bar Chart) */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
-            <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5">
-              📊 คะแนนความพึงพอใจแยกรายหัวข้อ (คะแนนเต็ม 5.00)
+            <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5 flex items-center gap-1.5">
+              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (คะแนนเต็ม 5.00)
             </h2>
-            <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-2">
-              {itemScores.map((item, idx) => (
-                <div key={item.key} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-700 truncate max-w-[80%] font-semibold">{item.title}</span>
-                    <span className="font-mono font-bold text-amber-600">{item.avg.toFixed(2)}</span>
+            
+            <div className="space-y-5 max-h-[380px] overflow-y-auto pr-2">
+              {categoryGroupedScores.map((catGroup, groupIdx) => (
+                <div key={catGroup.category} className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3 space-y-3">
+                  
+                  {/* หัวข้อหมวดหมู่ + คะแนนเฉลี่ยประจำหมวด */}
+                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                      <span className="font-bold text-slate-800 text-xs sm:text-sm">
+                        ด้าน{catGroup.category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-white px-2.5 py-0.5 rounded-md border border-slate-200 shadow-2xs">
+                      <span className="text-[10px] text-slate-400 font-medium">เฉลี่ยหมวด:</span>
+                      <span className="font-mono font-black text-amber-600 text-xs sm:text-sm">
+                        {catGroup.avg.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200/60">
-                    <div
-                      className="h-full rounded-full transition-all duration-500 shadow-sm"
-                      style={{
-                        width: `${(item.avg / 5) * 100}%`,
-                        backgroundColor: COLOR_PALETTE[idx % COLOR_PALETTE.length],
-                      }}
-                    ></div>
+
+                  {/* แท่งกราฟของรายการย่อยในหมวดหมู่นี้ */}
+                  <div className="space-y-2.5 pl-1">
+                    {catGroup.items.map((item, itemIdx) => {
+                      const globalIdx = groupIdx * 3 + itemIdx;
+                      return (
+                        <div key={item.key} className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-700 truncate max-w-[80%] font-medium">
+                              {item.title}
+                            </span>
+                            <span className="font-mono font-bold text-slate-700">
+                              {item.avg.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500 shadow-sm"
+                              style={{
+                                width: `${(item.avg / 5) * 100}%`,
+                                backgroundColor: COLOR_PALETTE[globalIdx % COLOR_PALETTE.length],
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
+
                 </div>
               ))}
             </div>
