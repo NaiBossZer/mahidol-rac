@@ -132,11 +132,11 @@ export function DashboardPage() {
           .toString()
           .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
       );
-    } catch (err: any) {
+  } catch (err: any) {
       console.error("Error fetching dashboard data:", err);
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
-    } font-medium: finally {
+    } finally {
       setLoading(false);
     }
   };
