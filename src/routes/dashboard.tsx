@@ -76,7 +76,6 @@ export function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  // States สำหรับ Filter
   const [selectedYear, setSelectedYear] = useState<string>("ALL");
   const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
@@ -134,8 +133,7 @@ export function DashboardPage() {
       console.error("Error fetching dashboard data:", err);
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
-    } font-medium
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -240,7 +238,6 @@ export function DashboardPage() {
     });
   }, [filteredData]);
 
-  // จัดกลุ่มคะแนนตามหมวดหมู่
   const categoryGroupedScores = useMemo(() => {
     const groups: Record<string, { category: string; avg: number; items: typeof itemScores }> = {};
 
@@ -259,7 +256,6 @@ export function DashboardPage() {
     return Object.values(groups);
   }, [itemScores]);
 
-  // Executive Insight Metrics
   const cardMetrics = useMemo(() => {
     if (itemScores.length === 0 || filteredData.length === 0) return null;
 
@@ -322,7 +318,6 @@ export function DashboardPage() {
     }));
   }, [filteredData]);
 
-  // ฟังก์ชันวิเคราะห์ประเด็นข้อเสนอแนะพร้อมจัดระดับความสำคัญและหมวดหมู่
   const feedbackAnalysis = useMemo(() => {
     const rawFeedbacks = filteredData
       .filter((d) => d.feedback && d.feedback.trim() !== "")
@@ -349,7 +344,6 @@ export function DashboardPage() {
       let status: "positive" | "followup" | "urgent" | "general" = "positive";
       let tag = "ทั่วไป";
 
-      // จำแนกความเร่งด่วน / ประเภทสี
       if (t.includes("ด่วน") || t.includes("ปรับปรุง") || t.includes("แย่") || t.includes("เสีย") || t.includes("ช้า")) {
         status = "urgent";
         urgentCount++;
@@ -364,7 +358,6 @@ export function DashboardPage() {
         generalCount++;
       }
 
-      // จำแนกหมวดหมู่ประเด็น
       if (t.includes("บริการ") || t.includes("พนักงาน") || t.includes("ต้อนรับ") || t.includes("เจ้าหน้าที่")) {
         tag = "การให้บริการ";
         topicCounts["การให้บริการ"]++;
@@ -400,7 +393,6 @@ export function DashboardPage() {
     };
   }, [filteredData]);
 
-  // Badge ระดับคุณภาพพร้อมสีสื่อความหมาย
   const getScoreBadge = (score: number) => {
     if (score >= 4.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">🟢 ดีมากที่สุด</span>;
     if (score >= 3.5) return <span className="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold border border-blue-200">🔵 ดีมาก</span>;
@@ -695,7 +687,6 @@ export function DashboardPage() {
         {/* Visual Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           
-          {/* กราฟแท่งจัดกลุ่มตามหมวดหมู่ พร้อม Badge ระดับคุณภาพในตัว */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5 flex items-center gap-1.5">
               <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (คะแนนเต็ม 5.00)
@@ -705,7 +696,6 @@ export function DashboardPage() {
               {categoryGroupedScores.map((catGroup, groupIdx) => (
                 <div key={catGroup.category} className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3.5 space-y-3">
                   
-                  {/* หัวข้อหมวดหมู่ + คะแนนเฉลี่ยประจำหมวด */}
                   <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
@@ -721,7 +711,6 @@ export function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* รายการย่อยในหมวดหมู่ พร้อม Badge คุณภาพด้านขวา */}
                   <div className="space-y-3 pl-1">
                     {catGroup.items.map((item, itemIdx) => {
                       const globalIdx = groupIdx * 3 + itemIdx;
@@ -757,7 +746,6 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* Donut Chart */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <h2 className="text-xs font-bold text-amber-700 tracking-wider uppercase border-b border-slate-100 pb-2.5">
               🍕 สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
@@ -779,10 +767,9 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* FEEDBACK & SUGGESTIONS SECTION (ออกแบบใหม่พร้อมสีสื่อความหมาย) */}
+        {/* FEEDBACK & SUGGESTIONS SECTION */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-5">
           
-          {/* Section Header */}
           <div className="flex justify-between items-start sm:items-center border-b border-slate-100 pb-3">
             <div>
               <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
@@ -795,43 +782,33 @@ export function DashboardPage() {
             </button>
           </div>
 
-          {/* 4 Stat Cards พร้อมสีสื่อความหมาย */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            
-            {/* Card 1: ความคิดเห็นทั้งหมด (สีฟ้า/ทั่วไป) */}
             <div className="bg-blue-50/60 border border-blue-200/80 rounded-xl p-3.5 text-center">
               <p className="text-2xl font-black text-blue-700 font-mono">{feedbackAnalysis.total}</p>
               <p className="text-xs font-bold text-blue-900 mt-0.5">🔵 ความคิดเห็น</p>
               <p className="text-[10px] text-blue-600/80 mt-0.5">รวมทุกหมวด</p>
             </div>
 
-            {/* Card 2: เชิงบวก (สีเขียว) */}
             <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-3.5 text-center">
               <p className="text-2xl font-black text-emerald-700 font-mono">{feedbackAnalysis.positiveCount}</p>
               <p className="text-xs font-bold text-emerald-900 mt-0.5">🟢 เชิงบวก / ปกติ</p>
               <p className="text-[10px] text-emerald-600/80 mt-0.5">ชื่นชมกิจกรรม</p>
             </div>
 
-            {/* Card 3: ต้องติดตาม (สีเหลือง/ส้ม) */}
             <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3.5 text-center">
               <p className="text-2xl font-black text-amber-700 font-mono">{feedbackAnalysis.followUpCount}</p>
               <p className="text-xs font-bold text-amber-900 mt-0.5">🟡 ควรติดตาม</p>
               <p className="text-[10px] text-amber-600/80 mt-0.5">ข้อเสนอแนะพัฒนา</p>
             </div>
 
-            {/* Card 4: เร่งด่วน (สีแดง) */}
             <div className="bg-rose-50/60 border border-rose-200/80 rounded-xl p-3.5 text-center">
               <p className="text-2xl font-black text-rose-700 font-mono">{feedbackAnalysis.urgentCount}</p>
               <p className="text-xs font-bold text-rose-900 mt-0.5">🔴 เร่งด่วน</p>
               <p className="text-[10px] text-rose-600/80 mt-0.5">ควรปรับปรุงทันที</p>
             </div>
-
           </div>
 
-          {/* Bottom Grid: ฝั่งซ้ายประเด็นสำคัญ / ฝั่งขวาข้อเสนอแนะล่าสุด */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-            
-            {/* ฝั่งซ้าย: 🔎 ประเด็นสำคัญ */}
             <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-200/70">
               <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-200 pb-2">
                 <span>🔎</span> ประเด็นสำคัญจำแนกตามเรื่อง
@@ -858,7 +835,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* ฝั่งขวา: 🕐 ข้อเสนอแนะล่าสุด พร้อม Tag ความหมายของสี */}
             <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-200/70">
               <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-200 pb-2">
                 <span>🕐</span> ข้อเสนอแนะล่าสุด
@@ -869,7 +845,6 @@ export function DashboardPage() {
                   <p className="text-xs text-slate-400 py-6 text-center">ไม่มีข้อเสนอแนะเพิ่มเติม</p>
                 ) : (
                   feedbackAnalysis.latestList.map((item, idx) => {
-                    // กำหนดสไตล์ของ Badge ตามสีสื่อความหมาย
                     const statusBadges = {
                       positive: { bg: "bg-emerald-100 text-emerald-800 border-emerald-200", text: "🟢 ปกติ/เชิงบวก" },
                       followup: { bg: "bg-amber-100 text-amber-800 border-amber-200", text: "🟡 ควรติดตาม" },
@@ -899,7 +874,6 @@ export function DashboardPage() {
                 )}
               </div>
             </div>
-
           </div>
 
         </div>
