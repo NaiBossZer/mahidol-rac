@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -7,6 +7,17 @@ export const Route = createFileRoute("/")({
 
 export function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeMediaTab, setActiveMediaTab] = useState<"video" | "3d">("video");
+
+  // โหลดสคริปต์ตัวเล่น 3D Model Viewer จาก Google อัตโนมัติ
+  useEffect(() => {
+    if (!document.querySelector('script[src*="model-viewer"]')) {
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js";
+      document.head.appendChild(script);
+    }
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -104,18 +115,9 @@ export function HomePage() {
               >
                 DASHBOARD
               </Link>
-              <button
-                type="button"
-                aria-label="Search"
-                className="p-1.5 rounded-full hover:bg-white/10 text-slate-200 hover:text-[#F5B800] transition-colors cursor-pointer"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Hamburger Button */}
             <div className="xl:hidden shrink-0">
               <button
                 type="button"
@@ -179,22 +181,74 @@ export function HomePage() {
           </div>
         </header>
 
-        {/* Video Section */}
+        {/* ==================== MEDIA SECTION: VIDEO & 3D SKETCHUP VIEW ==================== */}
         <section className="py-12 px-4 max-w-5xl mx-auto">
-          <div className="bg-white border border-slate-200/80 p-5 sm:p-8 rounded-3xl shadow-xl shadow-slate-200/50 space-y-5">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center justify-center gap-2">
-                <span>🎬</span> วิดีโอแนะนำห้องการเรียนรู้ครั่ง
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-normal">
-                รับชมบรรยากาศและบทเรียนการเพาะเลี้ยงครั่งอย่างถูกต้อง
-              </p>
+          <div className="bg-white border border-slate-200/80 p-5 sm:p-8 rounded-3xl shadow-xl shadow-slate-200/50 space-y-6">
+            
+            {/* ส่วนสลับแท็บ (Video VS 3D View) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="text-center sm:text-left space-y-1">
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                  {activeMediaTab === "video" ? "🎬 วิดีโอแนะนำห้องการเรียนรู้" : "🧊 โมเดล 3D อาคารเรียนรู้ (SketchUp)"}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 font-normal">
+                  {activeMediaTab === "video" 
+                    ? "รับชมบรรยากาศและบทเรียนการเพาะเลี้ยงครั่งอย่างถูกต้อง" 
+                    : "สำรวจโครงสร้างอาคารเรียนรู้ครั่ง 360 องศาด้วยโมเดล 3D"}
+                </p>
+              </div>
+
+              {/* ปุ่มเลือกสลับสื่อ */}
+              <div className="flex bg-slate-100 p-1 rounded-xl font-semibold text-xs shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("video")}
+                  className={`px-4 py-2 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMediaTab === "video" ? "bg-[#0A2E4D] text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <span>🎬</span> วิดีโอแนะนำ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("3d")}
+                  className={`px-4 py-2 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMediaTab === "3d" ? "bg-[#801818] text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <span>🧊</span> โมเดล 3D SketchUp
+                </button>
+              </div>
             </div>
+
+            {/* แสดงผลสื่อตามแท็บที่เลือก */}
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 shadow-inner">
-              <video className="w-full h-full object-cover" controls playsInline preload="metadata">
-                <source src="/intro-lac.mp4" type="video/mp4" />
-              </video>
+              {activeMediaTab === "video" ? (
+                /* TAB 1: วิดีโอ */
+                <video className="w-full h-full object-cover" controls playsInline preload="metadata">
+                  <source src="/intro-lac.mp4" type="video/mp4" />
+                </video>
+              ) : (
+                /* TAB 2: โมเดล 3D (ดึงไฟล์ rac-room3d.glb ในโฟลเดอร์ public) */
+                <div className="w-full h-full relative bg-slate-100 flex flex-col items-center justify-center">
+                  {/* @ts-ignore */}
+                  <model-viewer
+                    src="/rac-room3d.glb"
+                    alt="โมเดล 3D อาคารเรียนรู้ครั่ง"
+                    auto-rotate
+                    camera-controls
+                    shadow-intensity="1"
+                    style={{ width: "100%", height: "100%" }}
+                  {/* @ts-ignore */}
+                  ></model-viewer>
+
+                  <div className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-normal px-3 py-1.5 rounded-lg border border-white/20 pointer-events-none flex items-center gap-1.5 shadow-md">
+                    <span>🖱️</span> คลิกและลากเพื่อหมุนดูโมเดล 3D แบบ 360°
+                  </div>
+                </div>
+              )}
             </div>
+
           </div>
         </section>
 
@@ -536,7 +590,7 @@ function LacKnowledgeAccordion() {
         {accordions.map((item, index) => {
           const isOpen = openIndex === index;
           return (
-            <div key={index} className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
+            <div key={index} className="bg-[#ffffff] border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
