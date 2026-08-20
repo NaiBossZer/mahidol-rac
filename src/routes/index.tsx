@@ -20,6 +20,68 @@ export function HomePage() {
     // กำหนด font-['Prompt'] เป็นฟอนต์หลักของทั้งหน้า
     <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Prompt'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
+      {/* ==================== TOP BANNER (LOGOS & INSTITUTION) ==================== */}
+      <div className="bg-[#002B49] text-white border-b-3 border-[#1A1A1A] px-4 py-3">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+          
+          {/* ฝั่งซ้าย: รวม 3 โลโก้ */}
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            {/* โลโก้ที่ 1: Envi Mahidol */}
+            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
+              <img 
+                src="/logo-envi.png" 
+                alt="Envi Mahidol Logo" 
+                className="h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerText = '🌍 Envi Mahidol';
+                }}
+              />
+            </div>
+
+            {/* โลโก้ที่ 2: Mahidol University Faculty */}
+            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
+              <img 
+                src="/logo-mahidol.png" 
+                alt="Mahidol University Logo" 
+                className="h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerText = '🏛️ Mahidol Univ';
+                }}
+              />
+            </div>
+
+            {/* โลโก้ที่ 3: งานพันธกิจเพื่อสังคม */}
+            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
+              <img 
+                src="/logo-social.png" 
+                alt="Social Engagement Logo" 
+                className="h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerText = '🤝 งานพันธกิจฯ';
+                }}
+              />
+            </div>
+          </div>
+
+          {/* เส้นแบ่งแนวตั้ง (แสดงเฉพาะจอใหญ่) */}
+          <div className="hidden lg:block w-[2px] h-8 bg-white/20"></div>
+
+          {/* ฝั่งขวา: ข้อความชื่อหน่วยงาน */}
+          <div className="text-center lg:text-left">
+            <h2 className="font-['Mali'] text-base sm:text-lg font-extrabold tracking-wide leading-tight">
+              งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+            </h2>
+            <p className="text-xs sm:text-sm font-semibold text-[#FFB800] leading-tight">
+              คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+            </p>
+          </div>
+
+        </div>
+      </div>
+
       {/* ==================== MAIN BAR (OATLY STYLE) ==================== */}
       <nav className="sticky top-0 z-50 bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -164,8 +226,9 @@ export function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center text-xs font-bold font-mono border-t-3 border-[#1A1A1A] mt-16">
-        <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
+      <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center text-xs font-bold font-mono border-t-3 border-[#1A1A1A] mt-16 space-y-2">
+        <p className="font-['Prompt'] text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p>
+        <p className="text-[#888]">© 2026 Faculty of Environment and Resource Studies, Mahidol University</p>
       </footer>
     </div>
   );
