@@ -1,18 +1,3 @@
-นี่คือโค้ดปรับปรุงหน้าเว็บ **`src/routes/index.tsx`** ตามดีไซน์ระบบใหม่ **"Modern Earthy Academic"** ครับ 
-
-### ✨ สิ่งที่ปรับปรุงในดีไซน์ใหม่:
-1. **ยกระดับความน่าเชื่อถือแบบสถาบันวิจัย**: ปรับลดเส้นขอบดำหนาเตอะ (Neo-Brutalism) เป็นการ์ดสีขาวสะอาด ละมุนตา พร้อมขอบและเงาฟุ้งสไตล์โมเดิร์น (`border-slate-200/80`, `shadow-xl`, `rounded-2xl`)
-2. **คุมโทนสีเอกลักษณ์ครั่ง & สิ่งแวดล้อม**:
-   - **Header**: สีกรมท่าวิชาการ (`#0A2E4D`) และข้อความสีเหลืองทอง (`#F5B800`)
-   - **Hero Section**: สีกรมเลือดหมูครั่งเกรดพรีเมียม (`bg-gradient-to-r from-[#701414] via-[#801818] to-[#961E1E]`)
-   - **Cards & Visuals**: ใช้การ์ดไล่เฉดสีอ่อนธรรมชาติ (Rose, Emerald, Amber) ที่ถนอมสายตา
-3. **เอฟเฟกต์การโต้ตอบที่ลื่นไหล (Micro-Interactions)**: เพิ่มลูกเล่น Hover ยกตัวขึ้นเบาๆ (`hover:-translate-y-1`), แท็บเลือกข้อมูลแบบ Pill Button และ Modal แบบกระจกฝ้า (`backdrop-blur-md`)
-
----
-
-### 💻 โค้ดฉบับสมบูรณ์สำหรับ `src/routes/index.tsx`
-
-```tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -130,7 +115,7 @@ export function HomePage() {
               </button>
             </div>
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Menu Button */}
             <div className="xl:hidden shrink-0">
               <button
                 type="button"
@@ -572,4 +557,3 @@ function LacKnowledgeAccordion() {
     </section>
   );
 }
-```
