@@ -1,34 +1,21 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/")({
-  component: HomePage,
-});
-
-export function HomePage() {
+export function HeaderNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-    setIsMobileMenuOpen(false);
-  };
-
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Mitr'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
-      
-      {/* ==================== SINGLE NAVBAR ==================== */}
-      <header className="sticky top-0 z-50 shadow-md">
-        <nav className="bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white font-['Mitr'] shadow-lg border-b border-[#08233C]">
+      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
+        <div className="flex items-center justify-between gap-4">
+          
+          {/* ==================== ฝั่งซ้าย: โลโก้ 3 ตัว + เส้นแบ่ง + ชื่อหน่วยงาน ==================== */}
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             
-            {/* ฝั่งซ้าย: เรียงโลโก้ 3 ตัว + เส้นแบ่ง + โลโก้ครั่ง & ข้อความ */}
-            <div className="flex items-center gap-3 sm:gap-4">
-              
+            {/* กลุ่มโลโก้ 3 ตัว */}
+            <div className="flex items-center gap-2">
               {/* โลโก้ 1: Envi */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
                 <img 
                   src="/envi-logo.jpg" 
                   alt="Envi Mahidol Logo" 
@@ -41,7 +28,7 @@ export function HomePage() {
               </div>
 
               {/* โลโก้ 2: Mahidol */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
                 <img 
                   src="/mahidol-logo.png" 
                   alt="Mahidol University Logo" 
@@ -54,7 +41,7 @@ export function HomePage() {
               </div>
 
               {/* โลโก้ 3: Social Engagement */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
                 <img 
                   src="/social-engagement-logo.png" 
                   alt="Social Engagement Logo" 
@@ -65,109 +52,114 @@ export function HomePage() {
                   }}
                 />
               </div>
-
-              {/* เส้นแบ่งแนวตั้ง */}
-              <div className="w-[2px] h-8 bg-[#1A1A1A]/30 shrink-0"></div>
-
-              {/* ข้อความชื่อหน่วยงาน (ใช้ Mitr อ่านคมชัด) */}
-              <div className="flex items-center gap-2.5">
-                <span className="text-xl sm:text-2xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
-                  🐞
-                </span>
-                <div className="hidden sm:block">
-                  <span className="font-semibold text-xs sm:text-sm leading-snug block text-[#1A1A1A]">
-                    งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-medium text-[#801818] block leading-tight mt-0.5">
-                    คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-                  </span>
-                </div>
-              </div>
-
             </div>
 
-            {/* ฝั่งขวา: ปุ่มเมนู */}
-            <div className="hidden lg:flex items-center space-x-3 font-semibold text-xs sm:text-sm shrink-0">
-              <button
-                type="button"
-                onClick={() => scrollToSection("cards-section")}
-                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-              >
-                📚 คลังความรู้
-              </button>
+            {/* เส้นแบ่งแนวตั้ง */}
+            <div className="w-[1px] h-8 sm:h-10 bg-white/25 shrink-0 hidden sm:block"></div>
 
-              <button
-                type="button"
-                onClick={() => scrollToSection("data-viz")}
-                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-              >
-                📈 สถิติการผลิต
-              </button>
-
-              <Link
-                to="/survey"
-                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-              >
-                📝 แบบสอบถาม
-              </Link>
-
-              <Link
-                to="/dashboard"
-                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-1 font-bold"
-              >
-                📊 DASHBOARD
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="lg:hidden shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-semibold text-xs"
-              >
-                {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
-              </button>
+            {/* ชื่อหน่วยงาน 2 บรรทัด (ขาว / เหลืองทอง) */}
+            <div className="hidden sm:block">
+              <span className="text-xs sm:text-sm font-semibold tracking-tight text-white block leading-snug">
+                งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+              </span>
+              <span className="text-[10px] sm:text-xs font-medium text-[#F5B800] block leading-tight mt-0.5">
+                คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+              </span>
             </div>
 
           </div>
 
-          {/* Mobile Dropdown */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-semibold text-sm">
-              <button
-                type="button"
-                onClick={() => scrollToSection("cards-section")}
-                className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-              >
-                📚 คลังความรู้
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollToSection("data-viz")}
-                className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-              >
-                📈 สถิติการผลิต
-              </button>
-              <Link
-                to="/survey"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-              >
-                📝 แบบสอบถาม
-              </Link>
-              <Link
-                to="/dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white text-center font-bold"
-              >
-                📊 DASHBOARD
-              </Link>
-            </div>
-          )}
-        </nav>
-      </header>
+          {/* ==================== ฝั่งขวา: เมนูนำทาง ==================== */}
+          <div className="hidden xl:flex items-center space-x-5 text-xs sm:text-sm font-normal text-white shrink-0">
+            <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
+              หน้าแรก
+            </Link>
+            <a href="#cards-section" className="hover:text-[#F5B800] transition-colors py-1">
+              คลังความรู้
+            </a>
+            <a href="#learning-base" className="hover:text-[#F5B800] transition-colors py-1">
+              ฐานการเรียนรู้
+            </a>
+            <a href="#about" className="hover:text-[#F5B800] transition-colors py-1">
+              เกี่ยวกับเรา
+            </a>
+            <a href="#data-viz" className="hover:text-[#F5B800] transition-colors py-1">
+              สถิติ
+            </a>
+            <a href="#feedback" className="hover:text-[#F5B800] transition-colors py-1">
+              เสียงสะท้อน
+            </a>
+            <a href="#partners" className="hover:text-[#F5B800] transition-colors py-1">
+              พันธมิตร
+            </a>
+            <a href="#news" className="hover:text-[#F5B800] transition-colors py-1">
+              ข่าวสาร
+            </a>
 
+            {/* ไอคอนค้นหา 🔍 */}
+            <button 
+              type="button" 
+              aria-label="Search"
+              className="p-1.5 rounded-full hover:bg-white/10 text-white hover:text-[#F5B800] transition-colors cursor-pointer ml-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* ปุ่ม Mobile Menu Hamburger (สำหรับหน้าจอเล็ก) */}
+          <div className="xl:hidden shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-white hover:text-[#F5B800] focus:outline-none"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="xl:hidden mt-3 pt-3 border-t border-white/20 space-y-2 text-sm font-normal">
+            <Link to="/" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              หน้าแรก
+            </Link>
+            <a href="#cards-section" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              คลังความรู้
+            </a>
+            <a href="#learning-base" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              ฐานการเรียนรู้
+            </a>
+            <a href="#about" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              เกี่ยวกับเรา
+            </a>
+            <a href="#data-viz" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              สถิติ
+            </a>
+            <a href="#feedback" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              เสียงสะท้อน
+            </a>
+            <a href="#partners" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              พันธมิตร
+            </a>
+            <a href="#news" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+              ข่าวสาร
+            </a>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
       {/* ==================== HERO SECTION ==================== */}
       <div>
         <header className="bg-[#801818] text-white py-16 px-4 sm:px-8 border-b-3 border-[#1A1A1A] relative overflow-hidden">
