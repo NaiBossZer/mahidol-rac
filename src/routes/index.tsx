@@ -229,9 +229,8 @@ export function HomePage() {
                   <source src="/intro-lac.mp4" type="video/mp4" />
                 </video>
               ) : (
-                /* TAB 2: โมเดล 3D (ดึงไฟล์ rac-room3d.glb ในโฟลเดอร์ public) */
+                /* TAB 2: โมเดล 3D (ไฟล์ rac-room3d.glb) */
                 <div className="w-full h-full relative bg-slate-100 flex flex-col items-center justify-center">
-                  {/* @ts-ignore */}
                   <model-viewer
                     src="/rac-room3d.glb"
                     alt="โมเดล 3D อาคารเรียนรู้ครั่ง"
@@ -239,7 +238,6 @@ export function HomePage() {
                     camera-controls
                     shadow-intensity="1"
                     style={{ width: "100%", height: "100%" }}
-                  {/* @ts-ignore */}
                   ></model-viewer>
 
                   <div className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-normal px-3 py-1.5 rounded-lg border border-white/20 pointer-events-none flex items-center gap-1.5 shadow-md">
@@ -590,7 +588,7 @@ function LacKnowledgeAccordion() {
         {accordions.map((item, index) => {
           const isOpen = openIndex === index;
           return (
-            <div key={index} className="bg-[#ffffff] border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
+            <div key={index} className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
