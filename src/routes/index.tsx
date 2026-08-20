@@ -1,167 +1,164 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 
-export function HeaderNavbar() {
+export const Route = createFileRoute("/")({
+  component: HomePage,
+});
+
+export function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white font-['Mitr'] shadow-lg border-b border-[#08233C]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
-        <div className="flex items-center justify-between gap-4">
-          
-          {/* ==================== ฝั่งซ้าย: โลโก้ 3 ตัว + เส้นแบ่ง + ชื่อหน่วยงาน ==================== */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Mitr'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
+      
+      {/* ==================== SINGLE NAVBAR ==================== */}
+      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white font-['Mitr'] shadow-lg border-b border-[#08233C]">
+        <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
+          <div className="flex items-center justify-between gap-4">
             
-            {/* กลุ่มโลโก้ 3 ตัว */}
-            <div className="flex items-center gap-2">
-              {/* โลโก้ 1: Envi */}
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img 
-                  src="/envi-logo.jpg" 
-                  alt="Envi Mahidol Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🌍 Envi';
-                  }}
-                />
+            {/* ฝั่งซ้าย: โลโก้ 3 ตัว + เส้นแบ่ง + ข้อความ */}
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
+                  <img 
+                    src="/envi-logo.jpg" 
+                    alt="Envi Mahidol Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🌍 Envi';
+                    }}
+                  />
+                </div>
+
+                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
+                  <img 
+                    src="/mahidol-logo.png" 
+                    alt="Mahidol University Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🏛️ Mahidol';
+                    }}
+                  />
+                </div>
+
+                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
+                  <img 
+                    src="/social-engagement-logo.png" 
+                    alt="Social Engagement Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🤝 Social';
+                    }}
+                  />
+                </div>
               </div>
 
-              {/* โลโก้ 2: Mahidol */}
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img 
-                  src="/mahidol-logo.png" 
-                  alt="Mahidol University Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🏛️ Mahidol';
-                  }}
-                />
-              </div>
+              <div className="w-[1px] h-8 sm:h-10 bg-white/25 shrink-0 hidden sm:block"></div>
 
-              {/* โลโก้ 3: Social Engagement */}
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img 
-                  src="/social-engagement-logo.png" 
-                  alt="Social Engagement Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🤝 Social';
-                  }}
-                />
+              <div className="hidden sm:block">
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-white block leading-snug">
+                  งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+                </span>
+                <span className="text-[10px] sm:text-xs font-medium text-[#F5B800] block leading-tight mt-0.5">
+                  คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+                </span>
               </div>
             </div>
 
-            {/* เส้นแบ่งแนวตั้ง */}
-            <div className="w-[1px] h-8 sm:h-10 bg-white/25 shrink-0 hidden sm:block"></div>
+            {/* ฝั่งขวา: เมนูนำทาง */}
+            <div className="hidden xl:flex items-center space-x-5 text-xs sm:text-sm font-normal text-white shrink-0">
+              <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
+                หน้าแรก
+              </Link>
+              <button
+                type="button"
+                onClick={() => scrollToSection("cards-section")}
+                className="hover:text-[#F5B800] transition-colors py-1 cursor-pointer"
+              >
+                คลังความรู้
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("data-viz")}
+                className="hover:text-[#F5B800] transition-colors py-1 cursor-pointer"
+              >
+                สถิติ
+              </button>
+              <Link to="/survey" className="hover:text-[#F5B800] transition-colors py-1">
+                แบบสอบถาม
+              </Link>
+              <Link to="/dashboard" className="hover:text-[#F5B800] transition-colors py-1 font-bold text-[#F5B800]">
+                DASHBOARD
+              </Link>
+              <button
+                type="button"
+                aria-label="Search"
+                className="p-1.5 rounded-full hover:bg-white/10 text-white hover:text-[#F5B800] transition-colors cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
 
-            {/* ชื่อหน่วยงาน 2 บรรทัด (ขาว / เหลืองทอง) */}
-            <div className="hidden sm:block">
-              <span className="text-xs sm:text-sm font-semibold tracking-tight text-white block leading-snug">
-                งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-              </span>
-              <span className="text-[10px] sm:text-xs font-medium text-[#F5B800] block leading-tight mt-0.5">
-                คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-              </span>
+            {/* Mobile Menu Button */}
+            <div className="xl:hidden shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 text-white hover:text-[#F5B800]"
+              >
+                {isMobileMenuOpen ? "✕" : "☰"}
+              </button>
             </div>
 
           </div>
 
-          {/* ==================== ฝั่งขวา: เมนูนำทาง ==================== */}
-          <div className="hidden xl:flex items-center space-x-5 text-xs sm:text-sm font-normal text-white shrink-0">
-            <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
-              หน้าแรก
-            </Link>
-            <a href="#cards-section" className="hover:text-[#F5B800] transition-colors py-1">
-              คลังความรู้
-            </a>
-            <a href="#learning-base" className="hover:text-[#F5B800] transition-colors py-1">
-              ฐานการเรียนรู้
-            </a>
-            <a href="#about" className="hover:text-[#F5B800] transition-colors py-1">
-              เกี่ยวกับเรา
-            </a>
-            <a href="#data-viz" className="hover:text-[#F5B800] transition-colors py-1">
-              สถิติ
-            </a>
-            <a href="#feedback" className="hover:text-[#F5B800] transition-colors py-1">
-              เสียงสะท้อน
-            </a>
-            <a href="#partners" className="hover:text-[#F5B800] transition-colors py-1">
-              พันธมิตร
-            </a>
-            <a href="#news" className="hover:text-[#F5B800] transition-colors py-1">
-              ข่าวสาร
-            </a>
+          {/* Mobile Dropdown */}
+          {isMobileMenuOpen && (
+            <div className="xl:hidden mt-3 pt-3 border-t border-white/20 space-y-2 text-sm font-normal">
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+                หน้าแรก
+              </Link>
+              <button
+                type="button"
+                onClick={() => scrollToSection("cards-section")}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-white"
+              >
+                คลังความรู้
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("data-viz")}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-white"
+              >
+                สถิติ
+              </button>
+              <Link to="/survey" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+                แบบสอบถาม
+              </Link>
+              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-[#F5B800] font-bold">
+                DASHBOARD
+              </Link>
+            </div>
+          )}
+        </nav>
+      </header>
 
-            {/* ไอคอนค้นหา 🔍 */}
-            <button 
-              type="button" 
-              aria-label="Search"
-              className="p-1.5 rounded-full hover:bg-white/10 text-white hover:text-[#F5B800] transition-colors cursor-pointer ml-1"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-          </div>
-
-          {/* ปุ่ม Mobile Menu Hamburger (สำหรับหน้าจอเล็ก) */}
-          <div className="xl:hidden shrink-0">
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-white hover:text-[#F5B800] focus:outline-none"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="xl:hidden mt-3 pt-3 border-t border-white/20 space-y-2 text-sm font-normal">
-            <Link to="/" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              หน้าแรก
-            </Link>
-            <a href="#cards-section" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              คลังความรู้
-            </a>
-            <a href="#learning-base" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              ฐานการเรียนรู้
-            </a>
-            <a href="#about" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              เกี่ยวกับเรา
-            </a>
-            <a href="#data-viz" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              สถิติ
-            </a>
-            <a href="#feedback" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              เสียงสะท้อน
-            </a>
-            <a href="#partners" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              พันธมิตร
-            </a>
-            <a href="#news" className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-              ข่าวสาร
-            </a>
-          </div>
-        )}
-      </div>
-    </header>
-  );
-}
-      {/* ==================== HERO SECTION ==================== */}
-      <div>
+      {/* ==================== MAIN CONTENT ==================== */}
+      <main className="grow">
+        {/* HERO SECTION */}
         <header className="bg-[#801818] text-white py-16 px-4 sm:px-8 border-b-3 border-[#1A1A1A] relative overflow-hidden">
           <div className="max-w-5xl mx-auto text-center space-y-6">
             <span className="inline-block bg-[#F2E8CF] text-[#1A1A1A] font-semibold text-xs sm:text-sm tracking-wider px-4 py-1.5 rounded-full border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A]">
@@ -202,7 +199,7 @@ export function HeaderNavbar() {
 
         {/* Accordion Section */}
         <LacKnowledgeAccordion />
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center border-t-3 border-[#1A1A1A] mt-16 space-y-2">
@@ -213,6 +210,7 @@ export function HeaderNavbar() {
           © 2026 Faculty of Environment and Resource Studies, Mahidol University
         </p>
       </footer>
+
     </div>
   );
 }
