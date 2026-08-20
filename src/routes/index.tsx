@@ -17,228 +17,177 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between scroll-smooth">
+    // Oatly Palette: พื้นหลังสีครีมอุ่น #F9F6F0 ตัวอักษรสีน้ำตาลเข้ม/ดำ #1A1A1A
+    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-sans selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== MAIN BAR (NAVIGATION) ==================== */}
-      <nav className="sticky top-0 z-50 bg-rose-950/95 backdrop-blur-md border-b border-rose-900/60 shadow-lg text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            
-            {/* ฝั่งซ้าย: โลโก้ / ชื่อศูนย์เรียนรู้ */}
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">🐞</span>
-              <div>
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-rose-100 block leading-tight">
-                  ศูนย์เรียนรู้ครั่งครบวงจร
-                </span>
-                <span className="text-[10px] sm:text-xs text-rose-300 font-mono block">
-                  ม.มหิดล อ.สบปราบ
-                </span>
-              </div>
-            </div>
-
-            {/* ฝั่งขวา: เมนูหลัก (Desktop) */}
-            <div className="hidden md:flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => scrollToSection("cards-section")}
-                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <span>📚</span> คลังความรู้
-              </button>
-
-              <button
-                type="button"
-                onClick={() => scrollToSection("data-viz")}
-                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <span>📈</span> สถิติการผลิต
-              </button>
-
-              <Link
-                to="/survey"
-                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5"
-              >
-                <span>📝</span> แบบสอบถาม
-              </Link>
-
-              <Link
-                to="/dashboard"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md border border-emerald-500/30 transition-all flex items-center gap-1.5 active:scale-95 ml-2"
-              >
-                <span>📊</span> Dashboard
-              </Link>
-            </div>
-
-            {/* ปุ่มเปิดเมนูสำหรับมือถือ (Mobile Hamburger Button) */}
-            <div className="md:hidden flex items-center">
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-rose-200 hover:text-white p-2 rounded-lg focus:outline-none"
-                aria-label="Toggle Menu"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
+      {/* ==================== MAIN BAR (OATLY STYLE) ==================== */}
+      <nav className="sticky top-0 z-50 bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          
+          {/* ฝั่งซ้าย: โลโก้สไตล์ Oatly Bold */}
+          <div className="flex items-center gap-3">
+            <span className="text-3xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
+              🐞
+            </span>
+            <div>
+              <span className="text-xl sm:text-2xl font-black uppercase tracking-tight leading-none block font-mono">
+                ศูนย์ครั่งฯ
+              </span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#801818] block">
+                ม.มหิดล อ.สบปราบ
+              </span>
             </div>
           </div>
-        </div>
 
-        {/* เมนูย่อยสำหรับมือถือ (Mobile Menu Dropdown) */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-rose-950 border-b border-rose-900 px-4 pt-2 pb-4 space-y-2 font-medium">
+          {/* ฝั่งขวา: เมนูหลักแบบ Oatly Buttons (ขอบดำ หนา แน่น) */}
+          <div className="hidden md:flex items-center space-x-3 font-black text-sm uppercase tracking-wide">
             <button
               type="button"
               onClick={() => scrollToSection("cards-section")}
-              className="w-full text-left text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
-              <span>📚</span> คลังความรู้
+              📚 คลังความรู้
+            </button>
+
+            <button
+              type="button"
+              onClick={() => scrollToSection("data-viz")}
+              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+            >
+              📈 สถิติการผลิต
+            </button>
+
+            <Link
+              to="/survey"
+              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            >
+              📝 แบบสอบถาม
+            </Link>
+
+            <Link
+              to="/dashboard"
+              className="px-5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-2"
+            >
+              📊 DASHBOARD
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-black"
+            >
+              {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-black uppercase text-sm">
+            <button
+              type="button"
+              onClick={() => scrollToSection("cards-section")}
+              className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
+            >
+              📚 คลังความรู้
             </button>
             <button
               type="button"
               onClick={() => scrollToSection("data-viz")}
-              className="w-full text-left text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+              className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
             >
-              <span>📈</span> สถิติการผลิต
+              📈 สถิติการผลิต
             </button>
             <Link
               to="/survey"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+              className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
             >
-              <span>📝</span> แบบสอบถาม
+              📝 แบบสอบถาม
             </Link>
             <Link
               to="/dashboard"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block bg-emerald-600 text-white font-bold px-3 py-2.5 rounded-lg text-sm text-center flex items-center justify-center gap-2"
+              className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white text-center"
             >
-              <span>📊</span> Dashboard
+              📊 DASHBOARD
             </Link>
           </div>
         )}
       </nav>
 
-      {/* ==================== HERO SECTION ==================== */}
+      {/* ==================== HERO SECTION (OATLY BOLD STYLE) ==================== */}
       <div>
-        <header
-          className="relative bg-cover bg-center bg-no-repeat text-white py-16 sm:py-24 px-4 text-center overflow-hidden border-b border-rose-900/30"
-          style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-rose-950/90 via-slate-950/85 to-emerald-950/90 backdrop-blur-[2px]" />
-
-          <div className="relative z-10 max-w-4xl mx-auto space-y-4 sm:space-y-6">
-            <div className="inline-flex items-center gap-2 bg-rose-950/80 text-rose-200 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-rose-500/40 backdrop-blur-sm shadow-inner font-mono">
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <span>[RESEARCH] โครงการห้องการเรียนรู้ครั่งครบวงจร</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
-              ศูนย์เรียนรู้และองค์ความรู้ครั่ง
+        <header className="bg-[#801818] text-white py-16 px-4 sm:px-8 border-b-3 border-[#1A1A1A] relative overflow-hidden">
+          <div className="max-w-5xl mx-auto text-center space-y-6">
+            <span className="inline-block bg-[#F2E8CF] text-[#1A1A1A] font-black text-xs sm:text-sm uppercase tracking-widest px-4 py-1.5 rounded-full border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A]">
+              [RESEARCH] ห้องการเรียนรู้ครั่งครบวงจร
+            </span>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-none drop-shadow-sm">
+              ศูนย์เรียนรู้ & องค์ความรู้ครั่ง
             </h1>
-            <p className="text-rose-100 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
+            <p className="text-lg sm:text-xl font-bold max-w-2xl mx-auto text-[#F2E8CF]">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
-
-            <div className="w-48 h-1 mx-auto bg-gradient-to-r from-rose-600 via-amber-400 to-emerald-600 rounded-full my-4" />
           </div>
         </header>
 
-        {/* 2. Video Section */}
-        <section className="bg-white dark:bg-slate-800/60 py-12 sm:py-16 border-b border-slate-200 dark:border-slate-800">
-          <div className="max-w-4xl mx-auto px-4 space-y-6 text-center">
-            <div className="space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                🎬 วิดีโอแนะนำห้องการเรียนรู้ครั่ง
-              </h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                รับชมวิดีโอแนะนำศูนย์เรียนรู้และกิจกรรมการเรียนรู้ครั่งครบวงจร
-              </p>
-            </div>
-
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-rose-900/20 bg-slate-950">
-              <video
-                className="w-full h-full object-cover"
-                controls
-                playsInline
-                preload="metadata"
-              >
+        {/* Video Section */}
+        <section className="py-12 px-4 max-w-5xl mx-auto">
+          <div className="bg-white border-3 border-[#1A1A1A] p-4 sm:p-6 rounded-3xl shadow-[6px_6px_0px_#1A1A1A] space-y-4">
+            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-center">
+              🎬 วิดีโอแนะนำห้องการเรียนรู้ครั่ง
+            </h2>
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-[#1A1A1A] bg-[#1A1A1A]">
+              <video className="w-full h-full object-cover" controls playsInline preload="metadata">
                 <source src="/intro-lac.mp4" type="video/mp4" />
-                <p className="p-4 text-white text-sm">
-                  เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
-                </p>
               </video>
             </div>
           </div>
         </section>
 
-        {/* 3. Cards Grid Section */}
-        <div id="cards-section" className="scroll-mt-20">
+        {/* Cards Grid Section */}
+        <div id="cards-section" className="scroll-mt-24">
           <LacKnowledgeCards />
         </div>
 
-        {/* 4. Data Visualization Section */}
-        <div id="data-viz" className="scroll-mt-20">
+        {/* Data Viz Section */}
+        <div id="data-viz" className="scroll-mt-24">
           <LacDataVisualization />
         </div>
 
-        {/* 5. Accordion Section */}
+        {/* Accordion Section */}
         <LacKnowledgeAccordion />
       </div>
 
       {/* Footer */}
-      <footer className="bg-rose-950 text-rose-200/80 py-8 text-center text-sm border-t border-rose-900/50 mt-16 font-mono">
-        <div className="max-w-6xl mx-auto px-4">
-          <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
-        </div>
+      <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center text-xs font-bold font-mono border-t-3 border-[#1A1A1A] mt-16">
+        <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
       </footer>
     </div>
   );
 }
 
-// --- COMPONENT: Cards Grid ---
-interface CardDetail {
-  overview: string;
-  highlights: string[];
-}
-
-interface CardItem {
-  id: number;
-  icon: string;
-  title: string;
-  desc: string;
-  tag: string;
-  bgColor: string;
-  borderColor: string;
-  badgeColor: string;
-  detail: CardDetail;
-}
-
+// --- COMPONENT: Cards Grid (Oatly Block Cards) ---
 function LacKnowledgeCards() {
-  const [selectedCard, setSelectedCard] = useState<CardItem | null>(null);
+  const [selectedCard, setSelectedCard] = useState<any | null>(null);
 
-  const cards: CardItem[] = [
+  const cards = [
     {
       id: 1,
       icon: "🐞",
       title: "ครั่งคืออะไร & ถิ่นกำเนิด",
-      desc: "ยางธรรมชาติจากแมลงครั่ง (Laccifer lacca) สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
+      desc: "ยางธรรมชาติจากแมลงครั่ง สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
       tag: "พื้นฐานครั่ง",
-      bgColor: "bg-rose-50/70 dark:bg-rose-950/20",
-      borderColor: "border-rose-300 dark:border-rose-900/60",
-      badgeColor: "bg-rose-800 text-white dark:bg-rose-900 dark:text-rose-100",
+      bg: "bg-[#F2E8CF]",
       detail: {
-        overview:
-          "ครั่ง คือ ยางหรือสารชันชนิดหนึ่งที่ขับออกมาจากตัวแมลงครั่ง (Laccifer lacca) เพื่อสร้างเป็นรังห่อหุ้มลำตัว ครั่งดิบมีลักษณะเป็นก้อนแข็งสีแดงอิฐหรือน้ำตาลแดง มีคุณสมบัติละลายได้ในแอลกอฮอล์ และหลอมเหลวด้วยความร้อน",
+        overview: "ครั่ง คือ ยางหรือสารชันที่ขับออกมาจากตัวแมลงครั่งเพื่อสร้างเป็นรังห่อหุ้มลำตัว มีคุณสมบัติละลายในแอลกอฮอล์และหลอมเหลวด้วยความร้อน",
         highlights: [
-          "ถิ่นกำเนิดหลักอยู่ในภูมิภาคเอเชียใต้และเอเชียตะวันออกเฉียงใต้ (ไทย, อินเดีย, พม่า)",
-          "เป็นสารธรรมชาติ 100% ที่ปลอดภัยและย่อยสลายได้ตามธรรมชาติ",
-          "ถูกนำมาใช้ประโยชน์ย้อนไปนานหลายร้อยปีทั้งในงานช่างสิบหมู่และยารักษาโรค",
+          "สารธรรมชาติ 100% ที่ปลอดภัยและย่อยสลายได้",
+          "ภูมิปัญญาดั้งเดิมในงานช่างสิบหมู่และยารักษาโรค",
         ],
       },
     },
@@ -246,18 +195,14 @@ function LacKnowledgeCards() {
       id: 2,
       icon: "🌳",
       title: "พืชอาศัย & นิเวศวิทยา",
-      desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี (ก้ามปู) ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
+      desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
       tag: "นิเวศวิทยา",
-      bgColor: "bg-emerald-50/70 dark:bg-emerald-950/20",
-      borderColor: "border-emerald-300 dark:border-emerald-900/60",
-      badgeColor: "bg-emerald-700 text-white dark:bg-emerald-900 dark:text-emerald-100",
+      bg: "bg-[#D8E2DC]",
       detail: {
-        overview:
-          "แมลงครั่งต้องอาศัยอยู่บนกิ่งของต้นไม้เฉพาะชนิดเพื่อดูดกินน้ำเลี้ยง พืชอาศัยที่ดีต้องมีทรงพุ่มโปร่ง มีกิ่งอ่อนให้แมลงเกาะ และเจริญเติบโตได้ดีในสภาพอากาศท้องถิ่น",
+        overview: "แมลงครั่งอาศัยกิ่งของต้นไม้เฉพาะชนิดเพื่อดูดกินน้ำเลี้ยง พืชอาศัยที่ดีต้องมีทรงพุ่มโปร่งและกิ่งอ่อนสมบูรณ์",
         highlights: [
-          "ต้นจามจุรี (ก้ามปู): พืชอาศัยยอดนิยม ให้ผลผลิตครั่งสูงและโตไว",
-          "ต้นปลัก / สีเสียด / ปันแก: พืชอาศัยท้องถิ่นที่ทนทานสภาพอากาศแห้งแล้งได้ดี",
-          "การจัดการพุ่มไม้: ต้องมีการตัดแต่งกิ่งเพื่อให้แสงแดดและลมถ่ายเทอย่างเหมาะสม",
+          "ต้นจามจุรี (ก้ามปู): โตไว ให้ผลผลิตครั่งสูงที่สุด",
+          "ต้นปลัก/สีเสียด: ทนทานสภาพอากาศแห้งแล้งได้ดีเยี่ยม",
         ],
       },
     },
@@ -265,18 +210,14 @@ function LacKnowledgeCards() {
       id: 3,
       icon: "📅",
       title: "การเพาะเลี้ยง & การจัดการ",
-      desc: "เทคนิคการคัดแม่พันธุ์ รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) อัตราปล่อยพันธุ์ และการดูแลป้องกันศัตรูครั่ง",
+      desc: "รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) เทคนิคการคัดแม่พันธุ์ และการดูแลป้องกันศัตรูครั่ง",
       tag: "คู่มือเกษตรกร",
-      bgColor: "bg-rose-50/70 dark:bg-rose-950/20",
-      borderColor: "border-rose-300 dark:border-rose-900/60",
-      badgeColor: "bg-rose-800 text-white dark:bg-rose-900 dark:text-rose-100",
+      bg: "bg-[#FFCAD4]",
       detail: {
-        overview:
-          "การเลี้ยงครั่งแบ่งออกเป็น 2 รอบตามฤดูกาล ได้แก่ รอบฤดูร้อน และ รอบฤดูฝน การจัดการที่มีประสิทธิภาพจะช่วยลดอัตราการสูญเสียจากแมลงศัตรูพืชและสภาพอากาศ",
+        overview: "การเลี้ยงครั่งแบ่งเป็น 2 รอบตามฤดูกาล การจัดการที่ดีช่วยลดอัตราการสูญเสียจากศัตรูพืช",
         highlights: [
           "รอบฤดูร้อน: ปล่อยพันธุ์ พ.ย.-ธ.ค. เก็บเกี่ยว พ.ค.-มิ.ย.",
           "รอบฤดูฝน: ปล่อยพันธุ์ พ.ค.-มิ.ย. เก็บเกี่ยว พ.ย.-ธ.ค.",
-          "การคัดพันธุ์: เลือกกิ่งครั่งที่สมบูรณ์ ไม่มีมดหรือแมลงเบียนทำลาย มัดติดกิ่งพืชอาศัยช่วงละ 3-4 เมตร",
         ],
       },
     },
@@ -284,31 +225,27 @@ function LacKnowledgeCards() {
       id: 4,
       icon: "🧪",
       title: "ผลิตภัณฑ์ & การแปรรูป",
-      desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่งบำรุงดิน",
-      tag: "นวัตกรรม & มูลค่า",
-      bgColor: "bg-emerald-50/70 dark:bg-emerald-950/20",
-      borderColor: "border-emerald-300 dark:border-emerald-900/60",
-      badgeColor: "bg-emerald-700 text-white dark:bg-emerald-900 dark:text-emerald-100",
+      desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่ง",
+      tag: "นวัตกรรม",
+      bg: "bg-[#BEE1E6]",
       detail: {
-        overview:
-          "ครั่งดิบที่เก็บเกี่ยวได้จะถูกนำเข้าสู่กระบวนการแปรรูป ตั้งแต่การแกะกิ่ง บด ล้าง สกัดแยกสี และฟอกสี จนได้ผลิตภัณฑ์มูลค่าสูงที่ใช้ในหลายอุตสาหกรรม",
+        overview: "ครั่งดิบถูกนำไปแกะ บด ล้าง สกัดแยกสี เพื่อส่งต่อเข้าสู่อุตสาหกรรมมูลค่าสูง",
         highlights: [
-          "ครั่งเมล็ด (Seedlac) & เชลแลก (Shellac): ใช้ทำเคลือบเงาไม้ และเคลือบเม็ดยา/ลูกอม",
-          "สีสกัดครั่ง (Lac Dye): สีย้อมธรรมชาติโทนสีแดงสำหรับสิ่งทอและเครื่องสำอาง",
-          "น้ำล้างครั่ง: มีธาตุอาหารสูง นำไปทำปุ๋ยชีวภาพบำรุงพืชผักสวนครัว",
+          "เชลแลก (Shellac): เคลือบเงาไม้ และเคลือบเม็ดยา/อาหาร",
+          "สีสกัดครั่ง: สีย้อมธรรมชาติปลอดภัยสำหรับสิ่งทอ",
         ],
       },
     },
   ];
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+    <section className="max-w-6xl mx-auto px-4 py-12">
       <div className="text-center mb-10 space-y-2">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+        <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight">
           📚 หมวดหมู่องค์ความรู้เรื่องครั่ง
         </h2>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-          เจาะลึกข้อมูลทางนิเวศวิทยา การเพาะเลี้ยง และอุตสาหกรรมแปรรูปครั่ง (คลิกเพื่อดูรายละเอียด)
+        <p className="text-sm font-bold text-[#6E6A66]">
+          (คลิกที่การ์ดเพื่ออ่านข้อมูลเชิงลึกแบบเต็ม)
         </p>
       </div>
 
@@ -317,26 +254,26 @@ function LacKnowledgeCards() {
           <div
             key={card.id}
             onClick={() => setSelectedCard(card)}
-            className={`${card.bgColor} ${card.borderColor} border p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer text-left flex flex-col justify-between space-y-4 group`}
+            className={`${card.bg} border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_#1A1A1A] transition-all cursor-pointer flex flex-col justify-between space-y-4`}
           >
-            <div className="space-y-3 w-full">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-3xl group-hover:scale-110 transition-transform">
+                <span className="text-4xl bg-white p-2 rounded-2xl border-2 border-[#1A1A1A]">
                   {card.icon}
                 </span>
-                <span className={`text-[10px] font-bold font-mono px-2.5 py-1 rounded-full ${card.badgeColor}`}>
+                <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-[#1A1A1A] text-white rounded-full">
                   {card.tag}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-rose-800 dark:group-hover:text-rose-400 transition-colors">
+              <h3 className="text-xl font-black uppercase leading-tight pt-2">
                 {card.title}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-xs font-bold leading-relaxed text-[#333]">
                 {card.desc}
               </p>
             </div>
-            <div className="text-xs font-semibold text-rose-800 dark:text-rose-400 flex items-center gap-1 pt-2">
-              <span>อ่านรายละเอียดเพิ่มเติม</span>
+            <div className="text-xs font-black uppercase text-[#801818] flex items-center gap-1">
+              <span>อ่านเพิ่มเติม</span>
               <span>→</span>
             </div>
           </div>
@@ -346,69 +283,53 @@ function LacKnowledgeCards() {
       {/* Pop-up Modal */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/80 backdrop-blur-xs"
           onClick={() => setSelectedCard(null)}
         >
           <div
-            className="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border-2 border-rose-900/20 max-h-[90vh] overflow-y-auto"
+            className="bg-[#F9F6F0] border-3 border-[#1A1A1A] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-[8px_8px_0px_#1A1A1A] relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setSelectedCard(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white bg-slate-100 dark:bg-slate-700 w-9 h-9 rounded-full flex items-center justify-center transition-all text-base font-bold cursor-pointer"
-              aria-label="Close"
+              className="absolute top-4 right-4 bg-white border-2 border-[#1A1A1A] w-9 h-9 rounded-full font-black flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A] cursor-pointer"
             >
               ✕
             </button>
 
-            <div className="space-y-6">
-              <div className="flex items-center gap-4 pr-8">
-                <span className="text-4xl p-3 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border border-rose-200 dark:border-rose-900/50">
-                  {selectedCard.icon}
-                </span>
-                <div>
-                  <span className={`text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full ${selectedCard.badgeColor}`}>
-                    {selectedCard.tag}
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-                    {selectedCard.title}
-                  </h3>
-                </div>
+            <div className="space-y-5">
+              <div className="flex items-center gap-3">
+                <span className="text-4xl">{selectedCard.icon}</span>
+                <h3 className="text-2xl font-black uppercase">{selectedCard.title}</h3>
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold font-mono text-rose-800 dark:text-rose-400 uppercase tracking-wider">
-                  📌 ภาพรวมองค์ความรู้
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
+                <h4 className="text-xs font-black uppercase tracking-wider text-[#801818]">📌 ภาพรวมองค์ความรู้</h4>
+                <p className="text-sm font-bold bg-white p-4 rounded-2xl border-2 border-[#1A1A1A]">
                   {selectedCard.detail.overview}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-                  💡 ประเด็นสำคัญ
-                </h4>
-                <ul className="space-y-2">
-                  {selectedCard.detail.highlights.map((item, idx) => (
-                    <li key={idx} className="text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
-                      <span className="text-rose-700 dark:text-rose-400 font-bold mt-0.5">•</span>
+                <h4 className="text-xs font-black uppercase tracking-wider text-[#2D5A27]">💡 ประเด็นสำคัญ</h4>
+                <ul className="space-y-1.5 text-xs font-bold">
+                  {selectedCard.detail.highlights.map((item: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span>•</span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-700/60 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setSelectedCard(null)}
-                  className="bg-rose-800 hover:bg-rose-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer"
-                >
-                  ปิดหน้าต่าง
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCard(null)}
+                className="w-full bg-[#1A1A1A] text-white font-black py-3 rounded-xl border-2 border-[#1A1A1A] uppercase tracking-wider cursor-pointer"
+              >
+                ปิดหน้าต่าง
+              </button>
             </div>
           </div>
         </div>
@@ -417,325 +338,141 @@ function LacKnowledgeCards() {
   );
 }
 
-// --- COMPONENT: Data Visualization ---
+// --- COMPONENT: Data Visualization (Oatly Block Stats) ---
 function LacDataVisualization() {
   const [activeTab, setActiveTab] = useState<"farmers" | "efficiency">("farmers");
 
-  const compositions = [
-    { name: "ชัน/เรซิน (Resin)", percent: "68-90%", value: 80, color: "bg-rose-800" },
-    { name: "ขี้ผึ้ง (Wax)", percent: "5-6%", value: 6, color: "bg-amber-600" },
-    { name: "สีสกัด (Dye)", percent: "2-10%", value: 10, color: "bg-rose-600" },
-    { name: "แร่ธาตุ (Mineral)", percent: "3-7%", value: 5, color: "bg-emerald-600" },
-    { name: "น้ำ (Water)", percent: "2-3%", value: 3, color: "bg-slate-400" },
-  ];
-
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12 sm:py-16 space-y-10">
+    <section className="max-w-6xl mx-auto px-4 py-12 space-y-8">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-          📊 สถิติและข้อมูลการผลิตครั่ง จ.ลำปาง
+        <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight">
+          📊 สถิติและข้อมูลการผลิต จ.ลำปาง
         </h2>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-          ข้อมูลเชิงสถิติ นิเวศวิทยา และศักยภาพการผลิตครั่งในพื้นที่
-        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-rose-50/70 dark:bg-rose-950/30 p-6 rounded-2xl border border-rose-200 dark:border-rose-900/50 shadow-sm flex flex-col justify-between">
-          <div>
-            <p className="text-xs font-bold font-mono text-rose-800 dark:text-rose-300 uppercase tracking-wider">
-              ศูนย์กลางการผลิตใหญ่ที่สุด
-            </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-rose-100 mt-1">
-              อ.งาว (บ้านบ่อสี่เหลี่ยม)
-            </h3>
-          </div>
-          <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-rose-700 dark:text-rose-400">
-              300,000 <span className="text-base font-normal font-sans text-slate-600 dark:text-slate-400">กก./ปี</span>
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              สร้างรายได้เฉลี่ย 4.5 แสนบาท/ครอบครัว/ปี
-            </p>
-          </div>
+        <div className="bg-[#FFCAD4] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
+          <p className="text-xs font-black uppercase tracking-wider text-[#801818]">ศูนย์กลางการผลิตใหญ่สุด</p>
+          <h3 className="text-2xl font-black uppercase mt-1">อ.งาว (บ้านบ่อสี่เหลี่ยม)</h3>
+          <p className="text-4xl font-black mt-4">300,000 <span className="text-sm">กก./ปี</span></p>
         </div>
 
-        <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
-          <div>
-            <p className="text-xs font-bold font-mono text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
-              ประสิทธิภาพการผลิตสูงสุด
-            </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-emerald-100 mt-1">
-              อ.สบปราบ
-            </h3>
-          </div>
-          <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
-              อันดับ 1
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              วัดจากผลผลิตที่ได้ต่อกิโลกรัมพันธุ์ (ตามด้วย อ.เสริมงาม, อ.ห้างฉัตร)
-            </p>
-          </div>
+        <div className="bg-[#D8E2DC] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
+          <p className="text-xs font-black uppercase tracking-wider text-[#2D5A27]">ประสิทธิภาพสูงสุด</p>
+          <h3 className="text-2xl font-black uppercase mt-1">อ.สบปราบ</h3>
+          <p className="text-4xl font-black mt-4">อันดับ 1</p>
         </div>
 
-        <div className="bg-amber-50/70 dark:bg-amber-950/30 p-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between">
-          <div>
-            <p className="text-xs font-bold font-mono text-amber-800 dark:text-amber-300 uppercase tracking-wider">
-              พืชอาศัยยอดนิยม
-            </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-amber-100 mt-1">
-              ต้นจามจุรี (ก้ามปู)
-            </h3>
-          </div>
-          <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-amber-700 dark:text-amber-400">
-              TOP 1
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              เรือนยอดโปร่ง แตกกิ่งเร็ว เหมาะกับการเลี้ยงครั่งมากที่สุด
-            </p>
-          </div>
+        <div className="bg-[#F2E8CF] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
+          <p className="text-xs font-black uppercase tracking-wider text-[#801818]">พืชอาศัยยอดนิยม</p>
+          <h3 className="text-2xl font-black uppercase mt-1">ต้นจามจุรี (ก้ามปู)</h3>
+          <p className="text-4xl font-black mt-4">TOP 1</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Ranking Switcher */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-700/60 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              📍 อันดับพื้นที่การผลิต จ.ลำปาง
-            </h3>
-            <div className="flex bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl text-xs font-mono">
-              <button
-                type="button"
-                onClick={() => setActiveTab("farmers")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  activeTab === "farmers"
-                    ? "bg-rose-800 text-white shadow-sm font-bold"
-                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
-                }`}
-              >
-                ผู้เลี้ยงมากสุด
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("efficiency")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  activeTab === "efficiency"
-                    ? "bg-emerald-700 text-white shadow-sm font-bold"
-                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
-                }`}
-              >
-                ประสิทธิภาพสูงสุด
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {activeTab === "farmers" ? (
-              <>
-                <div className="flex items-center justify-between p-3.5 bg-rose-50/50 dark:bg-rose-950/20 rounded-xl border border-rose-100 dark:border-rose-900/50">
-                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.วังเหนือ</span>
-                  <span className="text-xs bg-rose-800 text-white px-2.5 py-1 rounded-full font-semibold font-mono">เกษตรกรมากที่สุด</span>
-                </div>
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.แจ้ห่ม</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">ยุทธศาสตร์การผลิต</span>
-                </div>
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥉 อันดับ 3: อ.เมืองปาน</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">ยุทธศาสตร์การผลิต</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-between p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
-                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.สบปราบ</span>
-                  <span className="text-xs bg-emerald-700 text-white px-2.5 py-1 rounded-full font-semibold font-mono">ผลผลิต/กก.พันธุ์ สูงสุด</span>
-                </div>
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.เสริมงาม</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">อัตราการรอดสูง</span>
-                </div>
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥉 อันดับ 3: อ.ห้างฉัตร</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">อัตราการรอดสูง</span>
-                </div>
-              </>
-            )}
+      <div className="bg-white border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[6px_6px_0px_#1A1A1A] space-y-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-[#1A1A1A] pb-4">
+          <h3 className="text-xl font-black uppercase">📍 อันดับพื้นที่การผลิต จ.ลำปาง</h3>
+          <div className="flex bg-[#F9F6F0] p-1.5 rounded-xl border-2 border-[#1A1A1A] font-black text-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("farmers")}
+              className={`px-3 py-1.5 rounded-lg border-2 border-transparent transition-all cursor-pointer ${
+                activeTab === "farmers" ? "bg-[#801818] text-white border-[#1A1A1A]" : ""
+              }`}
+            >
+              ผู้เลี้ยงมากสุด
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("efficiency")}
+              className={`px-3 py-1.5 rounded-lg border-2 border-transparent transition-all cursor-pointer ${
+                activeTab === "efficiency" ? "bg-[#2D5A27] text-white border-[#1A1A1A]" : ""
+              }`}
+            >
+              ประสิทธิภาพสูงสุด
+            </button>
           </div>
         </div>
 
-        {/* Composition Bars */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
-          <div className="space-y-1 border-b border-slate-100 dark:border-slate-700/60 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-              🧪 สัดส่วนองค์ประกอบของครั่งดิบ (Sticklac)
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              สัดส่วนสารธรรมชาติที่สกัดได้จากรังครั่ง
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {compositions.map((item, idx) => (
-              <div key={idx} className="space-y-1.5">
-                <div className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300">
-                  <span>{item.name}</span>
-                  <span className="font-bold font-mono text-slate-900 dark:text-white">{item.percent}</span>
-                </div>
-                <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${item.color} rounded-full transition-all duration-500`}
-                    style={{ width: `${item.value}%` }}
-                  />
-                </div>
+        <div className="space-y-3 font-bold text-sm">
+          {activeTab === "farmers" ? (
+            <>
+              <div className="p-4 bg-[#FFCAD4] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥇 อันดับ 1: อ.วังเหนือ</span>
+                <span className="bg-[#1A1A1A] text-white px-3 py-1 rounded-full text-xs font-black">เกษตรกรมากที่สุด</span>
               </div>
-            ))}
-          </div>
+              <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥈 อันดับ 2: อ.แจ้ห่ม</span>
+                <span className="text-xs font-bold text-[#6E6A66]">ยุทธศาสตร์การผลิต</span>
+              </div>
+              <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥉 อันดับ 3: อ.เมืองปาน</span>
+                <span className="text-xs font-bold text-[#6E6A66]">ยุทธศาสตร์การผลิต</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="p-4 bg-[#D8E2DC] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥇 อันดับ 1: อ.สบปราบ</span>
+                <span className="bg-[#2D5A27] text-white px-3 py-1 rounded-full text-xs font-black">ผลผลิต/กก.พันธุ์ สูงสุด</span>
+              </div>
+              <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥈 อันดับ 2: อ.เสริมงาม</span>
+                <span className="text-xs font-bold text-[#6E6A66]">อัตราการรอดสูง</span>
+              </div>
+              <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
+                <span>🥉 อันดับ 3: อ.ห้างฉัตร</span>
+                <span className="text-xs font-bold text-[#6E6A66]">อัตราการรอดสูง</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
   );
 }
 
-// --- COMPONENT: Accordion ---
+// --- COMPONENT: Accordion (Oatly Block Accordion) ---
 function LacKnowledgeAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const toggleAccordion = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   const accordions = [
     {
-      title: "🗓️ ปฏิทินและเทคนิคการเพาะเลี้ยงครั่ง (ฤดูกาล & การคัดพันธุ์)",
-      content: (
-        <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-rose-50/80 dark:bg-rose-950/30 p-4 rounded-xl border border-rose-200 dark:border-rose-900/40">
-              <p className="font-bold text-rose-900 dark:text-rose-200 mb-2">☀️ รอบฤดูร้อน</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li><b>ปล่อยครั่ง:</b> พฤศจิกายน - ธันวาคม</li>
-                <li><b>เก็บเกี่ยว:</b> พฤษภาคม - มิถุนายน</li>
-              </ul>
-            </div>
-            <div className="bg-emerald-50/80 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/40">
-              <p className="font-bold text-emerald-900 dark:text-emerald-200 mb-2">🌧️ รอบฤดูฝน</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li><b>ปล่อยครั่ง:</b> พฤษภาคม - มิถุนายน</li>
-                <li><b>เก็บเกี่ยว:</b> พฤศจิกายน - ธันวาคม (ปีถัดไป)</li>
-              </ul>
-            </div>
-          </div>
-          <div className="space-y-2 border-t pt-3 border-slate-200 dark:border-slate-700">
-            <p className="font-bold text-slate-900 dark:text-white">📌 เทคนิคการคัดเลือกและปล่อยครั่งพันธุ์:</p>
-            <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
-              <li>คัดรังครั่งสมบูรณ์ หนา เกาะติดกิ่งดี ไม่มีร่องรอยศัตรูพืชทำลาย</li>
-              <li>ตัดครั่งพันธุ์ความยาว 15 ซม. (หนัก 40-50 กรัม) ผูกติดกิ่งพืชอาศัยช่วงละ 3-4 เมตร</li>
-              <li><b>การดูแลหลังปล่อย:</b> เก็บครั่งพันธุ์ออกภายใน 3 สัปดาห์ หรือเมื่อตัวอ่อนลงเกาะหมดแล้ว</li>
-            </ul>
-          </div>
-        </div>
-      ),
+      title: "🗓️ ปฏิทินและเทคนิคการเพาะเลี้ยงครั่ง",
+      content: "รอบฤดูร้อน (ปล่อย พ.ย.-ธ.ค. / เก็บ พ.ค.-มิ.ย.) และรอบฤดูฝน (ปล่อย พ.ค.-มิ.ย. / เก็บ พ.ย.-ธ.ค.)",
     },
     {
-      title: "🌿 รายชื่อพืชอาศัยยอดนิยม และลักษณะต้นไม้ที่เหมาะสม",
-      content: (
-        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-          <p><b>คุณลักษณะต้นไม้ที่เหมาะแก่การเลี้ยงครั่ง:</b> เรือนยอดโปร่ง ได้รับแสงแดดพอเหมาะ อากาศถ่ายเทสะดวก แตกกิ่งได้ตลอดปี และเติบโตเร็ว</p>
-          <div className="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/40">
-            <p className="font-bold text-emerald-950 dark:text-emerald-200 mb-2">ตัวอย่างพืชอาศัย (Host Trees):</p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "ต้นจามจุรี (ก้ามปู) - Top 1",
-                "ต้นปลัก",
-                "ต้นสีเสียด",
-                "ต้นปันแก",
-                "กระถินเทพา",
-                "ต้นลำไย",
-                "ต้นลิ้นจี่",
-                "ต้นพุทรา",
-                "มะขามเทศ",
-                "มะกอกเกลื้อน",
-              ].map((tree, idx) => (
-                <span key={idx} className="bg-white dark:bg-slate-800 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-600 text-xs font-medium shadow-sm">
-                  🌱 {tree}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      ),
+      title: "🌿 รายชื่อพืชอาศัยยอดนิยม",
+      content: "ต้นจามจุรี (ก้ามปู), ต้นปลัก, ต้นสีเสียด, กระถินเทพา, ต้นลำไย ฯลฯ",
     },
     {
-      title: "🏭 ผลิตภัณฑ์และการแปรรูปจากครั่ง สู่ประโยชน์รอบตัว",
-      content: (
-        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3.5 bg-rose-50/80 dark:bg-rose-950/20 rounded-xl border border-rose-200 dark:border-rose-900/40">
-              <p className="font-bold text-rose-900 dark:text-rose-300">🎨 สีสกัดธรรมชาติ</p>
-              <p className="mt-1 text-slate-600 dark:text-slate-400">ใช้ย้อมผ้าสีแดงธรรมชาติ และแปรรูปเป็นสีผสมอาหาร</p>
-            </div>
-            <div className="p-3.5 bg-amber-50/80 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40">
-              <p className="font-bold text-amber-900 dark:text-amber-300">✨ สารเคลือบสารพัดประโยชน์</p>
-              <p className="mt-1 text-slate-600 dark:text-slate-400">ทำเชลแลกทาเงาไม้ เคลือบผิวผลไม้ เคลือบยาเม็ด ลูกอม และลิปสติก</p>
-            </div>
-            <div className="p-3.5 bg-emerald-50/80 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900/40">
-              <p className="font-bold text-emerald-900 dark:text-emerald-300">🌱 น้ำล้างครั่งรักษ์โลก</p>
-              <p className="mt-1 text-slate-600 dark:text-slate-400">น้ำจากการล้างครั่งดิบนำมาใช้เป็นสารบำรุงดิน ช่วยให้พืชผักเติบโตเร็วขึ้น</p>
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: "🌡️ ผลกระทบจากสภาวะโลกร้อน (Climate Change) ต่อการเลี้ยงครั่ง",
-      content: (
-        <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-          <div className="p-4 bg-red-50/80 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900/40 space-y-2">
-            <p className="font-bold text-red-900 dark:text-red-200">⚠️ ปัจจัยความเสี่ยงที่ต้องระวัง:</p>
-            <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
-              <li><b>อุณหภูมิสูงขึ้น:</b> ทำให้แมลงครั่งอ่อนแอ เมตาบอลิซึมผิดปกติ ตัวแมลงตายง่าย ผลผลิตลดลง</li>
-              <li><b>ฝนตกผิดฤดูกาล:</b> ส่งผลต่อการเกาะของตัวอ่อน ครั่งหลุดร่วงง่าย และเกิดเชื้อราในรังครั่ง</li>
-            </ul>
-          </div>
-        </div>
-      ),
+      title: "🏭 ผลิตภัณฑ์และการแปรรูปจากครั่ง",
+      content: "เชลแลกทาเงาไม้, สีสกัดย้อมผ้าธรรมชาติ, สารเคลือบเม็ดยา/ผลไม้ และน้ำล้างครั่งบำรุงดิน",
     },
   ];
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-      <div className="text-center mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-          ❓ เจาะลึกรายละเอียด (FAQ & Accordion)
-        </h2>
-      </div>
+    <section className="max-w-4xl mx-auto px-4 py-12">
+      <h2 className="text-2xl font-black uppercase tracking-tight text-center mb-6">
+        ❓ เจาะลึกรายละเอียด (FAQ)
+      </h2>
 
       <div className="space-y-3">
         {accordions.map((item, index) => {
           const isOpen = openIndex === index;
           return (
-            <div
-              key={index}
-              className="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm transition-all"
-            >
+            <div key={index} className="bg-white border-3 border-[#1A1A1A] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#1A1A1A]">
               <button
                 type="button"
-                onClick={() => toggleAccordion(index)}
-                aria-expanded={isOpen}
-                className="w-full flex justify-between items-center p-4 sm:p-5 text-left font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all text-sm sm:text-base gap-4 cursor-pointer"
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                className="w-full flex justify-between items-center p-4 font-black text-left uppercase cursor-pointer"
               >
                 <span>{item.title}</span>
-                <span className="text-rose-800 dark:text-rose-400 font-bold shrink-0 text-lg transition-transform duration-200">
-                  {isOpen ? "−" : "+"}
-                </span>
+                <span className="text-xl font-black">{isOpen ? "−" : "+"}</span>
               </button>
-
               {isOpen && (
-                <div className="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/50">
+                <div className="p-4 border-t-2 border-[#1A1A1A] bg-[#F9F6F0] font-bold text-sm">
                   {item.content}
                 </div>
               )}
