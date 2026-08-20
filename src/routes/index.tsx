@@ -6,45 +6,43 @@ export const Route = createFileRoute("/")({
 });
 
 export function HomePage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+    setIsMobileMenuOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between scroll-smooth border-t-4 border-blue-900">
-      <div>
-        {/* 1. Header Banner / Hero Section */}
-        <header
-          className="relative bg-cover bg-center bg-no-repeat text-white py-16 sm:py-24 px-4 text-center overflow-hidden border-b border-slate-200 dark:border-slate-800"
-          style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
-        >
-          {/* Overlay Tone Deep Navy */}
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[2px]" />
-
-          <div className="relative z-10 max-w-4xl mx-auto space-y-4 sm:space-y-6">
-            <div className="inline-flex items-center gap-2 bg-blue-950/80 text-amber-400 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-amber-500/30 backdrop-blur-sm shadow-inner font-mono">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              <span>[RESEARCH] โครงการห้องการเรียนรู้ครั่งครบวงจร</span>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between scroll-smooth">
+      
+      {/* ==================== MAIN BAR (NAVIGATION) ==================== */}
+      <nav className="sticky top-0 z-50 bg-rose-950/95 backdrop-blur-md border-b border-rose-900/60 shadow-lg text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            
+            {/* ฝั่งซ้าย: โลโก้ / ชื่อศูนย์เรียนรู้ */}
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🐞</span>
+              <div>
+                <span className="font-extrabold text-base sm:text-lg tracking-tight text-rose-100 block leading-tight">
+                  ศูนย์เรียนรู้ครั่งครบวงจร
+                </span>
+                <span className="text-[10px] sm:text-xs text-rose-300 font-mono block">
+                  ม.มหิดล อ.สบปราบ
+                </span>
+              </div>
             </div>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
-              ศูนย์เรียนรู้และองค์ความรู้ครั่ง
-            </h1>
-            <p className="text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
-              คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
-            </p>
 
-            {/* Accent Line Decorative */}
-            <div className="w-48 h-0.5 mx-auto bg-gradient-to-r from-blue-900 via-amber-400 to-blue-900 my-4" />
-
-            {/* TAB / Navigation Buttons */}
-            <div className="pt-2 flex flex-wrap justify-center gap-3 sm:gap-4">
+            {/* ฝั่งขวา: เมนูหลัก (Desktop) */}
+            <div className="hidden md:flex items-center space-x-2">
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
-                className="bg-blue-900 hover:bg-blue-800 text-amber-400 font-bold px-5 py-3 rounded-xl shadow-lg border border-amber-500/20 hover:shadow-xl transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>📚</span> คลังความรู้
               </button>
@@ -52,25 +50,102 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => scrollToSection("data-viz")}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>📈</span> สถิติการผลิต
               </button>
 
               <Link
                 to="/survey"
-                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2"
+                className="text-rose-100 hover:bg-rose-900/80 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5"
               >
-                <span>📝</span> ทำแบบประเมินความพึงพอใจ
+                <span>📝</span> แบบสอบถาม
               </Link>
 
               <Link
                 to="/dashboard"
-                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md border border-emerald-500/30 transition-all flex items-center gap-1.5 active:scale-95 ml-2"
               >
-                <span>📊</span> ดูสรุปผล Dashboard
+                <span>📊</span> Dashboard
               </Link>
             </div>
+
+            {/* ปุ่มเปิดเมนูสำหรับมือถือ (Mobile Hamburger Button) */}
+            <div className="md:hidden flex items-center">
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-rose-200 hover:text-white p-2 rounded-lg focus:outline-none"
+                aria-label="Toggle Menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isMobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* เมนูย่อยสำหรับมือถือ (Mobile Menu Dropdown) */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-rose-950 border-b border-rose-900 px-4 pt-2 pb-4 space-y-2 font-medium">
+            <button
+              type="button"
+              onClick={() => scrollToSection("cards-section")}
+              className="w-full text-left text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+            >
+              <span>📚</span> คลังความรู้
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("data-viz")}
+              className="w-full text-left text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+            >
+              <span>📈</span> สถิติการผลิต
+            </button>
+            <Link
+              to="/survey"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block text-rose-100 hover:bg-rose-900 px-3 py-2.5 rounded-lg text-sm flex items-center gap-2"
+            >
+              <span>📝</span> แบบสอบถาม
+            </Link>
+            <Link
+              to="/dashboard"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block bg-emerald-600 text-white font-bold px-3 py-2.5 rounded-lg text-sm text-center flex items-center justify-center gap-2"
+            >
+              <span>📊</span> Dashboard
+            </Link>
+          </div>
+        )}
+      </nav>
+
+      {/* ==================== HERO SECTION ==================== */}
+      <div>
+        <header
+          className="relative bg-cover bg-center bg-no-repeat text-white py-16 sm:py-24 px-4 text-center overflow-hidden border-b border-rose-900/30"
+          style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-rose-950/90 via-slate-950/85 to-emerald-950/90 backdrop-blur-[2px]" />
+
+          <div className="relative z-10 max-w-4xl mx-auto space-y-4 sm:space-y-6">
+            <div className="inline-flex items-center gap-2 bg-rose-950/80 text-rose-200 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-rose-500/40 backdrop-blur-sm shadow-inner font-mono">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span>[RESEARCH] โครงการห้องการเรียนรู้ครั่งครบวงจร</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
+              ศูนย์เรียนรู้และองค์ความรู้ครั่ง
+            </h1>
+            <p className="text-rose-100 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
+              คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
+            </p>
+
+            <div className="w-48 h-1 mx-auto bg-gradient-to-r from-rose-600 via-amber-400 to-emerald-600 rounded-full my-4" />
           </div>
         </header>
 
@@ -86,7 +161,7 @@ export function HomePage() {
               </p>
             </div>
 
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-slate-950">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-rose-900/20 bg-slate-950">
               <video
                 className="w-full h-full object-cover"
                 controls
@@ -103,12 +178,12 @@ export function HomePage() {
         </section>
 
         {/* 3. Cards Grid Section */}
-        <div id="cards-section" className="scroll-mt-6">
+        <div id="cards-section" className="scroll-mt-20">
           <LacKnowledgeCards />
         </div>
 
         {/* 4. Data Visualization Section */}
-        <div id="data-viz" className="scroll-mt-6">
+        <div id="data-viz" className="scroll-mt-20">
           <LacDataVisualization />
         </div>
 
@@ -117,7 +192,7 @@ export function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-950 text-slate-400 py-8 text-center text-sm border-t border-slate-800 mt-16 font-mono">
+      <footer className="bg-rose-950 text-rose-200/80 py-8 text-center text-sm border-t border-rose-900/50 mt-16 font-mono">
         <div className="max-w-6xl mx-auto px-4">
           <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
         </div>
@@ -154,9 +229,9 @@ function LacKnowledgeCards() {
       title: "ครั่งคืออะไร & ถิ่นกำเนิด",
       desc: "ยางธรรมชาติจากแมลงครั่ง (Laccifer lacca) สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
       tag: "พื้นฐานครั่ง",
-      bgColor: "bg-rose-50/50 dark:bg-rose-950/20",
-      borderColor: "border-rose-200 dark:border-rose-900/50",
-      badgeColor: "bg-rose-100 text-rose-800 dark:bg-rose-900/80 dark:text-rose-200",
+      bgColor: "bg-rose-50/70 dark:bg-rose-950/20",
+      borderColor: "border-rose-300 dark:border-rose-900/60",
+      badgeColor: "bg-rose-800 text-white dark:bg-rose-900 dark:text-rose-100",
       detail: {
         overview:
           "ครั่ง คือ ยางหรือสารชันชนิดหนึ่งที่ขับออกมาจากตัวแมลงครั่ง (Laccifer lacca) เพื่อสร้างเป็นรังห่อหุ้มลำตัว ครั่งดิบมีลักษณะเป็นก้อนแข็งสีแดงอิฐหรือน้ำตาลแดง มีคุณสมบัติละลายได้ในแอลกอฮอล์ และหลอมเหลวด้วยความร้อน",
@@ -173,9 +248,9 @@ function LacKnowledgeCards() {
       title: "พืชอาศัย & นิเวศวิทยา",
       desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี (ก้ามปู) ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
       tag: "นิเวศวิทยา",
-      bgColor: "bg-emerald-50/50 dark:bg-emerald-950/20",
-      borderColor: "border-emerald-200 dark:border-emerald-900/50",
-      badgeColor: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200",
+      bgColor: "bg-emerald-50/70 dark:bg-emerald-950/20",
+      borderColor: "border-emerald-300 dark:border-emerald-900/60",
+      badgeColor: "bg-emerald-700 text-white dark:bg-emerald-900 dark:text-emerald-100",
       detail: {
         overview:
           "แมลงครั่งต้องอาศัยอยู่บนกิ่งของต้นไม้เฉพาะชนิดเพื่อดูดกินน้ำเลี้ยง พืชอาศัยที่ดีต้องมีทรงพุ่มโปร่ง มีกิ่งอ่อนให้แมลงเกาะ และเจริญเติบโตได้ดีในสภาพอากาศท้องถิ่น",
@@ -192,9 +267,9 @@ function LacKnowledgeCards() {
       title: "การเพาะเลี้ยง & การจัดการ",
       desc: "เทคนิคการคัดแม่พันธุ์ รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) อัตราปล่อยพันธุ์ และการดูแลป้องกันศัตรูครั่ง",
       tag: "คู่มือเกษตรกร",
-      bgColor: "bg-amber-50/50 dark:bg-amber-950/20",
-      borderColor: "border-amber-200 dark:border-amber-900/50",
-      badgeColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200",
+      bgColor: "bg-rose-50/70 dark:bg-rose-950/20",
+      borderColor: "border-rose-300 dark:border-rose-900/60",
+      badgeColor: "bg-rose-800 text-white dark:bg-rose-900 dark:text-rose-100",
       detail: {
         overview:
           "การเลี้ยงครั่งแบ่งออกเป็น 2 รอบตามฤดูกาล ได้แก่ รอบฤดูร้อน และ รอบฤดูฝน การจัดการที่มีประสิทธิภาพจะช่วยลดอัตราการสูญเสียจากแมลงศัตรูพืชและสภาพอากาศ",
@@ -211,9 +286,9 @@ function LacKnowledgeCards() {
       title: "ผลิตภัณฑ์ & การแปรรูป",
       desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่งบำรุงดิน",
       tag: "นวัตกรรม & มูลค่า",
-      bgColor: "bg-blue-50/50 dark:bg-blue-950/20",
-      borderColor: "border-blue-200 dark:border-blue-900/50",
-      badgeColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/80 dark:text-blue-200",
+      bgColor: "bg-emerald-50/70 dark:bg-emerald-950/20",
+      borderColor: "border-emerald-300 dark:border-emerald-900/60",
+      badgeColor: "bg-emerald-700 text-white dark:bg-emerald-900 dark:text-emerald-100",
       detail: {
         overview:
           "ครั่งดิบที่เก็บเกี่ยวได้จะถูกนำเข้าสู่กระบวนการแปรรูป ตั้งแต่การแกะกิ่ง บด ล้าง สกัดแยกสี และฟอกสี จนได้ผลิตภัณฑ์มูลค่าสูงที่ใช้ในหลายอุตสาหกรรม",
@@ -253,14 +328,14 @@ function LacKnowledgeCards() {
                   {card.tag}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-900 dark:group-hover:text-amber-400 transition-colors">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-rose-800 dark:group-hover:text-rose-400 transition-colors">
                 {card.title}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                 {card.desc}
               </p>
             </div>
-            <div className="text-xs font-semibold text-blue-900 dark:text-amber-400 flex items-center gap-1 pt-2">
+            <div className="text-xs font-semibold text-rose-800 dark:text-rose-400 flex items-center gap-1 pt-2">
               <span>อ่านรายละเอียดเพิ่มเติม</span>
               <span>→</span>
             </div>
@@ -275,7 +350,7 @@ function LacKnowledgeCards() {
           onClick={() => setSelectedCard(null)}
         >
           <div
-            className="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border-2 border-rose-900/20 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -289,7 +364,7 @@ function LacKnowledgeCards() {
 
             <div className="space-y-6">
               <div className="flex items-center gap-4 pr-8">
-                <span className="text-4xl p-3 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
+                <span className="text-4xl p-3 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border border-rose-200 dark:border-rose-900/50">
                   {selectedCard.icon}
                 </span>
                 <div>
@@ -303,7 +378,7 @@ function LacKnowledgeCards() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold font-mono text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                <h4 className="text-xs font-bold font-mono text-rose-800 dark:text-rose-400 uppercase tracking-wider">
                   📌 ภาพรวมองค์ความรู้
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
@@ -312,13 +387,13 @@ function LacKnowledgeCards() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold font-mono text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                <h4 className="text-xs font-bold font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                   💡 ประเด็นสำคัญ
                 </h4>
                 <ul className="space-y-2">
                   {selectedCard.detail.highlights.map((item, idx) => (
                     <li key={idx} className="text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
-                      <span className="text-amber-500 font-bold mt-0.5">•</span>
+                      <span className="text-rose-700 dark:text-rose-400 font-bold mt-0.5">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -329,7 +404,7 @@ function LacKnowledgeCards() {
                 <button
                   type="button"
                   onClick={() => setSelectedCard(null)}
-                  className="bg-blue-900 hover:bg-blue-800 text-amber-400 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                  className="bg-rose-800 hover:bg-rose-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer"
                 >
                   ปิดหน้าต่าง
                 </button>
@@ -347,10 +422,10 @@ function LacDataVisualization() {
   const [activeTab, setActiveTab] = useState<"farmers" | "efficiency">("farmers");
 
   const compositions = [
-    { name: "ชัน/เรซิน (Resin)", percent: "68-90%", value: 80, color: "bg-blue-900" },
-    { name: "สีสกัด (Dye)", percent: "2-10%", value: 10, color: "bg-rose-500" },
-    { name: "ขี้ผึ้ง (Wax)", percent: "5-6%", value: 6, color: "bg-amber-500" },
-    { name: "แร่ธาตุ (Mineral)", percent: "3-7%", value: 5, color: "bg-emerald-500" },
+    { name: "ชัน/เรซิน (Resin)", percent: "68-90%", value: 80, color: "bg-rose-800" },
+    { name: "ขี้ผึ้ง (Wax)", percent: "5-6%", value: 6, color: "bg-amber-600" },
+    { name: "สีสกัด (Dye)", percent: "2-10%", value: 10, color: "bg-rose-600" },
+    { name: "แร่ธาตุ (Mineral)", percent: "3-7%", value: 5, color: "bg-emerald-600" },
     { name: "น้ำ (Water)", percent: "2-3%", value: 3, color: "bg-slate-400" },
   ];
 
@@ -366,17 +441,17 @@ function LacDataVisualization() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-rose-50/70 dark:bg-rose-950/30 p-6 rounded-2xl border border-rose-200 dark:border-rose-900/50 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold font-mono text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
+            <p className="text-xs font-bold font-mono text-rose-800 dark:text-rose-300 uppercase tracking-wider">
               ศูนย์กลางการผลิตใหญ่ที่สุด
             </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-emerald-100 mt-1">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-rose-100 mt-1">
               อ.งาว (บ้านบ่อสี่เหลี่ยม)
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+            <p className="text-3xl font-black font-mono text-rose-700 dark:text-rose-400">
               300,000 <span className="text-base font-normal font-sans text-slate-600 dark:text-slate-400">กก./ปี</span>
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
@@ -385,17 +460,17 @@ function LacDataVisualization() {
           </div>
         </div>
 
-        <div className="bg-blue-50/50 dark:bg-blue-950/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold font-mono text-blue-900 dark:text-blue-300 uppercase tracking-wider">
+            <p className="text-xs font-bold font-mono text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
               ประสิทธิภาพการผลิตสูงสุด
             </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-blue-100 mt-1">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-emerald-100 mt-1">
               อ.สบปราบ
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-blue-900 dark:text-amber-400">
+            <p className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
               อันดับ 1
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
@@ -404,7 +479,7 @@ function LacDataVisualization() {
           </div>
         </div>
 
-        <div className="bg-amber-50/50 dark:bg-amber-950/20 p-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-amber-50/70 dark:bg-amber-950/30 p-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between">
           <div>
             <p className="text-xs font-bold font-mono text-amber-800 dark:text-amber-300 uppercase tracking-wider">
               พืชอาศัยยอดนิยม
@@ -414,7 +489,7 @@ function LacDataVisualization() {
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400">
+            <p className="text-3xl font-black font-mono text-amber-700 dark:text-amber-400">
               TOP 1
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
@@ -437,7 +512,7 @@ function LacDataVisualization() {
                 onClick={() => setActiveTab("farmers")}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeTab === "farmers"
-                    ? "bg-blue-900 text-amber-400 shadow-sm font-bold"
+                    ? "bg-rose-800 text-white shadow-sm font-bold"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
                 }`}
               >
@@ -448,7 +523,7 @@ function LacDataVisualization() {
                 onClick={() => setActiveTab("efficiency")}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeTab === "efficiency"
-                    ? "bg-blue-900 text-amber-400 shadow-sm font-bold"
+                    ? "bg-emerald-700 text-white shadow-sm font-bold"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
                 }`}
               >
@@ -460,9 +535,9 @@ function LacDataVisualization() {
           <div className="space-y-3">
             {activeTab === "farmers" ? (
               <>
-                <div className="flex items-center justify-between p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
+                <div className="flex items-center justify-between p-3.5 bg-rose-50/50 dark:bg-rose-950/20 rounded-xl border border-rose-100 dark:border-rose-900/50">
                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.วังเหนือ</span>
-                  <span className="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2.5 py-1 rounded-full font-semibold font-mono">เกษตรกรมากที่สุด</span>
+                  <span className="text-xs bg-rose-800 text-white px-2.5 py-1 rounded-full font-semibold font-mono">เกษตรกรมากที่สุด</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.แจ้ห่ม</span>
@@ -475,9 +550,9 @@ function LacDataVisualization() {
               </>
             ) : (
               <>
-                <div className="flex items-center justify-between p-3.5 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-100 dark:border-blue-900/50">
+                <div className="flex items-center justify-between p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.สบปราบ</span>
-                  <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-amber-400 px-2.5 py-1 rounded-full font-semibold font-mono">ผลผลิต/กก.พันธุ์ สูงสุด</span>
+                  <span className="text-xs bg-emerald-700 text-white px-2.5 py-1 rounded-full font-semibold font-mono">ผลผลิต/กก.พันธุ์ สูงสุด</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.เสริมงาม</span>
@@ -539,15 +614,15 @@ function LacKnowledgeAccordion() {
       content: (
         <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-amber-50/80 dark:bg-amber-950/20 p-4 rounded-xl border border-amber-200 dark:border-amber-900/40">
-              <p className="font-bold text-amber-900 dark:text-amber-200 mb-2">☀️ รอบฤดูร้อน</p>
+            <div className="bg-rose-50/80 dark:bg-rose-950/30 p-4 rounded-xl border border-rose-200 dark:border-rose-900/40">
+              <p className="font-bold text-rose-900 dark:text-rose-200 mb-2">☀️ รอบฤดูร้อน</p>
               <ul className="list-disc list-inside space-y-1">
                 <li><b>ปล่อยครั่ง:</b> พฤศจิกายน - ธันวาคม</li>
                 <li><b>เก็บเกี่ยว:</b> พฤษภาคม - มิถุนายน</li>
               </ul>
             </div>
-            <div className="bg-blue-50/80 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200 dark:border-blue-900/40">
-              <p className="font-bold text-blue-900 dark:text-blue-200 mb-2">🌧️ รอบฤดูฝน</p>
+            <div className="bg-emerald-50/80 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/40">
+              <p className="font-bold text-emerald-900 dark:text-emerald-200 mb-2">🌧️ รอบฤดูฝน</p>
               <ul className="list-disc list-inside space-y-1">
                 <li><b>ปล่อยครั่ง:</b> พฤษภาคม - มิถุนายน</li>
                 <li><b>เก็บเกี่ยว:</b> พฤศจิกายน - ธันวาคม (ปีถัดไป)</li>
@@ -570,8 +645,8 @@ function LacKnowledgeAccordion() {
       content: (
         <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
           <p><b>คุณลักษณะต้นไม้ที่เหมาะแก่การเลี้ยงครั่ง:</b> เรือนยอดโปร่ง ได้รับแสงแดดพอเหมาะ อากาศถ่ายเทสะดวก แตกกิ่งได้ตลอดปี และเติบโตเร็ว</p>
-          <div className="p-4 bg-slate-100/70 dark:bg-slate-700/40 rounded-xl">
-            <p className="font-bold text-slate-900 dark:text-white mb-2">ตัวอย่างพืชอาศัย (Host Trees):</p>
+          <div className="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/40">
+            <p className="font-bold text-emerald-950 dark:text-emerald-200 mb-2">ตัวอย่างพืชอาศัย (Host Trees):</p>
             <div className="flex flex-wrap gap-2">
               {[
                 "ต้นจามจุรี (ก้ามปู) - Top 1",
@@ -599,16 +674,16 @@ function LacKnowledgeAccordion() {
       content: (
         <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3.5 bg-rose-50/80 dark:bg-rose-950/20 rounded-xl border border-rose-100 dark:border-rose-900/40">
-              <p className="font-bold text-rose-800 dark:text-rose-300">🎨 สีสกัดธรรมชาติ</p>
+            <div className="p-3.5 bg-rose-50/80 dark:bg-rose-950/20 rounded-xl border border-rose-200 dark:border-rose-900/40">
+              <p className="font-bold text-rose-900 dark:text-rose-300">🎨 สีสกัดธรรมชาติ</p>
               <p className="mt-1 text-slate-600 dark:text-slate-400">ใช้ย้อมผ้าสีแดงธรรมชาติ และแปรรูปเป็นสีผสมอาหาร</p>
             </div>
-            <div className="p-3.5 bg-amber-50/80 dark:bg-amber-950/20 rounded-xl border border-amber-100 dark:border-amber-900/40">
-              <p className="font-bold text-amber-800 dark:text-amber-300">✨ สารเคลือบสารพัดประโยชน์</p>
+            <div className="p-3.5 bg-amber-50/80 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40">
+              <p className="font-bold text-amber-900 dark:text-amber-300">✨ สารเคลือบสารพัดประโยชน์</p>
               <p className="mt-1 text-slate-600 dark:text-slate-400">ทำเชลแลกทาเงาไม้ เคลือบผิวผลไม้ เคลือบยาเม็ด ลูกอม และลิปสติก</p>
             </div>
-            <div className="p-3.5 bg-emerald-50/80 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/40">
-              <p className="font-bold text-emerald-800 dark:text-emerald-300">🌱 น้ำล้างครั่งรักษ์โลก</p>
+            <div className="p-3.5 bg-emerald-50/80 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900/40">
+              <p className="font-bold text-emerald-900 dark:text-emerald-300">🌱 น้ำล้างครั่งรักษ์โลก</p>
               <p className="mt-1 text-slate-600 dark:text-slate-400">น้ำจากการล้างครั่งดิบนำมาใช้เป็นสารบำรุงดิน ช่วยให้พืชผักเติบโตเร็วขึ้น</p>
             </div>
           </div>
@@ -654,7 +729,7 @@ function LacKnowledgeAccordion() {
                 className="w-full flex justify-between items-center p-4 sm:p-5 text-left font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all text-sm sm:text-base gap-4 cursor-pointer"
               >
                 <span>{item.title}</span>
-                <span className="text-blue-900 dark:text-amber-400 font-bold shrink-0 text-lg transition-transform duration-200">
+                <span className="text-rose-800 dark:text-rose-400 font-bold shrink-0 text-lg transition-transform duration-200">
                   {isOpen ? "−" : "+"}
                 </span>
               </button>
