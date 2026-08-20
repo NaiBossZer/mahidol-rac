@@ -87,7 +87,7 @@ export function HomePage() {
               </div>
             </div>
 
-            {/* ฝั่งขวา: เมนูนำทาง */}
+            {/* ฝั่งขวา: เมนูนำทาง (ถอดพื้นหลังออก + เปลี่ยนข้อความ) */}
             <div className="hidden xl:flex items-center space-x-6 text-xs sm:text-sm font-normal text-slate-200 shrink-0">
               <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
                 หน้าแรก
@@ -109,11 +109,8 @@ export function HomePage() {
               <Link to="/survey" className="hover:text-[#F5B800] transition-colors py-1">
                 แบบสอบถาม
               </Link>
-              <Link 
-                to="/dashboard" 
-                className="bg-[#F5B800] text-[#0A2E4D] hover:bg-[#ffc926] px-3.5 py-1.5 rounded-lg font-semibold transition-all shadow-sm"
-              >
-                DASHBOARD
+              <Link to="/dashboard" className="hover:text-[#F5B800] transition-colors py-1">
+                สรุปผลแบบประเมินความพึงพอใจ
               </Link>
             </div>
 
@@ -153,8 +150,8 @@ export function HomePage() {
               <Link to="/survey" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
                 แบบสอบถาม
               </Link>
-              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg bg-[#F5B800] text-[#0A2E4D] font-semibold text-center mt-2">
-                DASHBOARD
+              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
+                สรุปผลแบบประเมินความพึงพอใจ
               </Link>
             </div>
           )}
@@ -229,7 +226,7 @@ export function HomePage() {
                   <source src="/intro-lac.mp4" type="video/mp4" />
                 </video>
               ) : (
-                /* TAB 2: โมเดล 3D (ไฟล์ rac-room3d.glb) */
+                /* TAB 2: โมเดล 3D (ดึงไฟล์ rac-room3d.glb ในโฟลเดอร์ public) */
                 <div className="w-full h-full relative bg-slate-100 flex flex-col items-center justify-center">
                   <model-viewer
                     src="/rac-room3d.glb"
