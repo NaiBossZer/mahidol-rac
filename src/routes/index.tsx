@@ -17,68 +17,64 @@ export function HomePage() {
   };
 
   return (
-    // กำหนด font-['Prompt'] เป็นฟอนต์หลักของทั้งหน้า
     <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Prompt'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== SINGLE MAIN NAVBAR ==================== */}
+      {/* ==================== SINGLE NAVBAR ==================== */}
       <header className="sticky top-0 z-50 shadow-md">
         <nav className="bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             
-            {/* ฝั่งซ้าย: รวม 3 โลโก้ + ไอคอนครั่ง + ชื่อหน่วยงาน */}
-            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+            {/* ฝั่งซ้าย: เรียงโลโก้ 3 ตัว + เส้นแบ่ง + โลโก้ครั่ง & ข้อความ ทั้งหมดในบรรทัดเดียว */}
+            <div className="flex items-center gap-3 sm:gap-4">
               
-              {/* โลโก้สถาบัน 3 รูป */}
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                {/* โลโก้ 1: Envi */}
-                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
-                  <img 
-                    src="/envi-logo.jpg" 
-                    alt="Envi Mahidol Logo" 
-                    className="h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerText = '🌍 Envi';
-                    }}
-                  />
-                </div>
+              {/* โลโก้ 1: Envi */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+                <img 
+                  src="/envi-logo.jpg" 
+                  alt="Envi Mahidol Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🌍 Envi';
+                  }}
+                />
+              </div>
 
-                {/* โลโก้ 2: Mahidol */}
-                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
-                  <img 
-                    src="/mahidol-logo.png" 
-                    alt="Mahidol University Logo" 
-                    className="h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerText = '🏛️ Mahidol';
-                    }}
-                  />
-                </div>
+              {/* โลโก้ 2: Mahidol */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+                <img 
+                  src="/mahidol-logo.png" 
+                  alt="Mahidol University Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🏛️ Mahidol';
+                  }}
+                />
+              </div>
 
-                {/* โลโก้ 3: Social Engagement */}
-                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
-                  <img 
-                    src="/social-engagement-logo.png" 
-                    alt="Social Engagement Logo" 
-                    className="h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerText = '🤝 Social';
-                    }}
-                  />
-                </div>
+              {/* โลโก้ 3: Social Engagement */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
+                <img 
+                  src="/social-engagement-logo.png" 
+                  alt="Social Engagement Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🤝 Social';
+                  }}
+                />
               </div>
 
               {/* เส้นแบ่งแนวตั้ง */}
-              <div className="hidden sm:block w-[2px] h-8 bg-[#1A1A1A]/20"></div>
+              <div className="w-[2px] h-8 bg-[#1A1A1A]/30 shrink-0"></div>
 
               {/* ไอคอนแมลงครั่ง + ข้อความชื่อหน่วยงาน */}
               <div className="flex items-center gap-2.5">
                 <span className="text-xl sm:text-2xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
                   🐞
                 </span>
-                <div>
+                <div className="hidden sm:block">
                   <span className="font-['Mali'] text-xs sm:text-sm font-extrabold uppercase tracking-tight leading-tight block text-[#1A1A1A]">
                     งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
                   </span>
@@ -90,7 +86,7 @@ export function HomePage() {
 
             </div>
 
-            {/* ฝั่งขวา: เมนูหลักแบบ Oatly Buttons */}
+            {/* ฝั่งขวา: ปุ่มเมนู */}
             <div className="hidden lg:flex items-center space-x-3 font-['Mali'] font-extrabold text-xs sm:text-sm uppercase tracking-wide shrink-0">
               <button
                 type="button"
@@ -133,6 +129,7 @@ export function HomePage() {
                 {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
               </button>
             </div>
+
           </div>
 
           {/* Mobile Dropdown */}
