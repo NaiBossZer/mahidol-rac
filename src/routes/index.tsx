@@ -20,166 +20,169 @@ export function HomePage() {
     // กำหนด font-['Prompt'] เป็นฟอนต์หลักของทั้งหน้า
     <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Prompt'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== TOP BANNER (LOGOS & INSTITUTION) ==================== */}
-      <div className="bg-[#002B49] text-white border-b-3 border-[#1A1A1A] px-4 py-3">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
-          
-          {/* ฝั่งซ้าย: รวม 3 โลโก้ */}
-          <div className="flex items-center gap-3 flex-wrap justify-center">
-            {/* โลโก้ที่ 1: Envi Mahidol */}
-            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
-              <img 
-                src="/logo-envi.png" 
-                alt="Envi Mahidol Logo" 
-                className="h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerText = '🌍 Envi Mahidol';
-                }}
-              />
+      {/* ==================== COMBINED TOP NAVBAR & MAIN BAR ==================== */}
+      <header className="sticky top-0 z-50 shadow-md">
+        {/* แถบด้านบน: TOP BANNER (สีน้ำเงิน) */}
+        <div className="bg-[#002B49] text-white border-b-2 border-[#1A1A1A] px-4 py-2.5">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-3">
+            
+            {/* ฝั่งซ้าย: รวม 3 โลโก้ (แก้ไขชื่อไฟล์แล้ว) */}
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              {/* โลโก้ที่ 1: Envi Mahidol */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
+                <img 
+                  src="/envi-logo.jpg" 
+                  alt="Envi Mahidol Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🌍 Envi Mahidol';
+                  }}
+                />
+              </div>
+
+              {/* โลโก้ที่ 2: Mahidol University Faculty */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
+                <img 
+                  src="/mahidol-logo.png" 
+                  alt="Mahidol University Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🏛️ Mahidol Univ';
+                  }}
+                />
+              </div>
+
+              {/* โลโก้ที่ 3: งานพันธกิจเพื่อสังคม */}
+              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
+                <img 
+                  src="/social-engagement-logo.png" 
+                  alt="Social Engagement Logo" 
+                  className="h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerText = '🤝 งานพันธกิจฯ';
+                  }}
+                />
+              </div>
             </div>
 
-            {/* โลโก้ที่ 2: Mahidol University Faculty */}
-            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
-              <img 
-                src="/logo-mahidol.png" 
-                alt="Mahidol University Logo" 
-                className="h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerText = '🏛️ Mahidol Univ';
-                }}
-              />
+            {/* เส้นแบ่งแนวตั้ง (แสดงเฉพาะจอใหญ่) */}
+            <div className="hidden lg:block w-[2px] h-7 bg-white/20"></div>
+
+            {/* ฝั่งขวา: ข้อความชื่อหน่วยงาน */}
+            <div className="text-center lg:text-left">
+              <h2 className="font-['Mali'] text-sm sm:text-base font-extrabold tracking-wide leading-tight">
+                งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+              </h2>
+              <p className="text-xs font-semibold text-[#FFB800] leading-tight">
+                คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+              </p>
             </div>
 
-            {/* โลโก้ที่ 3: งานพันธกิจเพื่อสังคม */}
-            <div className="bg-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-12 flex items-center justify-center">
-              <img 
-                src="/logo-social.png" 
-                alt="Social Engagement Logo" 
-                className="h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerText = '🤝 งานพันธกิจฯ';
-                }}
-              />
-            </div>
-          </div>
-
-          {/* เส้นแบ่งแนวตั้ง (แสดงเฉพาะจอใหญ่) */}
-          <div className="hidden lg:block w-[2px] h-8 bg-white/20"></div>
-
-          {/* ฝั่งขวา: ข้อความชื่อหน่วยงาน */}
-          <div className="text-center lg:text-left">
-            <h2 className="font-['Mali'] text-base sm:text-lg font-extrabold tracking-wide leading-tight">
-              งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-            </h2>
-            <p className="text-xs sm:text-sm font-semibold text-[#FFB800] leading-tight">
-              คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ==================== MAIN BAR (OATLY STYLE) ==================== */}
-      <nav className="sticky top-0 z-50 bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          
-          {/* ฝั่งซ้าย: โลโก้สไตล์ Oatly Bold */}
-          <div className="flex items-center gap-3">
-            <span className="text-3xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-              🐞
-            </span>
-            <div>
-              <span className="font-['Mali'] text-2xl font-extrabold uppercase tracking-tight leading-none block">
-                ศูนย์ครั่งฯ
-              </span>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#801818] block">
-                ม.มหิดล อ.สบปราบ
-              </span>
-            </div>
-          </div>
-
-          {/* ฝั่งขวา: เมนูหลักแบบ Oatly Buttons */}
-          <div className="hidden md:flex items-center space-x-3 font-['Mali'] font-extrabold text-sm uppercase tracking-wide">
-            <button
-              type="button"
-              onClick={() => scrollToSection("cards-section")}
-              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-            >
-              📚 คลังความรู้
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("data-viz")}
-              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-            >
-              📈 สถิติการผลิต
-            </button>
-
-            <Link
-              to="/survey"
-              className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-            >
-              📝 แบบสอบถาม
-            </Link>
-
-            <Link
-              to="/dashboard"
-              className="px-5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-2"
-            >
-              📊 DASHBOARD
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-['Mali'] font-extrabold"
-            >
-              {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
-            </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Mali'] font-extrabold uppercase text-sm">
-            <button
-              type="button"
-              onClick={() => scrollToSection("cards-section")}
-              className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-            >
-              📚 คลังความรู้
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection("data-viz")}
-              className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-            >
-              📈 สถิติการผลิต
-            </button>
-            <Link
-              to="/survey"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
-            >
-              📝 แบบสอบถาม
-            </Link>
-            <Link
-              to="/dashboard"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white text-center"
-            >
-              📊 DASHBOARD
-            </Link>
+        {/* แถบด้านล่าง: MAIN BAR */}
+        <nav className="bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            {/* ฝั่งซ้าย: โลโก้แมลงครั่ง */}
+            <div className="flex items-center gap-3">
+              <span className="text-2xl sm:text-3xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
+                🐞
+              </span>
+              <div>
+                <span className="font-['Mali'] text-sm sm:text-base font-extrabold uppercase tracking-tight leading-tight block text-[#1A1A1A]">
+                  งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#801818] block leading-tight">
+                  คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+                </span>
+              </div>
+            </div>
+
+            {/* ฝั่งขวา: เมนูหลักแบบ Oatly Buttons */}
+            <div className="hidden md:flex items-center space-x-3 font-['Mali'] font-extrabold text-sm uppercase tracking-wide shrink-0">
+              <button
+                type="button"
+                onClick={() => scrollToSection("cards-section")}
+                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              >
+                📚 คลังความรู้
+              </button>
+
+              <button
+                type="button"
+                onClick={() => scrollToSection("data-viz")}
+                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              >
+                📈 สถิติการผลิต
+              </button>
+
+              <Link
+                to="/survey"
+                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              >
+                📝 แบบสอบถาม
+              </Link>
+
+              <Link
+                to="/dashboard"
+                className="px-5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-2"
+              >
+                📊 DASHBOARD
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-['Mali'] font-extrabold text-xs"
+              >
+                {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
+              </button>
+            </div>
           </div>
-        )}
-      </nav>
+
+          {/* Mobile Dropdown */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Mali'] font-extrabold uppercase text-sm">
+              <button
+                type="button"
+                onClick={() => scrollToSection("cards-section")}
+                className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
+              >
+                📚 คลังความรู้
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("data-viz")}
+                className="w-full text-left p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
+              >
+                📈 สถิติการผลิต
+              </button>
+              <Link
+                to="/survey"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#F9F6F0]"
+              >
+                📝 แบบสอบถาม
+              </Link>
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block p-3 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white text-center"
+              >
+                📊 DASHBOARD
+              </Link>
+            </div>
+          )}
+        </nav>
+      </header>
 
       {/* ==================== HERO SECTION (OATLY BOLD STYLE) ==================== */}
       <div>
@@ -234,7 +237,7 @@ export function HomePage() {
   );
 }
 
-// --- COMPONENT: Cards Grid (Oatly Block Cards) ---
+// --- COMPONENT: Cards Grid ---
 function LacKnowledgeCards() {
   const [selectedCard, setSelectedCard] = useState<any | null>(null);
 
@@ -304,7 +307,7 @@ function LacKnowledgeCards() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-12">
       <div className="text-center mb-10 space-y-2">
-        <h2 className="font-['Mali'] text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">
+        <h2 className="font-[#Mali] text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">
           📚 หมวดหมู่องค์ความรู้เรื่องครั่ง
         </h2>
         <p className="text-sm font-bold text-[#6E6A66]">
@@ -401,7 +404,7 @@ function LacKnowledgeCards() {
   );
 }
 
-// --- COMPONENT: Data Visualization (Oatly Block Stats) ---
+// --- COMPONENT: Data Visualization ---
 function LacDataVisualization() {
   const [activeTab, setActiveTab] = useState<"farmers" | "efficiency">("farmers");
 
@@ -496,7 +499,7 @@ function LacDataVisualization() {
   );
 }
 
-// --- COMPONENT: Accordion (Oatly Block Accordion) ---
+// --- COMPONENT: Accordion ---
 function LacKnowledgeAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
