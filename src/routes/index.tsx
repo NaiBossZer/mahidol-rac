@@ -20,7 +20,7 @@ export function HomePage() {
     <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Mitr'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
       {/* ==================== SINGLE NAVBAR ==================== */}
-      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white font-['Mitr'] shadow-lg border-b border-[#08233C]">
+      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white shadow-lg border-b border-[#08233C]">
         <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
           <div className="flex items-center justify-between gap-4">
             
