@@ -24,10 +24,10 @@ export function HomePage() {
         <nav className="bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             
-            {/* ฝั่งซ้าย: เรียงโลโก้ 3 ตัว + เส้นแบ่ง + โลโก้ครั่ง & ข้อความ ทั้งหมดในบรรทัดเดียว */}
+            {/* ฝั่งซ้าย: เรียงโลโก้ 3 ตัว + เส้นแบ่ง + โลโก้ครั่ง & ข้อความ */}
             <div className="flex items-center gap-3 sm:gap-4">
               
-              {/* โลโก้ 1: Envi */}
+              {/* โลโก้ 1 */}
               <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
                 <img 
                   src="/envi-logo.jpg" 
@@ -40,7 +40,7 @@ export function HomePage() {
                 />
               </div>
 
-              {/* โลโก้ 2: Mahidol */}
+              {/* โลโก้ 2 */}
               <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
                 <img 
                   src="/mahidol-logo.png" 
@@ -53,7 +53,7 @@ export function HomePage() {
                 />
               </div>
 
-              {/* โลโก้ 3: Social Engagement */}
+              {/* โลโก้ 3 */}
               <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-11 flex items-center justify-center shrink-0">
                 <img 
                   src="/social-engagement-logo.png" 
@@ -69,16 +69,16 @@ export function HomePage() {
               {/* เส้นแบ่งแนวตั้ง */}
               <div className="w-[2px] h-8 bg-[#1A1A1A]/30 shrink-0"></div>
 
-              {/* ไอคอนแมลงครั่ง + ข้อความชื่อหน่วยงาน */}
+              {/* ข้อความชื่อหน่วยงาน (เปลี่ยนมาใช้ Prompt + ปรับน้ำหนักให้อ่านง่าย) */}
               <div className="flex items-center gap-2.5">
                 <span className="text-xl sm:text-2xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
                   🐞
                 </span>
                 <div className="hidden sm:block">
-                  <span className="font-['Mali'] text-xs sm:text-sm font-extrabold uppercase tracking-tight leading-tight block text-[#1A1A1A]">
+                  <span className="font-['Prompt'] text-xs sm:text-sm font-bold leading-snug block text-[#1A1A1A]">
                     งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
                   </span>
-                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#801818] block leading-tight">
+                  <span className="font-['Prompt'] text-[11px] sm:text-xs font-semibold text-[#801818] block leading-tight mt-0.5">
                     คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
                   </span>
                 </div>
@@ -86,8 +86,8 @@ export function HomePage() {
 
             </div>
 
-            {/* ฝั่งขวา: ปุ่มเมนู */}
-            <div className="hidden lg:flex items-center space-x-3 font-['Mali'] font-extrabold text-xs sm:text-sm uppercase tracking-wide shrink-0">
+            {/* ฝั่งขวา: ปุ่มเมนู (ใช้ Prompt font-bold อ่านชัดเจน) */}
+            <div className="hidden lg:flex items-center space-x-3 font-['Prompt'] font-bold text-xs sm:text-sm shrink-0">
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
@@ -124,7 +124,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-['Mali'] font-extrabold text-xs"
+                className="p-2 border-2 border-[#1A1A1A] bg-white rounded-xl shadow-[2px_2px_0px_#1A1A1A] font-['Prompt'] font-bold text-xs"
               >
                 {isMobileMenuOpen ? "✕ CLOSE" : "☰ MENU"}
               </button>
@@ -134,7 +134,7 @@ export function HomePage() {
 
           {/* Mobile Dropdown */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Mali'] font-extrabold uppercase text-sm">
+            <div className="lg:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Prompt'] font-bold text-sm">
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
@@ -172,13 +172,13 @@ export function HomePage() {
       <div>
         <header className="bg-[#801818] text-white py-16 px-4 sm:px-8 border-b-3 border-[#1A1A1A] relative overflow-hidden">
           <div className="max-w-5xl mx-auto text-center space-y-6">
-            <span className="inline-block bg-[#F2E8CF] text-[#1A1A1A] font-['Mali'] font-extrabold text-xs sm:text-sm uppercase tracking-widest px-4 py-1.5 rounded-full border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A]">
+            <span className="inline-block bg-[#F2E8CF] text-[#1A1A1A] font-['Prompt'] font-bold text-xs sm:text-sm tracking-wider px-4 py-1.5 rounded-full border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A]">
               [RESEARCH] ห้องการเรียนรู้ครั่งครบวงจร
             </span>
-            <h1 className="font-['Mali'] text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight leading-none drop-shadow-[2px_2px_0px_#1A1A1A]">
+            <h1 className="font-['Mali'] text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-[2px_2px_0px_#1A1A1A]">
               ศูนย์เรียนรู้ & องค์ความรู้ครั่ง
             </h1>
-            <p className="text-lg sm:text-xl font-bold max-w-2xl mx-auto text-[#F2E8CF]">
+            <p className="text-base sm:text-xl font-medium max-w-2xl mx-auto text-[#F2E8CF] leading-relaxed">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
           </div>
@@ -187,7 +187,7 @@ export function HomePage() {
         {/* Video Section */}
         <section className="py-12 px-4 max-w-5xl mx-auto">
           <div className="bg-white border-3 border-[#1A1A1A] p-4 sm:p-6 rounded-3xl shadow-[6px_6px_0px_#1A1A1A] space-y-4">
-            <h2 className="font-['Mali'] text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-center">
+            <h2 className="font-['Mali'] text-2xl sm:text-3xl font-extrabold leading-tight text-center">
               🎬 วิดีโอแนะนำห้องการเรียนรู้ครั่ง
             </h2>
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-[#1A1A1A] bg-[#1A1A1A]">
@@ -213,9 +213,13 @@ export function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center text-xs font-bold font-mono border-t-3 border-[#1A1A1A] mt-16 space-y-2">
-        <p className="font-['Prompt'] text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p>
-        <p className="text-[#888]">© 2026 Faculty of Environment and Resource Studies, Mahidol University</p>
+      <footer className="bg-[#1A1A1A] text-[#F9F6F0] py-8 text-center border-t-3 border-[#1A1A1A] mt-16 space-y-2">
+        <p className="font-['Prompt'] text-xs sm:text-sm font-medium px-4">
+          งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+        </p>
+        <p className="text-[#A0A0A0] text-xs font-mono">
+          © 2026 Faculty of Environment and Resource Studies, Mahidol University
+        </p>
       </footer>
     </div>
   );
@@ -291,10 +295,11 @@ function LacKnowledgeCards() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-12">
       <div className="text-center mb-10 space-y-2">
-        <h2 className="font-[#Mali] text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">
+        {/* แก้ไข Bug font-[#Mali] เป็น font-['Mali'] */}
+        <h2 className="font-['Mali'] text-3xl sm:text-4xl font-extrabold leading-tight">
           📚 หมวดหมู่องค์ความรู้เรื่องครั่ง
         </h2>
-        <p className="text-sm font-bold text-[#6E6A66]">
+        <p className="text-sm font-semibold text-[#4A4A4A]">
           (คลิกที่การ์ดเพื่ออ่านข้อมูลเชิงลึกแบบเต็ม)
         </p>
       </div>
@@ -311,18 +316,19 @@ function LacKnowledgeCards() {
                 <span className="text-4xl bg-white p-2 rounded-2xl border-2 border-[#1A1A1A]">
                   {card.icon}
                 </span>
-                <span className="font-['Mali'] text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 bg-[#1A1A1A] text-white rounded-full">
+                <span className="font-['Prompt'] text-[11px] font-bold tracking-wider px-3 py-1 bg-[#1A1A1A] text-white rounded-full">
                   {card.tag}
                 </span>
               </div>
-              <h3 className="font-['Mali'] text-xl font-extrabold uppercase leading-tight pt-2">
+              <h3 className="font-['Mali'] text-xl font-extrabold leading-snug pt-2">
                 {card.title}
               </h3>
-              <p className="text-xs font-medium leading-relaxed text-[#333]">
+              {/* ปรับขนาดตัวอักษรบรรยายจาก text-xs เป็น text-sm และใส่ leading-relaxed */}
+              <p className="text-sm font-normal leading-relaxed text-[#2B2B2B]">
                 {card.desc}
               </p>
             </div>
-            <div className="font-['Mali'] text-xs font-extrabold uppercase text-[#801818] flex items-center gap-1">
+            <div className="font-['Prompt'] text-xs font-bold text-[#801818] flex items-center gap-1">
               <span>อ่านเพิ่มเติม</span>
               <span>→</span>
             </div>
@@ -343,7 +349,7 @@ function LacKnowledgeCards() {
             <button
               type="button"
               onClick={() => setSelectedCard(null)}
-              className="absolute top-4 right-4 bg-white border-2 border-[#1A1A1A] w-9 h-9 rounded-full font-['Mali'] font-extrabold flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A] cursor-pointer"
+              className="absolute top-4 right-4 bg-white border-2 border-[#1A1A1A] w-9 h-9 rounded-full font-['Prompt'] font-bold flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A] cursor-pointer"
             >
               ✕
             </button>
@@ -351,23 +357,23 @@ function LacKnowledgeCards() {
             <div className="space-y-5">
               <div className="flex items-center gap-3">
                 <span className="text-4xl">{selectedCard.icon}</span>
-                <h3 className="font-['Mali'] text-2xl font-extrabold uppercase">{selectedCard.title}</h3>
+                <h3 className="font-['Mali'] text-2xl font-extrabold">{selectedCard.title}</h3>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-['Mali'] text-xs font-extrabold uppercase tracking-wider text-[#801818]">📌 ภาพรวมองค์ความรู้</h4>
-                <p className="text-sm font-medium bg-white p-4 rounded-2xl border-2 border-[#1A1A1A]">
+                <h4 className="font-['Prompt'] text-xs font-bold tracking-wider text-[#801818]">📌 ภาพรวมองค์ความรู้</h4>
+                <p className="text-sm font-normal leading-relaxed bg-white p-4 rounded-2xl border-2 border-[#1A1A1A] text-[#2B2B2B]">
                   {selectedCard.detail.overview}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-['Mali'] text-xs font-extrabold uppercase tracking-wider text-[#2D5A27]">💡 ประเด็นสำคัญ</h4>
-                <ul className="space-y-1.5 text-xs font-bold">
+                <h4 className="font-['Prompt'] text-xs font-bold tracking-wider text-[#2D5A27]">💡 ประเด็นสำคัญ</h4>
+                <ul className="space-y-2 text-sm font-medium text-[#2B2B2B]">
                   {selectedCard.detail.highlights.map((item: string, idx: number) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <span>•</span>
-                      <span>{item}</span>
+                      <span className="text-[#801818] font-bold">•</span>
+                      <span className="leading-snug">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -376,7 +382,7 @@ function LacKnowledgeCards() {
               <button
                 type="button"
                 onClick={() => setSelectedCard(null)}
-                className="w-full bg-[#1A1A1A] text-white font-['Mali'] font-extrabold py-3 rounded-xl border-2 border-[#1A1A1A] uppercase tracking-wider cursor-pointer"
+                className="w-full bg-[#1A1A1A] text-white font-['Prompt'] font-bold py-3 rounded-xl border-2 border-[#1A1A1A] tracking-wider cursor-pointer hover:bg-[#333] transition-colors"
               >
                 ปิดหน้าต่าง
               </button>
@@ -395,35 +401,35 @@ function LacDataVisualization() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-12 space-y-8">
       <div className="text-center space-y-2">
-        <h2 className="font-['Mali'] text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">
+        <h2 className="font-['Mali'] text-3xl sm:text-4xl font-extrabold leading-tight">
           📊 สถิติและข้อมูลการผลิต จ.ลำปาง
         </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-[#FFCAD4] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
-          <p className="font-['Mali'] text-xs font-extrabold uppercase tracking-wider text-[#801818]">ศูนย์กลางการผลิตใหญ่สุด</p>
-          <h3 className="font-['Mali'] text-2xl font-extrabold uppercase mt-1">อ.งาว (บ้านบ่อสี่เหลี่ยม)</h3>
-          <p className="font-['Mali'] text-4xl font-extrabold mt-4">300,000 <span className="font-['Prompt'] text-sm font-bold">กก./ปี</span></p>
+          <p className="font-['Prompt'] text-xs font-bold tracking-wider text-[#801818]">ศูนย์กลางการผลิตใหญ่สุด</p>
+          <h3 className="font-['Mali'] text-2xl font-extrabold mt-1">อ.งาว (บ้านบ่อสี่เหลี่ยม)</h3>
+          <p className="font-['Mali'] text-4xl font-extrabold mt-4">300,000 <span className="font-['Prompt'] text-base font-bold text-[#1A1A1A]">กก./ปี</span></p>
         </div>
 
         <div className="bg-[#D8E2DC] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
-          <p className="font-['Mali'] text-xs font-extrabold uppercase tracking-wider text-[#2D5A27]">ประสิทธิภาพสูงสุด</p>
-          <h3 className="font-['Mali'] text-2xl font-extrabold uppercase mt-1">อ.สบปราบ</h3>
+          <p className="font-['Prompt'] text-xs font-bold tracking-wider text-[#2D5A27]">ประสิทธิภาพสูงสุด</p>
+          <h3 className="font-['Mali'] text-2xl font-extrabold mt-1">อ.สบปราบ</h3>
           <p className="font-['Mali'] text-4xl font-extrabold mt-4">อันดับ 1</p>
         </div>
 
         <div className="bg-[#F2E8CF] border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[5px_5px_0px_#1A1A1A]">
-          <p className="font-['Mali'] text-xs font-extrabold uppercase tracking-wider text-[#801818]">พืชอาศัยยอดนิยม</p>
-          <h3 className="font-['Mali'] text-2xl font-extrabold uppercase mt-1">ต้นจามจุรี (ก้ามปู)</h3>
+          <p className="font-['Prompt'] text-xs font-bold tracking-wider text-[#801818]">พืชอาศัยยอดนิยม</p>
+          <h3 className="font-['Mali'] text-2xl font-extrabold mt-1">ต้นจามจุรี (ก้ามปู)</h3>
           <p className="font-['Mali'] text-4xl font-extrabold mt-4">TOP 1</p>
         </div>
       </div>
 
       <div className="bg-white border-3 border-[#1A1A1A] p-6 rounded-3xl shadow-[6px_6px_0px_#1A1A1A] space-y-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-[#1A1A1A] pb-4">
-          <h3 className="font-['Mali'] text-xl font-extrabold uppercase">📍 อันดับพื้นที่การผลิต จ.ลำปาง</h3>
-          <div className="flex bg-[#F9F6F0] p-1.5 rounded-xl border-2 border-[#1A1A1A] font-['Mali'] font-extrabold text-xs">
+          <h3 className="font-['Mali'] text-xl font-extrabold">📍 อันดับพื้นที่การผลิต จ.ลำปาง</h3>
+          <div className="flex bg-[#F9F6F0] p-1.5 rounded-xl border-2 border-[#1A1A1A] font-['Prompt'] font-bold text-xs">
             <button
               type="button"
               onClick={() => setActiveTab("farmers")}
@@ -445,35 +451,35 @@ function LacDataVisualization() {
           </div>
         </div>
 
-        <div className="space-y-3 font-bold text-sm">
+        <div className="space-y-3 font-['Prompt'] font-bold text-sm">
           {activeTab === "farmers" ? (
             <>
               <div className="p-4 bg-[#FFCAD4] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥇 อันดับ 1: อ.วังเหนือ</span>
-                <span className="bg-[#1A1A1A] text-white px-3 py-1 rounded-full text-xs font-['Mali'] font-extrabold">เกษตรกรมากที่สุด</span>
+                <span className="bg-[#1A1A1A] text-white px-3 py-1 rounded-full text-xs font-bold">เกษตรกรมากที่สุด</span>
               </div>
               <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥈 อันดับ 2: อ.แจ้ห่ม</span>
-                <span className="text-xs font-bold text-[#6E6A66]">ยุทธศาสตร์การผลิต</span>
+                <span className="text-xs font-semibold text-[#555]">ยุทธศาสตร์การผลิต</span>
               </div>
               <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥉 อันดับ 3: อ.เมืองปาน</span>
-                <span className="text-xs font-bold text-[#6E6A66]">ยุทธศาสตร์การผลิต</span>
+                <span className="text-xs font-semibold text-[#555]">ยุทธศาสตร์การผลิต</span>
               </div>
             </>
           ) : (
             <>
               <div className="p-4 bg-[#D8E2DC] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥇 อันดับ 1: อ.สบปราบ</span>
-                <span className="bg-[#2D5A27] text-white px-3 py-1 rounded-full text-xs font-['Mali'] font-extrabold">ผลผลิต/กก.พันธุ์ สูงสุด</span>
+                <span className="bg-[#2D5A27] text-white px-3 py-1 rounded-full text-xs font-bold">ผลผลิต/กก.พันธุ์ สูงสุด</span>
               </div>
               <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥈 อันดับ 2: อ.เสริมงาม</span>
-                <span className="text-xs font-bold text-[#6E6A66]">อัตราการรอดสูง</span>
+                <span className="text-xs font-semibold text-[#555]">อัตราการรอดสูง</span>
               </div>
               <div className="p-4 bg-[#F9F6F0] rounded-2xl border-2 border-[#1A1A1A] flex justify-between items-center">
                 <span>🥉 อันดับ 3: อ.ห้างฉัตร</span>
-                <span className="text-xs font-bold text-[#6E6A66]">อัตราการรอดสูง</span>
+                <span className="text-xs font-semibold text-[#555]">อัตราการรอดสูง</span>
               </div>
             </>
           )}
@@ -504,7 +510,7 @@ function LacKnowledgeAccordion() {
 
   return (
     <section className="max-w-4xl mx-auto px-4 py-12">
-      <h2 className="font-['Mali'] text-2xl font-extrabold uppercase tracking-tight text-center mb-6">
+      <h2 className="font-['Mali'] text-2xl font-extrabold text-center mb-6">
         ❓ เจาะลึกรายละเอียด (FAQ)
       </h2>
 
@@ -516,13 +522,13 @@ function LacKnowledgeAccordion() {
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="w-full flex justify-between items-center p-4 font-['Mali'] font-extrabold text-left uppercase cursor-pointer"
+                className="w-full flex justify-between items-center p-4 font-['Mali'] font-extrabold text-left cursor-pointer"
               >
-                <span>{item.title}</span>
+                <span className="text-base sm:text-lg">{item.title}</span>
                 <span className="text-xl font-black">{isOpen ? "−" : "+"}</span>
               </button>
               {isOpen && (
-                <div className="p-4 border-t-2 border-[#1A1A1A] bg-[#F9F6F0] font-bold text-sm">
+                <div className="p-4 border-t-2 border-[#1A1A1A] bg-[#F9F6F0] font-['Prompt'] font-normal text-sm leading-relaxed text-[#2B2B2B]">
                   {item.content}
                 </div>
               )}
