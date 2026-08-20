@@ -20,95 +20,82 @@ export function HomePage() {
     // กำหนด font-['Prompt'] เป็นฟอนต์หลักของทั้งหน้า
     <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] font-['Prompt'] selection:bg-[#E85D04] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== COMBINED TOP NAVBAR & MAIN BAR ==================== */}
+      {/* ==================== SINGLE MAIN NAVBAR ==================== */}
       <header className="sticky top-0 z-50 shadow-md">
-        {/* แถบด้านบน: TOP BANNER (สีน้ำเงิน) */}
-        <div className="bg-[#002B49] text-white border-b-2 border-[#1A1A1A] px-4 py-2.5">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-3">
-            
-            {/* ฝั่งซ้าย: รวม 3 โลโก้ (แก้ไขชื่อไฟล์แล้ว) */}
-            <div className="flex items-center gap-3 flex-wrap justify-center">
-              {/* โลโก้ที่ 1: Envi Mahidol */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
-                <img 
-                  src="/envi-logo.jpg" 
-                  alt="Envi Mahidol Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🌍 Envi Mahidol';
-                  }}
-                />
-              </div>
-
-              {/* โลโก้ที่ 2: Mahidol University Faculty */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
-                <img 
-                  src="/mahidol-logo.png" 
-                  alt="Mahidol University Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🏛️ Mahidol Univ';
-                  }}
-                />
-              </div>
-
-              {/* โลโก้ที่ 3: งานพันธกิจเพื่อสังคม */}
-              <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-10 flex items-center justify-center">
-                <img 
-                  src="/social-engagement-logo.png" 
-                  alt="Social Engagement Logo" 
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerText = '🤝 งานพันธกิจฯ';
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* เส้นแบ่งแนวตั้ง (แสดงเฉพาะจอใหญ่) */}
-            <div className="hidden lg:block w-[2px] h-7 bg-white/20"></div>
-
-            {/* ฝั่งขวา: ข้อความชื่อหน่วยงาน */}
-            <div className="text-center lg:text-left">
-              <h2 className="font-['Mali'] text-sm sm:text-base font-extrabold tracking-wide leading-tight">
-                งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-              </h2>
-              <p className="text-xs font-semibold text-[#FFB800] leading-tight">
-                คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-              </p>
-            </div>
-
-          </div>
-        </div>
-
-        {/* แถบด้านล่าง: MAIN BAR */}
         <nav className="bg-[#F9F6F0] border-b-3 border-[#1A1A1A] px-4 lg:px-8 py-3">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             
-            {/* ฝั่งซ้าย: โลโก้แมลงครั่ง */}
-            <div className="flex items-center gap-3">
-              <span className="text-2xl sm:text-3xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
-                🐞
-              </span>
-              <div>
-                <span className="font-['Mali'] text-sm sm:text-base font-extrabold uppercase tracking-tight leading-tight block text-[#1A1A1A]">
-                  งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#801818] block leading-tight">
-                  คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-                </span>
+            {/* ฝั่งซ้าย: รวม 3 โลโก้ + ไอคอนครั่ง + ชื่อหน่วยงาน */}
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              
+              {/* โลโก้สถาบัน 3 รูป */}
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* โลโก้ 1: Envi */}
+                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
+                  <img 
+                    src="/envi-logo.jpg" 
+                    alt="Envi Mahidol Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🌍 Envi';
+                    }}
+                  />
+                </div>
+
+                {/* โลโก้ 2: Mahidol */}
+                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
+                  <img 
+                    src="/mahidol-logo.png" 
+                    alt="Mahidol University Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🏛️ Mahidol';
+                    }}
+                  />
+                </div>
+
+                {/* โลโก้ 3: Social Engagement */}
+                <div className="bg-white p-1 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] h-9 sm:h-10 flex items-center justify-center shrink-0">
+                  <img 
+                    src="/social-engagement-logo.png" 
+                    alt="Social Engagement Logo" 
+                    className="h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerText = '🤝 Social';
+                    }}
+                  />
+                </div>
               </div>
+
+              {/* เส้นแบ่งแนวตั้ง */}
+              <div className="hidden sm:block w-[2px] h-8 bg-[#1A1A1A]/20"></div>
+
+              {/* ไอคอนแมลงครั่ง + ข้อความชื่อหน่วยงาน */}
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl sm:text-2xl bg-[#801818] text-white p-1.5 rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] shrink-0">
+                  🐞
+                </span>
+                <div>
+                  <span className="font-['Mali'] text-xs sm:text-sm font-extrabold uppercase tracking-tight leading-tight block text-[#1A1A1A]">
+                    งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#801818] block leading-tight">
+                    คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+                  </span>
+                </div>
+              </div>
+
             </div>
 
             {/* ฝั่งขวา: เมนูหลักแบบ Oatly Buttons */}
-            <div className="hidden md:flex items-center space-x-3 font-['Mali'] font-extrabold text-sm uppercase tracking-wide shrink-0">
+            <div className="hidden lg:flex items-center space-x-3 font-['Mali'] font-extrabold text-xs sm:text-sm uppercase tracking-wide shrink-0">
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
-                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               >
                 📚 คลังความรู้
               </button>
@@ -116,28 +103,28 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => scrollToSection("data-viz")}
-                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               >
                 📈 สถิติการผลิต
               </button>
 
               <Link
                 to="/survey"
-                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                className="px-3.5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-white hover:bg-[#F2E8CF] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
                 📝 แบบสอบถาม
               </Link>
 
               <Link
                 to="/dashboard"
-                className="px-5 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-2"
+                className="px-4 py-2 rounded-xl border-2 border-[#1A1A1A] bg-[#2D5A27] text-white hover:bg-[#23471F] transition-all shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ml-1"
               >
                 📊 DASHBOARD
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden shrink-0">
+            <div className="lg:hidden shrink-0">
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -150,7 +137,7 @@ export function HomePage() {
 
           {/* Mobile Dropdown */}
           {isMobileMenuOpen && (
-            <div className="md:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Mali'] font-extrabold uppercase text-sm">
+            <div className="lg:hidden mt-3 p-4 bg-white border-2 border-[#1A1A1A] rounded-2xl shadow-[4px_4px_0px_#1A1A1A] space-y-2 font-['Mali'] font-extrabold uppercase text-sm">
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
@@ -184,7 +171,7 @@ export function HomePage() {
         </nav>
       </header>
 
-      {/* ==================== HERO SECTION (OATLY BOLD STYLE) ==================== */}
+      {/* ==================== HERO SECTION ==================== */}
       <div>
         <header className="bg-[#801818] text-white py-16 px-4 sm:px-8 border-b-3 border-[#1A1A1A] relative overflow-hidden">
           <div className="max-w-5xl mx-auto text-center space-y-6">
