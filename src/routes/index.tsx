@@ -6,7 +6,6 @@ export const Route = createFileRoute("/")({
 });
 
 export function HomePage() {
-  // ฟังก์ชันช่วย Scroll ไปยังส่วนที่ต้องการโดยไม่เปลี่ยน URL
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -15,63 +14,63 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between scroll-smooth">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col justify-between scroll-smooth border-t-4 border-blue-900">
       <div>
         {/* 1. Header Banner / Hero Section */}
         <header
-          className="relative bg-cover bg-center bg-no-repeat text-white py-16 sm:py-24 px-4 text-center overflow-hidden"
+          className="relative bg-cover bg-center bg-no-repeat text-white py-16 sm:py-24 px-4 text-center overflow-hidden border-b border-slate-200 dark:border-slate-800"
           style={{ backgroundImage: "url('/Backdrop_Shellac_2569.png')" }}
         >
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-emerald-950/80 backdrop-blur-[2px]" />
+          {/* Overlay Tone Deep Navy */}
+          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[2px]" />
 
           <div className="relative z-10 max-w-4xl mx-auto space-y-4 sm:space-y-6">
-            <span className="inline-block bg-emerald-500/30 text-emerald-100 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-emerald-400/30 backdrop-blur-sm shadow-inner">
-              โครงการห้องการเรียนรู้ครั่งครบวงจร
-            </span>
+            <div className="inline-flex items-center gap-2 bg-blue-950/80 text-amber-400 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-amber-500/30 backdrop-blur-sm shadow-inner font-mono">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span>[RESEARCH] โครงการห้องการเรียนรู้ครั่งครบวงจร</span>
+            </div>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight">
               ศูนย์เรียนรู้และองค์ความรู้ครั่ง
             </h1>
-            <p className="text-emerald-100 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
+            <p className="text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto font-light drop-shadow">
               คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
             </p>
 
+            {/* Accent Line Decorative */}
+            <div className="w-48 h-0.5 mx-auto bg-gradient-to-r from-blue-900 via-amber-400 to-blue-900 my-4" />
+
             {/* TAB / Navigation Buttons */}
-<div className="pt-4 flex flex-wrap justify-center gap-3 sm:gap-4">
-  {/* 1. คลังความรู้ */}
-  <button
-    type="button"
-    onClick={() => scrollToSection("cards-section")}
-    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
-  >
-    <span>📚</span> คลังความรู้
-  </button>
+            <div className="pt-2 flex flex-wrap justify-center gap-3 sm:gap-4">
+              <button
+                type="button"
+                onClick={() => scrollToSection("cards-section")}
+                className="bg-blue-900 hover:bg-blue-800 text-amber-400 font-bold px-5 py-3 rounded-xl shadow-lg border border-amber-500/20 hover:shadow-xl transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+              >
+                <span>📚</span> คลังความรู้
+              </button>
 
-  {/* 2. สถิติการผลิต */}
-  <button
-    type="button"
-    onClick={() => scrollToSection("data-viz")}
-    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2 cursor-pointer"
-  >
-    <span>📈</span> สถิติการผลิต
-  </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("data-viz")}
+                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+              >
+                <span>📈</span> สถิติการผลิต
+              </button>
 
-  {/* 3. ทำแบบประเมินความพึงพอใจ */}
-  <Link
-    to="/survey"
-    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
-  >
-    <span>📝</span> ทำแบบประเมินความพึงพอใจ
-  </Link>
+              <Link
+                to="/survey"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2"
+              >
+                <span>📝</span> ทำแบบประเมินความพึงพอใจ
+              </Link>
 
-  {/* 4. ดูสรุปผล Dashboard */}
-  <Link
-    to="/dashboard"
-    className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center gap-2"
-  >
-    <span>📊</span> ดูสรุปผล Dashboard
-  </Link>
-</div>
+              <Link
+                to="/dashboard"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-lg border border-slate-300 transition-all active:scale-[0.99] text-sm sm:text-base flex items-center gap-2"
+              >
+                <span>📊</span> ดูสรุปผล Dashboard
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -118,7 +117,7 @@ export function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-8 text-center text-sm border-t border-slate-800 mt-16">
+      <footer className="bg-slate-950 text-slate-400 py-8 text-center text-sm border-t border-slate-800 mt-16 font-mono">
         <div className="max-w-6xl mx-auto px-4">
           <p>© 2026 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</p>
         </div>
@@ -127,7 +126,7 @@ export function HomePage() {
   );
 }
 
-// --- COMPONENT: Cards Grid (เปิด Pop-up Tab ได้) ---
+// --- COMPONENT: Cards Grid ---
 interface CardDetail {
   overview: string;
   highlights: string[];
@@ -155,9 +154,9 @@ function LacKnowledgeCards() {
       title: "ครั่งคืออะไร & ถิ่นกำเนิด",
       desc: "ยางธรรมชาติจากแมลงครั่ง (Laccifer lacca) สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
       tag: "พื้นฐานครั่ง",
-      bgColor: "bg-rose-50/70 dark:bg-rose-950/20",
+      bgColor: "bg-rose-50/50 dark:bg-rose-950/20",
       borderColor: "border-rose-200 dark:border-rose-900/50",
-      badgeColor: "bg-rose-100 dark:bg-rose-900/80 text-rose-800 dark:text-rose-200",
+      badgeColor: "bg-rose-100 text-rose-800 dark:bg-rose-900/80 dark:text-rose-200",
       detail: {
         overview:
           "ครั่ง คือ ยางหรือสารชันชนิดหนึ่งที่ขับออกมาจากตัวแมลงครั่ง (Laccifer lacca) เพื่อสร้างเป็นรังห่อหุ้มลำตัว ครั่งดิบมีลักษณะเป็นก้อนแข็งสีแดงอิฐหรือน้ำตาลแดง มีคุณสมบัติละลายได้ในแอลกอฮอล์ และหลอมเหลวด้วยความร้อน",
@@ -174,9 +173,9 @@ function LacKnowledgeCards() {
       title: "พืชอาศัย & นิเวศวิทยา",
       desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี (ก้ามปู) ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
       tag: "นิเวศวิทยา",
-      bgColor: "bg-emerald-50/70 dark:bg-emerald-950/20",
+      bgColor: "bg-emerald-50/50 dark:bg-emerald-950/20",
       borderColor: "border-emerald-200 dark:border-emerald-900/50",
-      badgeColor: "bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200",
+      badgeColor: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200",
       detail: {
         overview:
           "แมลงครั่งต้องอาศัยอยู่บนกิ่งของต้นไม้เฉพาะชนิดเพื่อดูดกินน้ำเลี้ยง พืชอาศัยที่ดีต้องมีทรงพุ่มโปร่ง มีกิ่งอ่อนให้แมลงเกาะ และเจริญเติบโตได้ดีในสภาพอากาศท้องถิ่น",
@@ -193,9 +192,9 @@ function LacKnowledgeCards() {
       title: "การเพาะเลี้ยง & การจัดการ",
       desc: "เทคนิคการคัดแม่พันธุ์ รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) อัตราปล่อยพันธุ์ และการดูแลป้องกันศัตรูครั่ง",
       tag: "คู่มือเกษตรกร",
-      bgColor: "bg-amber-50/70 dark:bg-amber-950/20",
+      bgColor: "bg-amber-50/50 dark:bg-amber-950/20",
       borderColor: "border-amber-200 dark:border-amber-900/50",
-      badgeColor: "bg-amber-100 dark:bg-amber-900/80 text-amber-800 dark:text-amber-200",
+      badgeColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200",
       detail: {
         overview:
           "การเลี้ยงครั่งแบ่งออกเป็น 2 รอบตามฤดูกาล ได้แก่ รอบฤดูร้อน และ รอบฤดูฝน การจัดการที่มีประสิทธิภาพจะช่วยลดอัตราการสูญเสียจากแมลงศัตรูพืชและสภาพอากาศ",
@@ -212,9 +211,9 @@ function LacKnowledgeCards() {
       title: "ผลิตภัณฑ์ & การแปรรูป",
       desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่งบำรุงดิน",
       tag: "นวัตกรรม & มูลค่า",
-      bgColor: "bg-sky-50/70 dark:bg-sky-950/20",
-      borderColor: "border-sky-200 dark:border-sky-900/50",
-      badgeColor: "bg-sky-100 dark:bg-sky-900/80 text-sky-800 dark:text-sky-200",
+      bgColor: "bg-blue-50/50 dark:bg-blue-950/20",
+      borderColor: "border-blue-200 dark:border-blue-900/50",
+      badgeColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/80 dark:text-blue-200",
       detail: {
         overview:
           "ครั่งดิบที่เก็บเกี่ยวได้จะถูกนำเข้าสู่กระบวนการแปรรูป ตั้งแต่การแกะกิ่ง บด ล้าง สกัดแยกสี และฟอกสี จนได้ผลิตภัณฑ์มูลค่าสูงที่ใช้ในหลายอุตสาหกรรม",
@@ -238,7 +237,6 @@ function LacKnowledgeCards() {
         </p>
       </div>
 
-      {/* Grid การ์ด */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card) => (
           <div
@@ -251,18 +249,18 @@ function LacKnowledgeCards() {
                 <span className="text-3xl group-hover:scale-110 transition-transform">
                   {card.icon}
                 </span>
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${card.badgeColor}`}>
+                <span className={`text-[10px] font-bold font-mono px-2.5 py-1 rounded-full ${card.badgeColor}`}>
                   {card.tag}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-900 dark:group-hover:text-amber-400 transition-colors">
                 {card.title}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                 {card.desc}
               </p>
             </div>
-            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 pt-2">
+            <div className="text-xs font-semibold text-blue-900 dark:text-amber-400 flex items-center gap-1 pt-2">
               <span>อ่านรายละเอียดเพิ่มเติม</span>
               <span>→</span>
             </div>
@@ -270,17 +268,16 @@ function LacKnowledgeCards() {
         ))}
       </div>
 
-      {/* Pop-up Tab (Modal) */}
+      {/* Pop-up Modal */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
           onClick={() => setSelectedCard(null)}
         >
           <div
             className="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* ปุ่มปิด มุมขวาบน */}
             <button
               type="button"
               onClick={() => setSelectedCard(null)}
@@ -290,14 +287,13 @@ function LacKnowledgeCards() {
               ✕
             </button>
 
-            {/* เนื้อหาใน Modal */}
             <div className="space-y-6">
               <div className="flex items-center gap-4 pr-8">
                 <span className="text-4xl p-3 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
                   {selectedCard.icon}
                 </span>
                 <div>
-                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${selectedCard.badgeColor}`}>
+                  <span className={`text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full ${selectedCard.badgeColor}`}>
                     {selectedCard.tag}
                   </span>
                   <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
@@ -307,7 +303,7 @@ function LacKnowledgeCards() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                <h4 className="text-xs font-bold font-mono text-slate-400 dark:text-slate-400 uppercase tracking-wider">
                   📌 ภาพรวมองค์ความรู้
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
@@ -316,13 +312,13 @@ function LacKnowledgeCards() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                <h4 className="text-xs font-bold font-mono text-slate-400 dark:text-slate-400 uppercase tracking-wider">
                   💡 ประเด็นสำคัญ
                 </h4>
                 <ul className="space-y-2">
                   {selectedCard.detail.highlights.map((item, idx) => (
                     <li key={idx} className="text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
-                      <span className="text-emerald-500 font-bold mt-0.5">•</span>
+                      <span className="text-amber-500 font-bold mt-0.5">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -333,7 +329,7 @@ function LacKnowledgeCards() {
                 <button
                   type="button"
                   onClick={() => setSelectedCard(null)}
-                  className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                  className="bg-blue-900 hover:bg-blue-800 text-amber-400 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer"
                 >
                   ปิดหน้าต่าง
                 </button>
@@ -351,10 +347,10 @@ function LacDataVisualization() {
   const [activeTab, setActiveTab] = useState<"farmers" | "efficiency">("farmers");
 
   const compositions = [
-    { name: "ชัน/เรซิน (Resin)", percent: "68-90%", value: 80, color: "bg-emerald-600" },
+    { name: "ชัน/เรซิน (Resin)", percent: "68-90%", value: 80, color: "bg-blue-900" },
     { name: "สีสกัด (Dye)", percent: "2-10%", value: 10, color: "bg-rose-500" },
     { name: "ขี้ผึ้ง (Wax)", percent: "5-6%", value: 6, color: "bg-amber-500" },
-    { name: "แร่ธาตุ (Mineral)", percent: "3-7%", value: 5, color: "bg-sky-500" },
+    { name: "แร่ธาตุ (Mineral)", percent: "3-7%", value: 5, color: "bg-emerald-500" },
     { name: "น้ำ (Water)", percent: "2-3%", value: 3, color: "bg-slate-400" },
   ];
 
@@ -370,9 +366,9 @@ function LacDataVisualization() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
+            <p className="text-xs font-bold font-mono text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
               ศูนย์กลางการผลิตใหญ่ที่สุด
             </p>
             <h3 className="text-xl font-bold text-slate-900 dark:text-emerald-100 mt-1">
@@ -380,8 +376,8 @@ function LacDataVisualization() {
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
-              300,000 <span className="text-base font-normal text-slate-600 dark:text-slate-400">กก./ปี</span>
+            <p className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+              300,000 <span className="text-base font-normal font-sans text-slate-600 dark:text-slate-400">กก./ปี</span>
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
               สร้างรายได้เฉลี่ย 4.5 แสนบาท/ครอบครัว/ปี
@@ -389,17 +385,17 @@ function LacDataVisualization() {
           </div>
         </div>
 
-        <div className="bg-sky-50/60 dark:bg-sky-950/30 p-6 rounded-2xl border border-sky-200 dark:border-sky-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-blue-50/50 dark:bg-blue-950/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-900/50 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider">
+            <p className="text-xs font-bold font-mono text-blue-900 dark:text-blue-300 uppercase tracking-wider">
               ประสิทธิภาพการผลิตสูงสุด
             </p>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-sky-100 mt-1">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-blue-100 mt-1">
               อ.สบปราบ
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-sky-600 dark:text-sky-400">
+            <p className="text-3xl font-black font-mono text-blue-900 dark:text-amber-400">
               อันดับ 1
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
@@ -408,9 +404,9 @@ function LacDataVisualization() {
           </div>
         </div>
 
-        <div className="bg-amber-50/60 dark:bg-amber-950/30 p-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between">
+        <div className="bg-amber-50/50 dark:bg-amber-950/20 p-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between">
           <div>
-            <p className="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
+            <p className="text-xs font-bold font-mono text-amber-800 dark:text-amber-300 uppercase tracking-wider">
               พืชอาศัยยอดนิยม
             </p>
             <h3 className="text-xl font-bold text-slate-900 dark:text-amber-100 mt-1">
@@ -418,8 +414,8 @@ function LacDataVisualization() {
             </h3>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-amber-600 dark:text-amber-400">
-              Top 1
+            <p className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400">
+              TOP 1
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
               เรือนยอดโปร่ง แตกกิ่งเร็ว เหมาะกับการเลี้ยงครั่งมากที่สุด
@@ -435,13 +431,13 @@ function LacDataVisualization() {
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               📍 อันดับพื้นที่การผลิต จ.ลำปาง
             </h3>
-            <div className="flex bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl text-xs font-medium">
+            <div className="flex bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl text-xs font-mono">
               <button
                 type="button"
                 onClick={() => setActiveTab("farmers")}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeTab === "farmers"
-                    ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-sm font-bold"
+                    ? "bg-blue-900 text-amber-400 shadow-sm font-bold"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
                 }`}
               >
@@ -452,7 +448,7 @@ function LacDataVisualization() {
                 onClick={() => setActiveTab("efficiency")}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeTab === "efficiency"
-                    ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-sm font-bold"
+                    ? "bg-blue-900 text-amber-400 shadow-sm font-bold"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900"
                 }`}
               >
@@ -466,30 +462,30 @@ function LacDataVisualization() {
               <>
                 <div className="flex items-center justify-between p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.วังเหนือ</span>
-                  <span className="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2.5 py-1 rounded-full font-semibold">เกษตรกรมากที่สุด</span>
+                  <span className="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2.5 py-1 rounded-full font-semibold font-mono">เกษตรกรมากที่สุด</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.แจ้ห่ม</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">ยุทธศาสตร์การผลิต</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">ยุทธศาสตร์การผลิต</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥉 อันดับ 3: อ.เมืองปาน</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">ยุทธศาสตร์การผลิต</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">ยุทธศาสตร์การผลิต</span>
                 </div>
               </>
             ) : (
               <>
-                <div className="flex items-center justify-between p-3.5 bg-sky-50/50 dark:bg-sky-950/20 rounded-xl border border-sky-100 dark:border-sky-900/50">
+                <div className="flex items-center justify-between p-3.5 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-100 dark:border-blue-900/50">
                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">🥇 อันดับ 1: อ.สบปราบ</span>
-                  <span className="text-xs bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 px-2.5 py-1 rounded-full font-semibold">ผลผลิต/กก.พันธุ์ สูงสุด</span>
+                  <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-amber-400 px-2.5 py-1 rounded-full font-semibold font-mono">ผลผลิต/กก.พันธุ์ สูงสุด</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥈 อันดับ 2: อ.เสริมงาม</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">อัตราการรอดสูง</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">อัตราการรอดสูง</span>
                 </div>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-sm">🥉 อันดับ 3: อ.ห้างฉัตร</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">อัตราการรอดสูง</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">อัตราการรอดสูง</span>
                 </div>
               </>
             )}
@@ -512,7 +508,7 @@ function LacDataVisualization() {
               <div key={idx} className="space-y-1.5">
                 <div className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300">
                   <span>{item.name}</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{item.percent}</span>
+                  <span className="font-bold font-mono text-slate-900 dark:text-white">{item.percent}</span>
                 </div>
                 <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div
@@ -550,8 +546,8 @@ function LacKnowledgeAccordion() {
                 <li><b>เก็บเกี่ยว:</b> พฤษภาคม - มิถุนายน</li>
               </ul>
             </div>
-            <div className="bg-sky-50/80 dark:bg-sky-950/20 p-4 rounded-xl border border-sky-200 dark:border-sky-900/40">
-              <p className="font-bold text-sky-900 dark:text-sky-200 mb-2">🌧️ รอบฤดูฝน</p>
+            <div className="bg-blue-50/80 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200 dark:border-blue-900/40">
+              <p className="font-bold text-blue-900 dark:text-blue-200 mb-2">🌧️ รอบฤดูฝน</p>
               <ul className="list-disc list-inside space-y-1">
                 <li><b>ปล่อยครั่ง:</b> พฤษภาคม - มิถุนายน</li>
                 <li><b>เก็บเกี่ยว:</b> พฤศจิกายน - ธันวาคม (ปีถัดไป)</li>
@@ -562,7 +558,7 @@ function LacKnowledgeAccordion() {
             <p className="font-bold text-slate-900 dark:text-white">📌 เทคนิคการคัดเลือกและปล่อยครั่งพันธุ์:</p>
             <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
               <li>คัดรังครั่งสมบูรณ์ หนา เกาะติดกิ่งดี ไม่มีร่องรอยศัตรูพืชทำลาย</li>
-              <li>ตัดครั่งพันธุ์ความยาว 15 ซม. (หนัก 40-50 กรัม) ผูกติดกิ่งพืชอาศัยห่างกันช่วงละ 3-4 เมตร</li>
+              <li>ตัดครั่งพันธุ์ความยาว 15 ซม. (หนัก 40-50 กรัม) ผูกติดกิ่งพืชอาศัยช่วงละ 3-4 เมตร</li>
               <li><b>การดูแลหลังปล่อย:</b> เก็บครั่งพันธุ์ออกภายใน 3 สัปดาห์ หรือเมื่อตัวอ่อนลงเกาะหมดแล้ว</li>
             </ul>
           </div>
@@ -658,7 +654,7 @@ function LacKnowledgeAccordion() {
                 className="w-full flex justify-between items-center p-4 sm:p-5 text-left font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all text-sm sm:text-base gap-4 cursor-pointer"
               >
                 <span>{item.title}</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold shrink-0 text-lg transition-transform duration-200">
+                <span className="text-blue-900 dark:text-amber-400 font-bold shrink-0 text-lg transition-transform duration-200">
                   {isOpen ? "−" : "+"}
                 </span>
               </button>
