@@ -5,12 +5,12 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-// ข้อมูลภาพสไลด์สำหรับแบนเนอร์ด้านบน
+// ข้อมูลภาพสไลด์สำหรับแบนเนอร์ด้านบน (เน้นธีมแดงครั่ง)
 const HERO_SLIDES = [
   {
     id: 1,
     image: "/Backdrop_Shellac_2569.png",
-    badge: "MAHIDOL LEARNING HUB",
+    badge: "ห้องการเรียนรู้ครั่งครบวงจร มหาวิทยาลัยมหิดล",
     title: "ศูนย์เรียนรู้ & องค์ความรู้ครั่ง",
     subtitle: "งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง",
     buttonText: "สำรวจคลังความรู้",
@@ -78,8 +78,8 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-slate-800 font-['Mitr'] selection:bg-[#801818] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== NAVBAR ==================== */}
-      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white shadow-md border-b border-[#08233C]">
+      {/* ==================== NAVBAR (พร้อมขอบล่างสีแดงครั่ง) ==================== */}
+      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white shadow-md border-b-2 border-[#801818]">
         <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
           <div className="flex items-center justify-between gap-4">
             
@@ -209,8 +209,8 @@ export function HomePage() {
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="grow">
         
-        {/* ==================== HERO SLIDER BANNER SECTION ==================== */}
-        <section className="relative w-full h-[450px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-slate-900">
+        {/* ==================== HERO SLIDER BANNER SECTION (เน้นธีมแดงครั่ง #801818) ==================== */}
+        <section className="relative w-full h-[450px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#500A0A]">
           {HERO_SLIDES.map((slide, index) => (
             <div
               key={slide.id}
@@ -223,13 +223,14 @@ export function HomePage() {
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 transform scale-105"
                 style={{ backgroundImage: `url('${slide.image}')` }}
               >
-                {/* Gradient Overlay ให้ข้อความเด่นอ่านง่าย */}
-                <div className="absolute inset-0 bg-[#0A2E4D]/50 bg-gradient-to-t from-[#0A2E4D] via-[#0A2E4D]/40 to-black/30" />
+                {/* Gradient Overlay โทนสีแดงครั่งเอกลักษณ์ #801818 */}
+                <div className="absolute inset-0 bg-[#701414]/50 bg-gradient-to-t from-[#500A0A] via-[#801818]/60 to-black/40" />
               </div>
 
               {/* ข้อความกลางสไลด์ */}
               <div className="relative z-20 max-w-5xl mx-auto h-full px-6 sm:px-12 flex flex-col justify-center items-center text-center text-white space-y-4">
-                <span className="bg-[#F5B800] text-[#0A2E4D] text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+                <span className="bg-white/10 backdrop-blur-md text-[#F5B800] text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#F5B800] animate-pulse"></span>
                   {slide.badge}
                 </span>
 
@@ -248,7 +249,7 @@ export function HomePage() {
                       const id = slide.buttonLink.replace("#", "");
                       scrollToSection(id);
                     }}
-                    className="bg-[#0A2E4D] border border-white/30 hover:bg-[#071F34] text-white font-semibold text-xs sm:text-sm px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-2"
+                    className="bg-[#801818] border border-rose-300/40 hover:bg-[#600C0C] text-white font-semibold text-xs sm:text-sm px-8 py-3.5 rounded-xl shadow-lg hover:shadow-2xl transition-all cursor-pointer flex items-center gap-2"
                   >
                     <span>{slide.buttonText}</span>
                     <span className="text-[#F5B800] font-bold">›</span>
@@ -286,7 +287,7 @@ export function HomePage() {
                 type="button"
                 onClick={() => setCurrentSlide(idx)}
                 className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  currentSlide === idx ? "w-8 bg-[#F5B800]" : "w-2.5 bg-white/50 hover:bg-white"
+                  currentSlide === idx ? "w-8 bg-[#801818] border border-rose-400" : "w-2.5 bg-white/60 hover:bg-white"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
@@ -476,7 +477,7 @@ function LacKnowledgeCards() {
           <div
             key={card.id}
             onClick={() => setSelectedCard(card)}
-            className="bg-white border border-slate-200/90 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-5 group"
+            className="bg-white border border-slate-200/90 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-[#801818]/30 transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-5 group"
           >
             <div className="space-y-3.5">
               <div className="flex items-center justify-between">
@@ -553,7 +554,7 @@ function LacKnowledgeCards() {
               <button
                 type="button"
                 onClick={() => setSelectedCard(null)}
-                className="w-full bg-[#0A2E4D] hover:bg-[#071F34] text-white font-semibold py-3 rounded-xl transition-colors cursor-pointer shadow-sm"
+                className="w-full bg-[#801818] hover:bg-[#600C0C] text-white font-semibold py-3 rounded-xl transition-colors cursor-pointer shadow-sm"
               >
                 ปิดหน้าต่าง
               </button>
@@ -617,7 +618,7 @@ function LacDataVisualization() {
               type="button"
               onClick={() => setActiveTab("farmers")}
               className={`px-3.5 py-2 rounded-lg transition-all cursor-pointer ${
-                activeTab === "farmers" ? "bg-[#0A2E4D] text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
+                activeTab === "farmers" ? "bg-[#801818] text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
             >
               ผู้เลี้ยงมากสุด
