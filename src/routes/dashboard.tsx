@@ -622,4 +622,335 @@ export function DashboardPage() {
                   <option value="ALL">ทุกเดือน</option>
                   {availableMonths.map((mIdx) => (
                     <option key={mIdx} value={mIdx.toString()}>
-                      {MONTH_NAMES
+                      {MONTH_NAMES[mIdx]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filter Age */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+                <span className="text-[#0A2E4D] font-bold">🎂 ช่วงอายุ:</span>
+                <select
+                  value={selectedAge}
+                  onChange={(e) => setSelectedAge(e.target.value)}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                >
+                  <option value="ALL">ทุกช่วงอายุ</option>
+                  {ageGroupList.map((age) => (
+                    <option key={age} value={age}>{age}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filter Affiliation */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+                <span className="text-[#0A2E4D] font-bold">📌 สังกัด:</span>
+                <select
+                  value={selectedAffiliation}
+                  onChange={(e) => setSelectedAffiliation(e.target.value)}
+                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs max-w-[160px] truncate"
+                >
+                  <option value="ALL">ทั้งหมด</option>
+                  {affiliationsList.map((aff) => (
+                    <option key={aff} value={aff}>{aff}</option>
+                  ))}
+                </select>
+              </div>
+
+            </div>
+
+            <div className="flex items-center justify-end gap-1.5 bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2 font-medium">
+              <span className="text-slate-500">แสดงผล:</span>
+              <span className="text-[#801818] font-bold font-mono text-sm">{filteredData.length}</span>
+              <span className="text-slate-400">/ {data.length} รายการ</span>
+            </div>
+          </div>
+        </div>
+
+        {/* EXECUTIVE SUMMARY 4 METRIC CARDS */}
+        {cardMetrics && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Card 1: จำนวนผู้ประเมิน */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-sky-50 text-[#0A2E4D] border border-sky-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+                📋
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-semibold">จำนวนผู้ตอบแบบประเมิน</p>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-3xl font-bold text-slate-800 font-mono">{filteredData.length}</span>
+                  <span className="text-xs text-slate-500 font-normal">คน</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 truncate">จากทั้งหมด {data.length} รายการ</p>
+              </div>
+            </div>
+
+            {/* Card 2: คะแนนเฉลี่ยรวม */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#F5B800] border border-amber-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+                ⭐
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-semibold">คะแนนเฉลี่ยรวม (ร้อยละ)</p>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-3xl font-bold text-[#F5B800] font-mono">{cardMetrics.grandAvgPercent}%</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 truncate">คำนวณจาก {cardMetrics.totalQuestions} หัวข้อประเมิน</p>
+              </div>
+            </div>
+
+            {/* Card 3: หมวดคะแนนสูงสุด */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 text-[#801818] border border-rose-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+                🏅
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ได้คะแนนสูงสุด</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.highest.title}</p>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-bold text-[#801818] font-mono">{cardMetrics.highest.avg.toFixed(2)}</span>
+                  <span className="text-xs text-slate-400">/ 5.00</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: หมวดควรปรับปรุง */}
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#2D5A27] border border-emerald-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+                🛠️
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ควรพัฒนาต่อ</p>
+                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.lowest.title}</p>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-bold text-[#2D5A27] font-mono">{cardMetrics.lowest.avg.toFixed(2)}</span>
+                  <span className="text-xs text-slate-400">/ 5.00</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* CHARTS & BREAKDOWN SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* คะแนนตามหมวดหมู่ */}
+          <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-5">
+            <h2 className="text-sm font-bold text-[#0A2E4D] tracking-tight border-b border-slate-100 pb-3 flex items-center gap-2">
+              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (เรียงลำดับสูงสุด - ต่ำสุด)
+            </h2>
+            
+            <div className="space-y-5 max-h-[460px] overflow-y-auto pr-2">
+              {categoryGroupedScores.map((catGroup, groupIdx) => (
+                <div key={catGroup.category} className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-4 space-y-3.5">
+                  
+                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-[#801818]"></span>
+                      <span className="font-bold text-slate-800 text-sm">
+                        ด้าน{catGroup.category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-2xs">
+                      <span className="text-[11px] text-slate-400 font-medium">เฉลี่ยหมวด:</span>
+                      <span className="font-mono font-bold text-[#801818] text-sm">
+                        {catGroup.avg.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pl-1">
+                    {catGroup.items.map((item, itemIdx) => {
+                      const globalIdx = groupIdx * 3 + itemIdx;
+                      return (
+                        <div key={item.key} className="space-y-1.5">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-700 truncate max-w-[65%] font-medium">
+                              {item.title}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-slate-800">
+                                {item.avg.toFixed(2)}
+                              </span>
+                              {getScoreBadge(item.avg)}
+                            </div>
+                          </div>
+                          <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500 shadow-2xs"
+                              style={{
+                                width: `${(item.avg / 5) * 100}%`,
+                                backgroundColor: COLOR_PALETTE[globalIdx % COLOR_PALETTE.length],
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* สัดส่วนตามสังกัด */}
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-5 flex flex-col justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-[#0A2E4D] tracking-tight border-b border-slate-100 pb-3 flex items-center gap-2">
+                <span>🍕</span> สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
+              </h2>
+              
+              <div className="py-4">
+                {renderPieChart()}
+              </div>
+            </div>
+
+            <div className="space-y-2.5 pt-3 border-t border-slate-100 max-h-[200px] overflow-y-auto pr-1">
+              {affiliationBreakdown.map((item) => (
+                <div key={item.name} className="flex justify-between items-center text-xs p-1.5 rounded-xl hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-2.5 truncate max-w-[70%]">
+                    <span className="w-3 h-3 rounded-full shrink-0 shadow-2xs" style={{ backgroundColor: item.color }}></span>
+                    <span className="text-slate-700 truncate font-medium">{item.name}</span>
+                  </div>
+                  <span className="text-slate-500 font-mono shrink-0 font-semibold">{item.count} คน ({item.percent}%)</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* FEEDBACK & SUGGESTIONS SECTION */}
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          
+          <div className="flex justify-between items-start sm:items-center border-b border-slate-100 pb-4">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                <span>💬</span> ข้อเสนอแนะและความคิดเห็นเพิ่มเติม
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">สรุปประเด็นความคิดเห็นจากผู้ตอบแบบสอบถามจริง</p>
+            </div>
+          </div>
+
+          {/* 4 Feedback Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-sky-50/70 border border-sky-200/80 rounded-2xl p-4 text-center space-y-1">
+              <p className="text-2xl font-bold text-[#0A2E4D] font-mono">{feedbackAnalysis.total}</p>
+              <p className="text-xs font-semibold text-[#0A2E4D]">🔵 ข้อเสนอแนะทั้งหมด</p>
+              <p className="text-[10px] text-sky-600">รวมทุกหมวดหมู่</p>
+            </div>
+
+            <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 text-center space-y-1">
+              <p className="text-2xl font-bold text-[#2D5A27] font-mono">{feedbackAnalysis.positiveCount}</p>
+              <p className="text-xs font-semibold text-[#2D5A27]">🟢 เชิงบวก / ชื่นชม</p>
+              <p className="text-[10px] text-emerald-600">ประทับใจการจัดงาน</p>
+            </div>
+
+            <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-center space-y-1">
+              <p className="text-2xl font-bold text-amber-800 font-mono">{feedbackAnalysis.followUpCount}</p>
+              <p className="text-xs font-semibold text-amber-900">🟡 ควรติดตาม</p>
+              <p className="text-[10px] text-amber-700">ข้อเสนอแนะพัฒนา</p>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-4 text-center space-y-1">
+              <p className="text-2xl font-bold text-[#801818] font-mono">{feedbackAnalysis.urgentCount}</p>
+              <p className="text-xs font-semibold text-[#801818]">🔴 ควรปรับปรุงเร่งด่วน</p>
+              <p className="text-[10px] text-rose-600">ต้องเร่งแก้ไข</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            
+            {/* Topic Breakdown */}
+            <div className="space-y-3.5 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                <span>🔎</span> ประเด็นสำคัญจำแนกตามเรื่อง
+              </h3>
+              
+              <div className="space-y-3.5 pt-1">
+                {Object.entries(feedbackAnalysis.topicCounts).map(([topic, count]) => {
+                  const percent = Math.round((count / feedbackAnalysis.maxTopicCount) * 100);
+                  return (
+                    <div key={topic} className="space-y-1.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-medium text-slate-700">{topic}</span>
+                        <span className="font-mono font-bold text-slate-800">{count} เรื่อง</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#0A2E4D] rounded-full transition-all duration-500"
+                          style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Latest Feedback List */}
+            <div className="space-y-3.5 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                <span>🕐</span> ข้อเสนอแนะล่าสุดจากผู้เข้าร่วม
+              </h3>
+
+              <div className="space-y-3 max-h-[240px] overflow-y-auto pr-1">
+                {feedbackAnalysis.latestList.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-8 text-center">ไม่มีข้อเสนอแนะเพิ่มเติม</p>
+                ) : (
+                  feedbackAnalysis.latestList.map((item, idx) => {
+                    const statusBadges = {
+                      positive: { bg: "bg-emerald-100 text-[#2D5A27] border-emerald-200", text: "🟢 ปกติ/เชิงบวก" },
+                      followup: { bg: "bg-amber-100 text-amber-800 border-amber-200", text: "🟡 ควรติดตาม" },
+                      urgent: { bg: "bg-rose-100 text-[#801818] border-rose-200", text: "🔴 เร่งด่วน" },
+                      general: { bg: "bg-sky-100 text-[#0A2E4D] border-sky-200", text: "🔵 ข้อมูลทั่วไป" },
+                    };
+
+                    const statusStyle = statusBadges[item.status];
+
+                    return (
+                      <div key={idx} className="bg-white border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-2 shadow-2xs hover:border-slate-300 transition-colors">
+                        <p className="text-slate-800 font-normal leading-relaxed">"{item.text}"</p>
+                        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] bg-slate-100 text-slate-600 font-medium">
+                            {item.tag}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${statusStyle.bg}`}>
+                            {statusStyle.text}
+                          </span>
+                          <span className="text-[10px] text-slate-400 ml-auto font-mono">
+                            {item.affiliation}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+      {/* FOOTER */}
+      <footer className="bg-[#071F34] text-slate-300 py-10 border-t border-slate-800 mt-16 space-y-3 text-center">
+        <div className="max-w-5xl mx-auto px-4 space-y-2">
+          <p className="text-xs sm:text-sm font-normal text-slate-300 leading-relaxed">
+            งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
+          </p>
+          <p className="text-slate-500 text-xs font-mono">
+            © 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
