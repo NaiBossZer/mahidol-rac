@@ -236,7 +236,7 @@ export function HomePage() {
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="grow">
         
-        {/* ==================== HERO SLIDER BANNER SECTION (ดึงรูป Banner 1.jpg ถึง Banner 6.jpg) ==================== */}
+        {/* ==================== HERO SLIDER BANNER SECTION ==================== */}
         <section className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#500A0A]">
           {HERO_SLIDES.map((slide, index) => (
             <div
@@ -330,7 +330,7 @@ export function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div className="text-center sm:text-left space-y-1">
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
-                  {activeMediaTab === "video" ? "🎬 วิดีโอแนะนำห้องการเรียนรู้" : "🧊 โมเดล 3D อาคารเรียนรู้"}
+                  {activeMediaTab === "video" ? "🎬 วิดีโอแนะนำห้องการเรียนรู้" : "🧊 โมเดล 3D อาคารเรียนรู้ (SketchUp)"}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 font-normal">
                   {activeMediaTab === "video" 
@@ -421,7 +421,7 @@ export function HomePage() {
   );
 }
 
-// --- COMPONENT: Cards Grid ---
+// --- COMPONENT: Cards Grid (5 โซนหลัก) ---
 function LacKnowledgeCards() {
   const [selectedCard, setSelectedCard] = useState<any | null>(null);
 
@@ -498,21 +498,6 @@ function LacKnowledgeCards() {
         highlights: [
           "เชลแลก (Shellac): เคลือบเงาไม้ และเคลือบเม็ดยา/อาหาร",
           "สีสกัดครั่ง: สีย้อมธรรมชาติปลอดภัยสำหรับสิ่งทอ",
-        ],
-      },
-    },
-    {
-      id: 6,
-      icon: "🏛️",
-      title: "ห้องเรียนรู้ครั่งครบวงจร",
-      desc: "ศูนย์รวมนิทรรศการจริง แปลงสาธิต และอาคารเรียนรู้ ม.มหิดล อ.สบปราบ จ.ลำปาง",
-      tag: "โซนหลัก • ศูนย์เรียนรู้",
-      tagBg: "bg-amber-100 text-amber-800 border-amber-200",
-      detail: {
-        overview: "อาคารศูนย์เรียนรู้ครั่งครบวงจร มหาวิทยาลัยมหิดล อ.สบปราบ เป็นแหล่งถ่ายทอดเทคโนโลยีและนวัตกรรมเพื่อชุมชนอย่างยั่งยืน",
-        highlights: [
-          "อาคารเรียนรู้และห้องจัดแสดงชิ้นงานจริง",
-          "ระบบจำลอง 3D SketchUp แบบ Interactive",
         ],
       },
     },
