@@ -5,11 +5,11 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-// ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ตรงตาม 6 โซนนิทรรศการจริงในอาคารเรียนรู้ครั่ง)
+// ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ดึงไฟล์จริง Banner 1.jpg ถึง Banner 6.jpg จากโฟลเดอร์ public)
 const HERO_SLIDES = [
   {
     id: 1,
-    image: "/Backdrop_Shellac_2569.png",
+    image: "/Banner 1.jpg",
     badge: "MAHIDOL LAC LEARNING CENTER",
     title: "ห้องเรียนรู้ครั่งครบวงจร",
     subtitle: "งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง",
@@ -18,7 +18,7 @@ const HERO_SLIDES = [
   },
   {
     id: 2,
-    image: "/banner1.jpg",
+    image: "/Banner 2.jpg",
     badge: "ZONE 01 // THE ORIGIN",
     title: "กำเนิดครั่ง (The Origin)",
     subtitle: "ประวัติศาสตร์ ภูมิปัญญาดั้งเดิม อนุกรมวิธาน และถิ่นกำเนิดแมลงครั่งในเอเชียใต้และตะวันออกเฉียงใต้",
@@ -27,7 +27,7 @@ const HERO_SLIDES = [
   },
   {
     id: 3,
-    image: "/banner2.jpg",
+    image: "/Banner 3.jpg",
     badge: "ZONE 02 // LIFE CYCLE",
     title: "มหัศจรรย์วงจรชีวิต (The Life Cycle)",
     subtitle: "เรียนรู้ชีววิทยา วงจรชีวิต ตัวอ่อน การขับชันยาง และสรีรวิทยาของแมลงครั่งอย่างครอบคลุม",
@@ -36,7 +36,7 @@ const HERO_SLIDES = [
   },
   {
     id: 4,
-    image: "/banner3.jpg",
+    image: "/Banner 4.jpg",
     badge: "ZONE 03 // THE HABITATS",
     title: "พืชอาศัยและนิเวศวิทยา (The Habitats)",
     subtitle: "พืชอาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น ต้นจามจุรี (ก้ามปู) ต้นปลัก สีเสียด พร้อมการกักเก็บคาร์บอน",
@@ -45,7 +45,7 @@ const HERO_SLIDES = [
   },
   {
     id: 5,
-    image: "/Backdrop_Shellac_2569.png",
+    image: "/Banner 5.jpg",
     badge: "ZONE 04 // CULTIVATION",
     title: "การเพาะเลี้ยงและการจัดการ",
     subtitle: "รอบปฏิทินฤดูกาล (ฤดูร้อน/ฤดูฝน) เทคนิคการคัดแม่พันธุ์ การคุมศัตรูครั่ง และการเก็บเกี่ยวอย่างมีประสิทธิภาพ",
@@ -54,7 +54,7 @@ const HERO_SLIDES = [
   },
   {
     id: 6,
-    image: "/banner1.jpg",
+    image: "/Banner 6.jpg",
     badge: "ZONE 05 // PRODUCT INNOVATION",
     title: "ครั่ง สู่ นวัตกรรมการผลิต",
     subtitle: "การแปรรูปครั่งดิบสู่ครั่งเมล็ด เชลแลกเกรดอุตสาหกรรม สีย้อมผ้าธรรมชาติ และสารเคลือบผิวระดับสูง",
@@ -236,7 +236,7 @@ export function HomePage() {
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="grow">
         
-        {/* ==================== HERO SLIDER BANNER SECTION (6 โซนจัดแสดงจริง) ==================== */}
+        {/* ==================== HERO SLIDER BANNER SECTION (ดึงรูป Banner 1.jpg ถึง Banner 6.jpg) ==================== */}
         <section className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#500A0A]">
           {HERO_SLIDES.map((slide, index) => (
             <div
@@ -248,7 +248,7 @@ export function HomePage() {
               {/* ภาพพื้นหลังสไลด์ */}
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 transform scale-105"
-                style={{ backgroundImage: `url('${slide.image}')` }}
+                style={{ backgroundImage: `url('${encodeURI(slide.image)}')` }}
               >
                 {/* Gradient Overlay สีแดงครั่ง #801818 */}
                 <div className="absolute inset-0 bg-[#701414]/55 bg-gradient-to-t from-[#500A0A] via-[#801818]/60 to-black/40" />
@@ -759,7 +759,7 @@ function LacKnowledgeAccordion() {
         {accordions.map((item, index) => {
           const isOpen = openIndex === index;
           return (
-            <div key={index} className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
+            <div key={index} className="bg-white border border-[#801818]/20 rounded-2xl overflow-hidden shadow-sm hover:border-[#801818]/40 transition-colors">
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
