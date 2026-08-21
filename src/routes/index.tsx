@@ -330,7 +330,7 @@ export function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div className="text-center sm:text-left space-y-1">
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
-                  {activeMediaTab === "video" ? "🎬 วิดีโอแนะนำห้องการเรียนรู้" : "🧊 โมเดล 3D อาคารเรียนรู้ (SketchUp)"}
+                  {activeMediaTab === "video" ? "🎬 วิดีโอแนะนำห้องการเรียนรู้" : "🧊 โมเดล 3D อาคารเรียนรู้"}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 font-normal">
                   {activeMediaTab === "video" 
