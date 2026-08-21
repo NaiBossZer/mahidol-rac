@@ -5,9 +5,49 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
+// ข้อมูลภาพสไลด์สำหรับแบนเนอร์ด้านบน
+const HERO_SLIDES = [
+  {
+    id: 1,
+    image: "/Backdrop_Shellac_2569.png",
+    badge: "MAHIDOL LEARNING HUB",
+    title: "ศูนย์เรียนรู้ & องค์ความรู้ครั่ง",
+    subtitle: "งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง",
+    buttonText: "สำรวจคลังความรู้",
+    buttonLink: "#cards-section",
+  },
+  {
+    id: 2,
+    image: "/banner1.jpg",
+    badge: "INNOVATION & RESEARCH",
+    title: "นวัตกรรมครั่ง & สารสกัดชีวภาพ",
+    subtitle: "ยกระดับองค์ความรู้และงานวิจัยครั่งสู่การประยุกต์ใช้ในระดับอุตสาหกรรมมูลค่าสูง",
+    buttonText: "ดูสถิติและงานวิจัย",
+    buttonLink: "#data-viz",
+  },
+  {
+    id: 3,
+    image: "/banner2.jpg",
+    badge: "SUSTAINABLE COMMUNITY",
+    title: "ส่งเสริมเศรษฐกิจชุมชน จ.ลำปาง",
+    subtitle: "เชื่อมโยงปฏิทินการเพาะเลี้ยง พืชอาศัย และคู่มือสำหรับเกษตรกรอย่างยั่งยืน",
+    buttonText: "อ่านคู่มือการเพาะเลี้ยง",
+    buttonLink: "#cards-section",
+  },
+];
+
 export function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMediaTab, setActiveMediaTab] = useState<"video" | "3d">("video");
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // ตั้งเวลาเปลี่ยนภาพสไลด์อัตโนมัติทุกๆ 5 วินาที
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === HERO_SLIDES.length - 1 ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // โหลดสคริปต์ตัวเล่น 3D Model Viewer จาก Google อัตโนมัติ
   useEffect(() => {
@@ -18,6 +58,14 @@ export function HomePage() {
       document.head.appendChild(script);
     }
   }, []);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === HERO_SLIDES.length - 1 ? 0 : prev + 1));
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -87,7 +135,7 @@ export function HomePage() {
               </div>
             </div>
 
-            {/* ฝั่งขวา: เมนูนำทาง (ถอดพื้นหลังออก + เปลี่ยนข้อความ) */}
+            {/* ฝั่งขวา: เมนูนำทาง */}
             <div className="hidden xl:flex items-center space-x-6 text-xs sm:text-sm font-normal text-slate-200 shrink-0">
               <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
                 หน้าแรก
@@ -161,22 +209,90 @@ export function HomePage() {
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="grow">
         
-        {/* HERO SECTION */}
-        <header className="bg-gradient-to-r from-[#701414] via-[#801818] to-[#961E1E] text-white py-16 sm:py-20 px-4 sm:px-8 shadow-inner relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
-          <div className="max-w-4xl mx-auto text-center space-y-5 relative z-10">
-            <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-[#F5B800] font-medium text-xs sm:text-sm tracking-wide px-4 py-1.5 rounded-full border border-white/20 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#F5B800] animate-pulse"></span>
-              ห้องการเรียนรู้ครั่งครบวงจร มหาวิทยาลัยมหิดล
-            </span>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight drop-shadow-md">
-              ศูนย์เรียนรู้ & องค์ความรู้ครั่ง
-            </h1>
-            <p className="text-base sm:text-lg font-light max-w-2xl mx-auto text-rose-100/90 leading-relaxed">
-              งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง
-            </p>
+        {/* ==================== HERO SLIDER BANNER SECTION ==================== */}
+        <section className="relative w-full h-[450px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-slate-900">
+          {HERO_SLIDES.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
+            >
+              {/* ภาพพื้นหลังสไลด์ */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 transform scale-105"
+                style={{ backgroundImage: `url('${slide.image}')` }}
+              >
+                {/* Gradient Overlay ให้ข้อความเด่นอ่านง่าย */}
+                <div className="absolute inset-0 bg-[#0A2E4D]/50 bg-gradient-to-t from-[#0A2E4D] via-[#0A2E4D]/40 to-black/30" />
+              </div>
+
+              {/* ข้อความกลางสไลด์ */}
+              <div className="relative z-20 max-w-5xl mx-auto h-full px-6 sm:px-12 flex flex-col justify-center items-center text-center text-white space-y-4">
+                <span className="bg-[#F5B800] text-[#0A2E4D] text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+                  {slide.badge}
+                </span>
+
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-md leading-tight max-w-4xl">
+                  {slide.title}
+                </h1>
+
+                <p className="text-sm sm:text-lg text-rose-100/90 max-w-2xl font-light leading-relaxed drop-shadow">
+                  {slide.subtitle}
+                </p>
+
+                <div className="pt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const id = slide.buttonLink.replace("#", "");
+                      scrollToSection(id);
+                    }}
+                    className="bg-[#0A2E4D] border border-white/30 hover:bg-[#071F34] text-white font-semibold text-xs sm:text-sm px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <span>{slide.buttonText}</span>
+                    <span className="text-[#F5B800] font-bold">›</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* ปุ่มสไลด์ย้อนกลับ (ซ้าย) */}
+          <button
+            type="button"
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm transition-all flex items-center justify-center cursor-pointer border border-white/20"
+            aria-label="Previous Slide"
+          >
+            ‹
+          </button>
+
+          {/* ปุ่มสไลด์ถัดไป (ขวา) */}
+          <button
+            type="button"
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm transition-all flex items-center justify-center cursor-pointer border border-white/20"
+            aria-label="Next Slide"
+          >
+            ›
+          </button>
+
+          {/* แถบจุดเปลี่ยนสไลด์ (ด้านล่าง) */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  currentSlide === idx ? "w-8 bg-[#F5B800]" : "w-2.5 bg-white/50 hover:bg-white"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
           </div>
-        </header>
+        </section>
 
         {/* ==================== MEDIA SECTION: VIDEO & 3D SKETCHUP VIEW ==================== */}
         <section className="py-12 px-4 max-w-5xl mx-auto">
