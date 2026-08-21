@@ -5,33 +5,60 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-// ข้อมูลภาพสไลด์สำหรับแบนเนอร์ด้านบน (เน้นธีมแดงครั่ง)
+// ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ตรงตาม 6 โซนนิทรรศการจริงในอาคารเรียนรู้ครั่ง)
 const HERO_SLIDES = [
   {
     id: 1,
     image: "/Backdrop_Shellac_2569.png",
-    badge: "ห้องการเรียนรู้ครั่งครบวงจร มหาวิทยาลัยมหิดล",
-    title: "ศูนย์เรียนรู้ & องค์ความรู้ครั่ง",
+    badge: "MAHIDOL LAC LEARNING CENTER",
+    title: "ห้องเรียนรู้ครั่งครบวงจร",
     subtitle: "งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง",
-    buttonText: "สำรวจคลังความรู้",
-    buttonLink: "#cards-section",
+    buttonText: "สำรวจศูนย์เรียนรู้ 3D",
+    buttonLink: "#media-section",
   },
   {
     id: 2,
     image: "/banner1.jpg",
-    badge: "INNOVATION & RESEARCH",
-    title: "นวัตกรรมครั่ง & สารสกัดชีวภาพ",
-    subtitle: "ยกระดับองค์ความรู้และงานวิจัยครั่งสู่การประยุกต์ใช้ในระดับอุตสาหกรรมมูลค่าสูง",
-    buttonText: "ดูสถิติและงานวิจัย",
-    buttonLink: "#data-viz",
+    badge: "ZONE 01 // THE ORIGIN",
+    title: "กำเนิดครั่ง (The Origin)",
+    subtitle: "ประวัติศาสตร์ ภูมิปัญญาดั้งเดิม อนุกรมวิธาน และถิ่นกำเนิดแมลงครั่งในเอเชียใต้และตะวันออกเฉียงใต้",
+    buttonText: "ศึกษาเรื่องกำเนิดครั่ง",
+    buttonLink: "#cards-section",
   },
   {
     id: 3,
     image: "/banner2.jpg",
-    badge: "SUSTAINABLE COMMUNITY",
-    title: "ส่งเสริมเศรษฐกิจชุมชน จ.ลำปาง",
-    subtitle: "เชื่อมโยงปฏิทินการเพาะเลี้ยง พืชอาศัย และคู่มือสำหรับเกษตรกรอย่างยั่งยืน",
-    buttonText: "อ่านคู่มือการเพาะเลี้ยง",
+    badge: "ZONE 02 // LIFE CYCLE",
+    title: "มหัศจรรย์วงจรชีวิต (The Life Cycle)",
+    subtitle: "เรียนรู้ชีววิทยา วงจรชีวิต ตัวอ่อน การขับชันยาง และสรีรวิทยาของแมลงครั่งอย่างครอบคลุม",
+    buttonText: "ชมวงจรชีวิตแมลงครั่ง",
+    buttonLink: "#cards-section",
+  },
+  {
+    id: 4,
+    image: "/banner3.jpg",
+    badge: "ZONE 03 // THE HABITATS",
+    title: "พืชอาศัยและนิเวศวิทยา (The Habitats)",
+    subtitle: "พืชอาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น ต้นจามจุรี (ก้ามปู) ต้นปลัก สีเสียด พร้อมการกักเก็บคาร์บอน",
+    buttonText: "ดูข้อมูลพืชอาศัย",
+    buttonLink: "#cards-section",
+  },
+  {
+    id: 5,
+    image: "/Backdrop_Shellac_2569.png",
+    badge: "ZONE 04 // CULTIVATION",
+    title: "การเพาะเลี้ยงและการจัดการ",
+    subtitle: "รอบปฏิทินฤดูกาล (ฤดูร้อน/ฤดูฝน) เทคนิคการคัดแม่พันธุ์ การคุมศัตรูครั่ง และการเก็บเกี่ยวอย่างมีประสิทธิภาพ",
+    buttonText: "ดูคู่มือการเพาะเลี้ยง",
+    buttonLink: "#cards-section",
+  },
+  {
+    id: 6,
+    image: "/banner1.jpg",
+    badge: "ZONE 05 // PRODUCT INNOVATION",
+    title: "ครั่ง สู่ นวัตกรรมการผลิต",
+    subtitle: "การแปรรูปครั่งดิบสู่ครั่งเมล็ด เชลแลกเกรดอุตสาหกรรม สีย้อมผ้าธรรมชาติ และสารเคลือบผิวระดับสูง",
+    buttonText: "ชมนวัตกรรมแปรรูปครั่ง",
     buttonLink: "#cards-section",
   },
 ];
@@ -78,7 +105,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-slate-800 font-['Mitr'] selection:bg-[#801818] selection:text-white flex flex-col justify-between">
       
-      {/* ==================== NAVBAR (พร้อมขอบล่างสีแดงครั่ง) ==================== */}
+      {/* ==================== NAVBAR ==================== */}
       <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white shadow-md border-b-2 border-[#801818]">
         <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
           <div className="flex items-center justify-between gap-4">
@@ -209,8 +236,8 @@ export function HomePage() {
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="grow">
         
-        {/* ==================== HERO SLIDER BANNER SECTION (เน้นธีมแดงครั่ง #801818) ==================== */}
-        <section className="relative w-full h-[450px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#500A0A]">
+        {/* ==================== HERO SLIDER BANNER SECTION (6 โซนจัดแสดงจริง) ==================== */}
+        <section className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#500A0A]">
           {HERO_SLIDES.map((slide, index) => (
             <div
               key={slide.id}
@@ -223,13 +250,13 @@ export function HomePage() {
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-10000 transform scale-105"
                 style={{ backgroundImage: `url('${slide.image}')` }}
               >
-                {/* Gradient Overlay โทนสีแดงครั่งเอกลักษณ์ #801818 */}
-                <div className="absolute inset-0 bg-[#701414]/50 bg-gradient-to-t from-[#500A0A] via-[#801818]/60 to-black/40" />
+                {/* Gradient Overlay สีแดงครั่ง #801818 */}
+                <div className="absolute inset-0 bg-[#701414]/55 bg-gradient-to-t from-[#500A0A] via-[#801818]/60 to-black/40" />
               </div>
 
               {/* ข้อความกลางสไลด์ */}
               <div className="relative z-20 max-w-5xl mx-auto h-full px-6 sm:px-12 flex flex-col justify-center items-center text-center text-white space-y-4">
-                <span className="bg-white/10 backdrop-blur-md text-[#F5B800] text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+                <span className="bg-white/15 backdrop-blur-md text-[#F5B800] text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#F5B800] animate-pulse"></span>
                   {slide.badge}
                 </span>
@@ -238,7 +265,7 @@ export function HomePage() {
                   {slide.title}
                 </h1>
 
-                <p className="text-sm sm:text-lg text-rose-100/90 max-w-2xl font-light leading-relaxed drop-shadow">
+                <p className="text-sm sm:text-lg text-rose-100/95 max-w-2xl font-light leading-relaxed drop-shadow">
                   {slide.subtitle}
                 </p>
 
@@ -279,7 +306,7 @@ export function HomePage() {
             ›
           </button>
 
-          {/* แถบจุดเปลี่ยนสไลด์ (ด้านล่าง) */}
+          {/* แถบจุดเปลี่ยนสไลด์ 6 แบนเนอร์ (ด้านล่าง) */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
             {HERO_SLIDES.map((_, idx) => (
               <button
@@ -296,7 +323,7 @@ export function HomePage() {
         </section>
 
         {/* ==================== MEDIA SECTION: VIDEO & 3D SKETCHUP VIEW ==================== */}
-        <section className="py-12 px-4 max-w-5xl mx-auto">
+        <section id="media-section" className="py-12 px-4 max-w-5xl mx-auto scroll-mt-24">
           <div className="bg-white border border-slate-200/80 p-5 sm:p-8 rounded-3xl shadow-xl shadow-slate-200/50 space-y-6">
             
             {/* ส่วนสลับแท็บ (Video VS 3D View) */}
@@ -401,25 +428,40 @@ function LacKnowledgeCards() {
   const cards = [
     {
       id: 1,
-      icon: "🐞",
-      title: "ครั่งคืออะไร & ถิ่นกำเนิด",
-      desc: "ยางธรรมชาติจากแมลงครั่ง สารชันสีแดงธรรมชาติตั้งแต่เอเชียใต้ถึงตะวันออกเฉียงใต้",
-      tag: "พื้นฐานครั่ง",
+      icon: "📜",
+      title: "กำเนิดครั่ง (The Origin)",
+      desc: "ประวัติศาสตร์ สารชันสีแดงธรรมชาติ ภูมิปัญญา และกำเนิดแมลงครั่งในอนุกรมวิธาน",
+      tag: "โซน 1 • ประวัติศาสตร์",
       tagBg: "bg-amber-100 text-amber-800 border-amber-200",
       detail: {
-        overview: "ครั่ง คือ ยางหรือสารชันที่ขับออกมาจากตัวแมลงครั่งเพื่อสร้างเป็นรังห่อหุ้มลำตัว มีคุณสมบัติละลายในแอลกอฮอล์และหลอมเหลวด้วยความร้อน",
+        overview: "ครั่ง คือ สารชันธรรมชาติที่ขับออกมาจากตัวแมลงครั่งเพื่อสร้างเป็นรังห่อหุ้มลำตัว มีประวัติยาวนานในงานภูมิปัญญาไทยและเอเชียใต้",
         highlights: [
           "สารธรรมชาติ 100% ที่ปลอดภัยและย่อยสลายได้ง่าย",
-          "ภูมิปัญญาดั้งเดิมในงานช่างสิบหมู่และยารักษาโรคไทย",
+          "ภูมิปัญญาดั้งเดิมในงานช่างสิบหมู่ ยารักษาโรค และงานสีย้อม",
         ],
       },
     },
     {
       id: 2,
+      icon: "🐞",
+      title: "มหัศจรรย์วงจรชีวิต (Life Cycle)",
+      desc: "สรีรวิทยาแมลงครั่ง ระยะตัวอ่อน การลอกคราบ การเกาะกิ่ง และการสร้างรังชัน",
+      tag: "โซน 2 • ชีววิทยา",
+      tagBg: "bg-rose-100 text-rose-800 border-rose-200",
+      detail: {
+        overview: "แมลงครั่งมีวงจรชีวิตที่น่าทึ่ง ตัวอ่อนจะคลานออกจากรังแม่ไปเกาะกิ่งอ่อนเพื่อดูดกินน้ำเลี้ยงและขับชันห่อหุ้มตัว",
+        highlights: [
+          "การขับชันยางเพื่อปกป้องตนเองและขยายพันธุ์",
+          "วงจรชีวิต 2 รอบต่อปีที่สัมพันธ์กับสภาพอากาศ",
+        ],
+      },
+    },
+    {
+      id: 3,
       icon: "🌳",
-      title: "พืชอาศัย & นิเวศวิทยา",
-      desc: "ต้นไม้อาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น จามจุรี ปลัก สีเสียด พร้อมรับมือสภาวะโลกร้อน",
-      tag: "นิเวศวิทยา",
+      title: "พืชอาศัยและนิเวศวิทยา (Habitats)",
+      desc: "ต้นไม้อาศัยที่เหมาะสม เช่น จามจุรี ปลัก สีเสียด พร้อมระบบกักเก็บคาร์บอน",
+      tag: "โซน 3 • นิเวศวิทยา",
       tagBg: "bg-emerald-100 text-emerald-800 border-emerald-200",
       detail: {
         overview: "แมลงครั่งอาศัยกิ่งของต้นไม้เฉพาะชนิดเพื่อดูดกินน้ำเลี้ยง พืชอาศัยที่ดีต้องมีทรงพุ่มโปร่งและกิ่งอ่อนสมบูรณ์",
@@ -430,12 +472,12 @@ function LacKnowledgeCards() {
       },
     },
     {
-      id: 3,
+      id: 4,
       icon: "📅",
-      title: "การเพาะเลี้ยง & การจัดการ",
+      title: "การเพาะเลี้ยงและการจัดการ",
       desc: "รอบปฏิทินฤดูกาล (รอบร้อน/ฝน) เทคนิคการคัดแม่พันธุ์ และการดูแลป้องกันศัตรูครั่ง",
-      tag: "คู่มือเกษตรกร",
-      tagBg: "bg-rose-100 text-rose-800 border-rose-200",
+      tag: "โซน 4 • การเพาะเลี้ยง",
+      tagBg: "bg-sky-100 text-sky-800 border-sky-200",
       detail: {
         overview: "การเลี้ยงครั่งแบ่งเป็น 2 รอบตามฤดูกาล การจัดการที่ดีช่วยลดอัตราการสูญเสียจากศัตรูพืช",
         highlights: [
@@ -445,17 +487,32 @@ function LacKnowledgeCards() {
       },
     },
     {
-      id: 4,
+      id: 5,
       icon: "🧪",
-      title: "ผลิตภัณฑ์ & การแปรรูป",
+      title: "ครั่ง สู่ นวัตกรรมการผลิต",
       desc: "การแปรรูปสู่ครั่งเมล็ด เชลแลก สีย้อมผ้า สารเคลือบผิวผลไม้/ยา และน้ำล้างครั่ง",
-      tag: "นวัตกรรม",
-      tagBg: "bg-sky-100 text-sky-800 border-sky-200",
+      tag: "โซน 5 • นวัตกรรม",
+      tagBg: "bg-purple-100 text-purple-800 border-purple-200",
       detail: {
         overview: "ครั่งดิบถูกนำไปแกะ บด ล้าง สกัดแยกสี เพื่อส่งต่อเข้าสู่อุตสาหกรรมมูลค่าสูง",
         highlights: [
           "เชลแลก (Shellac): เคลือบเงาไม้ และเคลือบเม็ดยา/อาหาร",
           "สีสกัดครั่ง: สีย้อมธรรมชาติปลอดภัยสำหรับสิ่งทอ",
+        ],
+      },
+    },
+    {
+      id: 6,
+      icon: "🏛️",
+      title: "ห้องเรียนรู้ครั่งครบวงจร",
+      desc: "ศูนย์รวมนิทรรศการจริง แปลงสาธิต และอาคารเรียนรู้ ม.มหิดล อ.สบปราบ จ.ลำปาง",
+      tag: "โซนหลัก • ศูนย์เรียนรู้",
+      tagBg: "bg-amber-100 text-amber-800 border-amber-200",
+      detail: {
+        overview: "อาคารศูนย์เรียนรู้ครั่งครบวงจร มหาวิทยาลัยมหิดล อ.สบปราบ เป็นแหล่งถ่ายทอดเทคโนโลยีและนวัตกรรมเพื่อชุมชนอย่างยั่งยืน",
+        highlights: [
+          "อาคารเรียนรู้และห้องจัดแสดงชิ้นงานจริง",
+          "ระบบจำลอง 3D SketchUp แบบ Interactive",
         ],
       },
     },
@@ -465,14 +522,14 @@ function LacKnowledgeCards() {
     <section className="max-w-6xl mx-auto px-4 py-12">
       <div className="text-center mb-10 space-y-2">
         <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 tracking-tight">
-          📚 หมวดหมู่องค์ความรู้เรื่องครั่ง
+          📚 โซนเรียนรู้และองค์ความรู้เรื่องครั่ง
         </h2>
         <p className="text-sm font-normal text-slate-500">
-          คลิกที่การ์ดเพื่อเปิดอ่านรายละเอียดเชิงลึกฉบับเต็ม
+          คลิกที่การ์ดเพื่อเปิดอ่านรายละเอียดเชิงลึกประจำโซน
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {cards.map((card) => (
           <div
             key={card.id}
@@ -496,7 +553,7 @@ function LacKnowledgeCards() {
               </p>
             </div>
             <div className="text-xs font-semibold text-[#801818] flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-slate-100">
-              <span>อ่านเพิ่มเติม</span>
+              <span>อ่านรายละเอียดโซนนี้</span>
               <span>→</span>
             </div>
           </div>
@@ -533,7 +590,7 @@ function LacKnowledgeCards() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-semibold tracking-wider text-[#801818]">📌 ภาพรวมองค์ความรู้</h4>
+                <h4 className="text-xs font-semibold tracking-wider text-[#801818]">📌 ภาพรวมประจำโซน</h4>
                 <p className="text-sm font-normal leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 text-slate-700">
                   {selectedCard.detail.overview}
                 </p>
