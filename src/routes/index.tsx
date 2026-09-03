@@ -1,9 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-
-export const Route = createFileRoute("/")({
-  component: HomePage,
-});
 
 // ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ดึงไฟล์จริง Banner 1.jpg ถึง Banner 6.jpg จากโฟลเดอร์ public)
 const HERO_SLIDES = [
@@ -765,3 +761,5 @@ function LacKnowledgeAccordion() {
     </section>
   );
 }
+
+

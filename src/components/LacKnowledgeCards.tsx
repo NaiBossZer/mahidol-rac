@@ -226,3 +226,4 @@ export function LacKnowledgeCards() {
     </section>
   );
 }
+
