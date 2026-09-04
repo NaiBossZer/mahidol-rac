@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import SobprabLacLabGame from "@/components/game";
 
 // ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ดึงไฟล์จริง Banner 1.jpg ถึง Banner 6.jpg จากโฟลเดอร์ public)
 const HERO_SLIDES = [
@@ -396,6 +397,17 @@ export function HomePage() {
         <div id="data-viz" className="scroll-mt-24">
           <LacDataVisualization />
         </div>
+
+        <section id="learning-game" className="scroll-mt-24 px-4 py-12" aria-labelledby="learning-game-title">
+          <div className="mx-auto max-w-6xl space-y-3">
+            <div className="text-center">
+              <p className="text-xs font-semibold tracking-widest text-[#801818]">INTERACTIVE LEARNING LAB</p>
+              <h2 id="learning-game-title" className="text-2xl font-bold text-slate-800">เกมจำลองวิทยาศาสตร์ครั่งสบปราบ</h2>
+              <p className="text-sm text-slate-500">ทดลองเลือกต้นโฮสต์ ฤดูกาล และกระบวนการแปรรูป แล้วดูผลลัพธ์แบบทันที</p>
+            </div>
+            <SobprabLacLabGame />
+          </div>
+        </section>
 
         {/* Accordion Section */}
         <LacKnowledgeAccordion />
