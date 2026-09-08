@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SobprabLacLabGame from "@/components/game";
+import LacBingoGame from "@/components/LacBingoGame";
 
 // ข้อมูล 6 ภาพสไลด์แบนเนอร์ (ดึงไฟล์จริง Banner 1.jpg ถึง Banner 6.jpg จากโฟลเดอร์ public)
 const HERO_SLIDES = [
@@ -178,6 +179,13 @@ export function HomePage() {
               >
                 สถิติ
               </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("bingo-section")}
+                className="text-[#F5B800] hover:text-white font-bold transition-colors py-1 cursor-pointer flex items-center gap-1 bg-[#801818]/60 px-3 py-1 rounded-full border border-[#F5B800]/40 shadow-xs"
+              >
+                <span>🎲</span> เกมบิงโก
+              </button>
               <Link to="/survey" className="hover:text-[#F5B800] transition-colors py-1">
                 แบบสอบถาม
               </Link>
@@ -205,6 +213,13 @@ export function HomePage() {
               <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
                 หน้าแรก
               </Link>
+              <button
+                type="button"
+                onClick={() => scrollToSection("bingo-section")}
+                className="w-full text-left px-3 py-2 rounded-lg bg-[#801818] font-bold text-white flex items-center gap-1.5"
+              >
+                <span>🎲</span> เกมบิงโกห้องเรียนรู้
+              </button>
               <button
                 type="button"
                 onClick={() => scrollToSection("cards-section")}
@@ -406,6 +421,24 @@ export function HomePage() {
               <p className="text-sm text-slate-500">ทดลองเลือกต้นโฮสต์ ฤดูกาล และกระบวนการแปรรูป แล้วดูผลลัพธ์แบบทันที</p>
             </div>
             <SobprabLacLabGame />
+          </div>
+        </section>
+
+        {/* ==================== BINGO GAME SECTION ==================== */}
+        <section id="bingo-section" className="scroll-mt-24 px-4 py-12 bg-gradient-to-b from-transparent via-[#801818]/5 to-transparent" aria-labelledby="bingo-game-title">
+          <div className="mx-auto max-w-6xl space-y-4">
+            <div className="text-center space-y-1">
+              <span className="bg-[#801818] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                CLASSROOM INTERACTIVE BINGO
+              </span>
+              <h2 id="bingo-game-title" className="text-2xl sm:text-3xl font-bold text-slate-800">
+                🎲 เกมบิงโกวิทยาศาสตร์ครั่งสบปราบ
+              </h2>
+              <p className="text-sm text-slate-500 max-w-xl mx-auto">
+                ท้าทายความรู้ครั่ง 16 คีย์เวิร์ด ตรวจจับสายบิงโกอัตโนมัติ 10 รูปแบบ พร้อมพิธีกรพี่ M-Guide
+              </p>
+            </div>
+            <LacBingoGame />
           </div>
         </section>
 
