@@ -1,6 +1,6 @@
-import { Link, redirect, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import LacBingoGame from "@/components/LacBingoGame";
+import { useNavigate } from "react-router-dom";
+import { AppNavbar } from "@/components/AppNavbar";
 
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxIXYFkonDlYf8sb1VqTDoJXlsZ58Pd53qYSP-rxeLc-9_hiHA4kKIUVAUEM-IdcrLIkQ/exec";
@@ -9,26 +9,11 @@ interface SurveyResponse {
   timestamp?: string;
   ageGroup?: string;
   affiliation?: string;
-  everJoined?: string;
-  channels?: string;
-  p2_location?: number | string;
-  p2_schedule?: number | string;
-  p2_readiness?: number | string;
-  p2_reception?: number | string;
-  p2_overall?: number | string;
-  p3_interest?: number | string;
-  p3_content?: number | string;
-  p3_clarity?: number | string;
-  p3_benefit?: number | string;
-  p3_application?: number | string;
-  p4_knowledge?: number | string;
-  p4_inspiration?: number | string;
-  p4_communityResource?: number | string;
-  p4_futureReturn?: number | string;
   feedback?: string;
+  [key: string]: string | number | undefined;
 }
 
-const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: string }> = {
+const QUESTION_MAP: Record<string, { title: string; category: string }> = {
   p2_location: { title: "ความเหมาะสมของสถานที่", category: "การจัดงาน" },
   p2_schedule: { title: "ความเหมาะสมของระยะเวลา", category: "การจัดงาน" },
   p2_readiness: { title: "ความพร้อมของอุปกรณ์/สื่อ", category: "การจัดงาน" },
@@ -43,19 +28,22 @@ const QUESTION_MAP: Record<keyof SurveyResponse, { title: string; category: stri
   p4_inspiration: { title: "แรงบันดาลใจในการต่อยอด", category: "ผลกระทบ" },
   p4_communityResource: { title: "การเป็นแหล่งเรียนรู้ของชุมชน", category: "ผลกระทบ" },
   p4_futureReturn: { title: "ความสนใจเข้าร่วมอีกในอนาคต", category: "ผลกระทบ" },
-  timestamp: { title: "", category: "" },
-  ageGroup: { title: "", category: "" },
-  affiliation: { title: "", category: "" },
-  everJoined: { title: "", category: "" },
-  channels: { title: "", category: "" },
-  feedback: { title: "", category: "" },
 };
 
 const COLOR_PALETTE = ["#0A2E4D", "#801818", "#2D5A27", "#F5B800", "#0284c7", "#7c3aed", "#e11d48"];
-
 const MONTH_NAMES = [
-  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+  "มกราคม",
+  "กุมภาพันธ์",
+  "มีนาคม",
+  "เมษายน",
+  "พฤษภาคม",
+  "มิถุนายน",
+  "กรกฎาคม",
+  "สิงหาคม",
+  "กันยายน",
+  "ตุลาคม",
+  "พฤศจิกายน",
+  "ธันวาคม",
 ];
 
 export function DashboardPage() {
@@ -64,17 +52,14 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const [selectedYear, setSelectedYear] = useState<string>("ALL");
-  const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
-  const [selectedAge, setSelectedAge] = useState<string>("ALL");
-  const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
-  const [activeTab, setActiveTab] = useState<"all" | "analytics" | "bingo">("all");
+  const [selectedYear, setSelectedYear] = useState("ALL");
+  const [selectedMonth, setSelectedMonth] = useState("ALL");
+  const [selectedAge, setSelectedAge] = useState("ALL");
+  const [selectedAffiliation, setSelectedAffiliation] = useState("ALL");
 
   useEffect(() => {
-    const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
-    if (!isAuth) {
+    if (sessionStorage.getItem("dashboard_auth") !== "true") {
       navigate("/login");
       return;
     }
@@ -98,30 +83,28 @@ export function DashboardPage() {
     setErrorMsg("");
     try {
       const res = await fetch(GOOGLE_SCRIPT_URL, { method: "GET", redirect: "follow" });
-      if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อกับ Google Apps Script ได้");
+      if (!res.ok) throw new Error("ไม่สามารถเชื่อมต่อ Google Apps Script ได้");
       const json = await res.json();
 
       if (Array.isArray(json)) {
-        const validData = json.filter((item: any) => {
-          if (!item || typeof item !== "object") return false;
-          return Object.values(item).some(
-            (val) => val !== null && val !== undefined && String(val).trim() !== ""
-          );
-        });
-        setData(validData);
+        const valid = json.filter(
+          (item) =>
+            item &&
+            typeof item === "object" &&
+            Object.values(item).some(
+              (v) => v !== null && v !== undefined && String(v).trim() !== "",
+            ),
+        );
+        setData(valid);
       } else {
         setData([]);
       }
 
       const now = new Date();
       setLastUpdated(
-        `${now.getDate()} ส.ค. ${now.getFullYear() + 543} ${now
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
+        `${now.getDate()} ส.ค. ${now.getFullYear() + 543} ${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`,
       );
-    } catch (err: any) {
-      console.error("Error fetching dashboard data:", err);
+    } catch {
       setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
       setData([]);
     } finally {
@@ -129,89 +112,73 @@ export function DashboardPage() {
     }
   };
 
-  const parseNum = (val: any): number => {
-    const n = Number(val);
+  const parseNum = (v: unknown): number => {
+    const n = Number(v);
     return isNaN(n) ? 0 : n;
   };
 
+  // Filter options derived from dataset
   const availableYears = useMemo(() => {
-    const yearSet = new Set<string>();
-    data.forEach((item) => {
-      if (item.timestamp) {
-        const d = new Date(item.timestamp);
-        if (!isNaN(d.getTime())) {
-          yearSet.add(d.getFullYear().toString());
-        }
-      }
-    });
-    return Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
+    const s = new Set<string>();
+    data.forEach(
+      (d) =>
+        d.timestamp &&
+        !isNaN(new Date(d.timestamp).getTime()) &&
+        s.add(new Date(d.timestamp).getFullYear().toString()),
+    );
+    return Array.from(s).sort((a, b) => Number(b) - Number(a));
   }, [data]);
 
   const availableMonths = useMemo(() => {
-    const monthSet = new Set<number>();
-    data.forEach((item) => {
-      if (item.timestamp) {
-        const d = new Date(item.timestamp);
-        if (!isNaN(d.getTime())) {
-          if (selectedYear === "ALL" || d.getFullYear().toString() === selectedYear) {
-            monthSet.add(d.getMonth());
-          }
+    const s = new Set<number>();
+    data.forEach((d) => {
+      if (d.timestamp) {
+        const date = new Date(d.timestamp);
+        if (
+          !isNaN(date.getTime()) &&
+          (selectedYear === "ALL" || date.getFullYear().toString() === selectedYear)
+        ) {
+          s.add(date.getMonth());
         }
       }
     });
-    return Array.from(monthSet).sort((a, b) => a - b);
+    return Array.from(s).sort((a, b) => a - b);
   }, [data, selectedYear]);
 
-  const ageGroupList = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((item) => {
-      if (item.ageGroup?.trim()) set.add(item.ageGroup.trim());
-    });
-    return Array.from(set);
-  }, [data]);
+  const ageGroupList = useMemo(
+    () => Array.from(new Set(data.map((d) => d.ageGroup?.trim()).filter(Boolean))) as string[],
+    [data],
+  );
+  const affiliationsList = useMemo(
+    () => Array.from(new Set(data.map((d) => d.affiliation?.trim() || "ไม่ระบุ"))),
+    [data],
+  );
 
-  const affiliationsList = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((item) => set.add(item.affiliation?.trim() || "ไม่ระบุ"));
-    return Array.from(set);
-  }, [data]);
-
+  // Filtered dataset
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       if (item.timestamp) {
-        const itemDate = new Date(item.timestamp);
-        if (!isNaN(itemDate.getTime())) {
-          if (selectedYear !== "ALL" && itemDate.getFullYear().toString() !== selectedYear) {
-            return false;
-          }
-          if (selectedMonth !== "ALL" && itemDate.getMonth().toString() !== selectedMonth) {
-            return false;
-          }
+        const d = new Date(item.timestamp);
+        if (!isNaN(d.getTime())) {
+          if (selectedYear !== "ALL" && d.getFullYear().toString() !== selectedYear) return false;
+          if (selectedMonth !== "ALL" && d.getMonth().toString() !== selectedMonth) return false;
         }
       }
-
-      if (selectedAge !== "ALL") {
-        const itemAge = item.ageGroup?.trim() || "";
-        if (itemAge !== selectedAge) return false;
-      }
-
-      if (selectedAffiliation !== "ALL") {
-        const itemAff = item.affiliation?.trim() || "ไม่ระบุ";
-        if (itemAff !== selectedAffiliation) return false;
-      }
-
+      if (selectedAge !== "ALL" && (item.ageGroup?.trim() || "") !== selectedAge) return false;
+      if (
+        selectedAffiliation !== "ALL" &&
+        (item.affiliation?.trim() || "ไม่ระบุ") !== selectedAffiliation
+      )
+        return false;
       return true;
     });
   }, [data, selectedYear, selectedMonth, selectedAge, selectedAffiliation]);
 
+  // Question Scores Calculation
   const itemScores = useMemo(() => {
-    const keys = Object.keys(QUESTION_MAP).filter(
-      (k) => QUESTION_MAP[k as keyof SurveyResponse].title !== ""
-    ) as (keyof SurveyResponse)[];
-
-    return keys.map((key) => {
-      let sum = 0;
-      let count = 0;
+    return Object.entries(QUESTION_MAP).map(([key, info]) => {
+      let sum = 0,
+        count = 0;
       filteredData.forEach((item) => {
         const val = parseNum(item[key]);
         if (val > 0) {
@@ -219,59 +186,47 @@ export function DashboardPage() {
           count++;
         }
       });
-      const avg = count > 0 ? parseFloat((sum / count).toFixed(2)) : 0;
       return {
         key,
-        title: QUESTION_MAP[key].title,
-        category: QUESTION_MAP[key].category,
-        avg,
+        title: info.title,
+        category: info.category,
+        avg: count > 0 ? parseFloat((sum / count).toFixed(2)) : 0,
       };
     });
   }, [filteredData]);
 
+  // Scores grouped by Category
   const categoryGroupedScores = useMemo(() => {
-    const groups: Record<string, { category: string; avg: number; items: typeof itemScores }> = {};
-
+    const groups: Record<string, { category: string; items: typeof itemScores }> = {};
     itemScores.forEach((item) => {
-      if (!groups[item.category]) {
-        groups[item.category] = { category: item.category, avg: 0, items: [] };
-      }
-      groups[item.category].items.push(item);
+      if (!groups[item.category]) groups[item.category] = { category: item.category, items: [] };
+      groups[item.category]!.items.push(item);
     });
 
-    const resultList = Object.values(groups).map((group) => {
-      const total = group.items.reduce((sum, i) => sum + i.avg, 0);
-      const avg = group.items.length > 0 ? parseFloat((total / group.items.length).toFixed(2)) : 0;
-      const sortedItems = [...group.items].sort((a, b) => b.avg - a.avg);
-
-      return {
-        ...group,
-        avg,
-        items: sortedItems,
-      };
-    });
-
-    return resultList.sort((a, b) => b.avg - a.avg);
+    return Object.values(groups)
+      .map((g) => {
+        const avg = g.items.length
+          ? parseFloat((g.items.reduce((acc, i) => acc + i.avg, 0) / g.items.length).toFixed(2))
+          : 0;
+        return { ...g, avg, items: [...g.items].sort((a, b) => b.avg - a.avg) };
+      })
+      .sort((a, b) => b.avg - a.avg);
   }, [itemScores]);
 
+  // Summary Metrics
   const cardMetrics = useMemo(() => {
-    if (itemScores.length === 0 || filteredData.length === 0) return null;
-
+    if (!itemScores.length || !filteredData.length) return null;
     const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
-    const highest = sorted[0];
-    const lowest = sorted[sorted.length - 1];
-
     const rawGrandAvg = itemScores.reduce((acc, curr) => acc + curr.avg, 0) / itemScores.length;
-    const grandAvgPercent = Math.round((rawGrandAvg / 5) * 100);
-
     return {
-      highest,
-      lowest,
-      grandAvgPercent,
+      highest: sorted[0]!,
+      lowest: sorted[sorted.length - 1]!,
+      grandAvgPercent: Math.round((rawGrandAvg / 5) * 100),
       totalQuestions: itemScores.length,
     };
   }, [itemScores, filteredData]);
 
+  // Affiliation Breakdown for Donut Chart
   const affiliationBreakdown = useMemo(() => {
     const counts: Record<string, number> = {};
     filteredData.forEach((item) => {
@@ -283,289 +238,175 @@ export function DashboardPage() {
       name,
       count,
       percent: parseFloat(((count / total) * 100).toFixed(1)),
-      color: COLOR_PALETTE[idx % COLOR_PALETTE.length],
+      color: COLOR_PALETTE[idx % COLOR_PALETTE.length]!,
     }));
   }, [filteredData]);
 
+  // Feedback Text Analysis
   const feedbackAnalysis = useMemo(() => {
-    const rawFeedbacks = filteredData
+    const raw = filteredData
       .filter((d) => d.feedback && d.feedback.trim() !== "")
-      .map((d) => ({
-        text: d.feedback!.trim(),
-        affiliation: d.affiliation || "ไม่ระบุ",
-        timestamp: d.timestamp || "N/A",
-      }));
+      .map((d) => ({ text: d.feedback!.trim(), affiliation: d.affiliation || "ไม่ระบุ" }));
 
-    let positiveCount = 0;
-    let followUpCount = 0;
-    let urgentCount = 0;
-    let generalCount = 0;
-
+    let positiveCount = 0,
+      followUpCount = 0,
+      urgentCount = 0;
     const topicCounts: Record<string, number> = {
-      "การให้บริการ": 0,
+      การให้บริการ: 0,
       "กิจกรรม/การเรียนรู้": 0,
       "สิ่งแวดล้อม/สถานที่": 0,
       "อุปกรณ์/สื่อ": 0,
     };
 
-    const parsedList = rawFeedbacks.map((item) => {
+    const parsedList = raw.map((item) => {
       const t = item.text.toLowerCase();
       let status: "positive" | "followup" | "urgent" | "general" = "positive";
       let tag = "ทั่วไป";
 
-      if (t.includes("ด่วน") || t.includes("ปรับปรุง") || t.includes("แย่") || t.includes("เสีย") || t.includes("ช้า")) {
+      if (
+        t.includes("ด่วน") ||
+        t.includes("ปรับปรุง") ||
+        t.includes("แย่") ||
+        t.includes("เสีย") ||
+        t.includes("ช้า")
+      ) {
         status = "urgent";
         urgentCount++;
-      } else if (t.includes("ควร") || t.includes("อยากให้") || t.includes("ติดตาม") || t.includes("เพิ่ม")) {
+      } else if (
+        t.includes("ควร") ||
+        t.includes("อยากให้") ||
+        t.includes("ติดตาม") ||
+        t.includes("เพิ่ม")
+      ) {
         status = "followup";
         followUpCount++;
-      } else if (t.includes("ดี") || t.includes("ประทับใจ") || t.includes("ชอบ") || t.includes("เยี่ยม") || t.includes("ขอบคุณ")) {
+      } else if (
+        t.includes("ดี") ||
+        t.includes("ประทับใจ") ||
+        t.includes("ชอบ") ||
+        t.includes("เยี่ยม") ||
+        t.includes("ขอบคุณ")
+      ) {
         status = "positive";
         positiveCount++;
-      } else {
-        status = "general";
-        generalCount++;
       }
 
-      if (t.includes("บริการ") || t.includes("พนักงาน") || t.includes("ต้อนรับ") || t.includes("เจ้าหน้าที่")) {
+      if (
+        t.includes("บริการ") ||
+        t.includes("พนักงาน") ||
+        t.includes("ต้อนรับ") ||
+        t.includes("เจ้าหน้าที่")
+      ) {
         tag = "การให้บริการ";
-        topicCounts["การให้บริการ"]++;
-      } else if (t.includes("จอดรถ") || t.includes("สถานที่") || t.includes("ห้อง") || t.includes("แอร์") || t.includes("สะอาด")) {
+        topicCounts["การให้บริการ"]!++;
+      } else if (
+        t.includes("จอดรถ") ||
+        t.includes("สถานที่") ||
+        t.includes("ห้อง") ||
+        t.includes("แอร์") ||
+        t.includes("สะอาด")
+      ) {
         tag = "สิ่งแวดล้อม/สถานที่";
-        topicCounts["สิ่งแวดล้อม/สถานที่"]++;
-      } else if (t.includes("อุปกรณ์") || t.includes("สื่อ") || t.includes("ไมค์") || t.includes("สไลด์")) {
+        topicCounts["สิ่งแวดล้อม/สถานที่"]!++;
+      } else if (
+        t.includes("อุปกรณ์") ||
+        t.includes("สื่อ") ||
+        t.includes("ไมค์") ||
+        t.includes("สไลด์")
+      ) {
         tag = "อุปกรณ์/สื่อ";
-        topicCounts["อุปกรณ์/สื่อ"]++;
+        topicCounts["อุปกรณ์/สื่อ"]!++;
       } else {
         tag = "กิจกรรม/การเรียนรู้";
-        topicCounts["กิจกรรม/การเรียนรู้"]++;
+        topicCounts["กิจกรรม/การเรียนรู้"]!++;
       }
 
-      return {
-        ...item,
-        status,
-        tag,
-      };
+      return { ...item, status, tag };
     });
 
-    const maxTopicCount = Math.max(...Object.values(topicCounts), 1);
-
     return {
-      total: rawFeedbacks.length,
+      total: raw.length,
       positiveCount,
       followUpCount,
       urgentCount,
-      generalCount,
       topicCounts,
-      maxTopicCount,
+      maxTopicCount: Math.max(...Object.values(topicCounts), 1),
       latestList: parsedList.slice(0, 5),
     };
   }, [filteredData]);
 
   const getScoreBadge = (score: number) => {
-    if (score >= 4.5) return <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-[#2D5A27] font-semibold border border-emerald-200">🟢 ดีมากที่สุด</span>;
-    if (score >= 3.5) return <span className="px-2 py-0.5 rounded-full text-[10px] bg-sky-100 text-[#0A2E4D] font-semibold border border-sky-200">🔵 ดีมาก</span>;
-    if (score >= 2.5) return <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-semibold border border-amber-200">🟡 ปานกลาง</span>;
-    return <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-100 text-[#801818] font-semibold border border-rose-200">🔴 ควรปรับปรุง</span>;
-  };
-
-  const renderPieChart = () => {
-    if (affiliationBreakdown.length === 0) return null;
-
-    let accumulatedPercent = 0;
+    if (score >= 4.5)
+      return (
+        <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-[#2D5A27] font-semibold border border-emerald-200">
+          🟢 ดีมากที่สุด
+        </span>
+      );
+    if (score >= 3.5)
+      return (
+        <span className="px-2 py-0.5 rounded-full text-[10px] bg-sky-100 text-[#0A2E4D] font-semibold border border-sky-200">
+          🔵 ดีมาก
+        </span>
+      );
+    if (score >= 2.5)
+      return (
+        <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-semibold border border-amber-200">
+          🟡 ปานกลาง
+        </span>
+      );
     return (
-      <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
-        <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-          {affiliationBreakdown.map((item, idx) => {
-            const strokeDasharray = `${item.percent} ${100 - item.percent}`;
-            const strokeDashoffset = -accumulatedPercent;
-            accumulatedPercent += item.percent;
-
-            return (
-              <circle
-                key={idx}
-                cx="18"
-                cy="18"
-                r="15.91549430918954"
-                fill="transparent"
-                stroke={item.color}
-                strokeWidth="4.5"
-                strokeDasharray={strokeDasharray}
-                strokeDashoffset={strokeDashoffset}
-                className="transition-all duration-300 hover:opacity-80 cursor-pointer"
-              />
-            );
-          })}
-        </svg>
-        <div className="absolute text-center pointer-events-none">
-          <p className="text-2xl font-bold text-[#0A2E4D] font-mono">{filteredData.length}</p>
-          <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">คนทั้งหมด</p>
-        </div>
-      </div>
+      <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-100 text-[#801818] font-semibold border border-rose-200">
+        🔴 ควรปรับปรุง
+      </span>
     );
   };
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-slate-800 font-['Mitr'] selection:bg-[#801818] selection:text-white flex flex-col justify-between">
-      
-      {/* ==================== NAVBAR ==================== */}
-      <header className="sticky top-0 z-50 bg-[#0A2E4D] text-white shadow-md border-b border-[#08233C]">
-        <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            
-            {/* ฝั่งซ้าย: โลโก้ 3 ตัว + ข้อความหน่วยงาน */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                  <img src="/envi-logo.jpg" alt="Envi Mahidol Logo" className="h-full object-contain" />
-                </div>
-                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                  <img src="/mahidol-logo.png" alt="Mahidol University Logo" className="h-full object-contain" />
-                </div>
-                <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                  <img src="/social-engagement-logo.png" alt="Social Engagement Logo" className="h-full object-contain" />
-                </div>
-              </div>
+      {/* Shared Navbar */}
+      <AppNavbar />
 
-              <div className="w-[1px] h-8 sm:h-10 bg-white/20 shrink-0 hidden sm:block"></div>
-
-              <div className="hidden sm:block">
-                <span className="text-xs sm:text-sm font-semibold tracking-tight text-white block leading-snug">
-                  งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
-                </span>
-                <span className="text-[10px] sm:text-xs font-medium text-[#F5B800] block leading-tight mt-0.5">
-                  คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-                </span>
-              </div>
-            </div>
-
-            {/* ฝั่งขวา: เมนูนำทาง */}
-            <div className="hidden xl:flex items-center space-x-6 text-xs sm:text-sm font-normal text-slate-200 shrink-0">
-              <Link to="/" className="hover:text-[#F5B800] transition-colors py-1">
-                หน้าแรก
-              </Link>
-              <Link to="/survey" className="hover:text-[#F5B800] transition-colors py-1">
-                แบบสอบถาม
-              </Link>
-              <Link to="/dashboard" className="hover:text-[#F5B800] transition-colors py-1 font-semibold text-[#F5B800]">
-                สรุปผลแบบประเมินความพึงพอใจ
-              </Link>
-            </div>
-
-            {/* Mobile Hamburger Button */}
-            <div className="xl:hidden shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-white hover:text-[#F5B800]"
-              >
-                {isMobileMenuOpen ? "✕" : "☰"}
-              </button>
-            </div>
-
+      <main className="grow py-6 sm:py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-6 w-full">
+        {/* Header Bar */}
+        <div className="bg-gradient-to-r from-[#002D62] via-[#801818] to-[#961E1E] text-white rounded-3xl p-6 sm:p-7 shadow-md flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1.5 bg-white/15 text-[#F5B800] font-bold text-[10px] tracking-wider px-3 py-0.5 rounded-full uppercase border border-white/20">
+              📊 Analytics Dashboard
+            </span>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              ระบบสรุปผลการประเมินความพึงพอใจ
+            </h1>
+            <p className="text-xs sm:text-sm text-rose-100/90 font-light">
+              ศูนย์การเรียนรู้ครั่งสบปราบ • คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล
+            </p>
           </div>
 
-          {/* Mobile Dropdown */}
-          {isMobileMenuOpen && (
-            <div className="xl:hidden mt-3 pt-3 border-t border-white/15 space-y-2 text-sm font-normal">
-              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-                หน้าแรก
-              </Link>
-              <Link to="/survey" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white">
-                แบบสอบถาม
-              </Link>
-              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg bg-[#F5B800] text-[#0A2E4D] font-semibold text-center mt-2">
-                สรุปผลแบบประเมินความพึงพอใจ
-              </Link>
-            </div>
-          )}
-        </nav>
-      </header>
-
-      {/* ==================== MAIN CONTENT ==================== */}
-      <main className="grow py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-6 w-full">
-        
-        {/* Top Breadcrumb & Status */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
-          <Link to="/" className="hover:text-[#801818] transition-colors flex items-center gap-1.5 font-semibold text-slate-600">
-            <span>←</span> กลับสู่หน้าแรก
-          </Link>
-          <span className="text-[#0A2E4D] font-semibold bg-sky-50 px-3 py-1 rounded-full border border-sky-200/80 shadow-xs w-fit">
-            🔗 เชื่อมต่อระบบ Google Sheets เรียบร้อยแล้ว
-          </span>
-        </div>
-
-        {errorMsg && (
-          <div className="bg-rose-50 border border-rose-200 text-[#801818] p-3 rounded-2xl text-xs text-center font-medium shadow-sm">
-            ⚠️ {errorMsg}
-          </div>
-        )}
-
-        {/* HERO HEADER BANNER (สไตล์แดงครั่งเกรดพรีเมียม) */}
-        <div className="bg-gradient-to-r from-[#701414] via-[#801818] to-[#961E1E] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
-
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="w-16 h-16 rounded-2xl bg-white p-1.5 shadow-md shrink-0 flex items-center justify-center overflow-hidden">
-              <img
-                src="/Mahidol_U.jpg"
-                alt="Mahidol Logo"
-                className="w-full h-full object-contain rounded-xl"
-                onError={(e) => {
-                  e.currentTarget.src = "/mahidol-logo.png";
-                }}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-[#F5B800] font-medium text-xs tracking-wide px-3 py-0.5 rounded-full border border-white/20">
-                <span className="w-2 h-2 rounded-full bg-[#F5B800] animate-pulse"></span>
-                Mahidol University Satisfaction Insight
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight text-white drop-shadow-sm">
-                พิธีเปิดห้องการเรียนรู้ครั่งครบวงจร
-              </h1>
-              <p className="text-xs sm:text-sm text-rose-100/90 font-light">
-                สรุปผลแบบประเมินความพึงพอใจและวิเคราะห์ข้อมูลผู้เข้าร่วมกิจกรรมเชิงลึก
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-white/15 lg:border-t-0 pt-4 lg:pt-0 relative z-10">
+          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end border-t border-white/15 lg:border-t-0 pt-3 lg:pt-0">
             <div className="text-right">
-              <div className="flex items-center gap-2 justify-end">
-                <span className={`w-2 h-2 rounded-full ${loading ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`}></span>
-                <span className={`text-xs font-bold ${loading ? "text-amber-200" : "text-emerald-200"}`}>
-                  {loading ? "กำลังเชื่อมต่อข้อมูล..." : "เชื่อมต่อสด (LIVE)"}
+              <div className="flex items-center gap-1.5 justify-end text-xs font-bold">
+                <span
+                  className={`w-2 h-2 rounded-full ${loading ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`}
+                />
+                <span className={loading ? "text-amber-200" : "text-emerald-200"}>
+                  {loading ? "กำลังโหลด..." : "เชื่อมต่อสด (LIVE)"}
                 </span>
               </div>
-              <p className="text-[11px] text-rose-200/80 mt-0.5">อัปเดตล่าสุด: {lastUpdated || "กำลังโหลด..."}</p>
+              <p className="text-[11px] text-rose-200/80 mt-0.5">อัปเดต: {lastUpdated || "..."}</p>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => {
-                  setActiveTab("bingo");
-                  const el = document.getElementById("bingo-game-section");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-3.5 py-2 rounded-xl bg-[#F5B800] hover:bg-amber-400 text-[#002D62] text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
-              >
-                <span>🎲</span> เล่นเกมบิงโก
-              </button>
-              <button
-                type="button"
                 onClick={fetchData}
                 disabled={loading}
-                className="px-3.5 py-2 rounded-xl bg-white/15 border border-white/25 text-white hover:bg-white/25 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm active:scale-95"
+                className="px-3.5 py-2 rounded-xl bg-white/15 border border-white/25 text-white hover:bg-white/25 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 shadow-sm active:scale-95"
               >
                 🔄 รีเฟรช
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="px-3.5 py-2 rounded-xl bg-rose-900/60 border border-rose-400/40 text-rose-100 hover:bg-rose-900/90 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                className="px-3.5 py-2 rounded-xl bg-rose-900/60 border border-rose-400/40 text-rose-100 hover:bg-rose-900/90 text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95"
               >
                 🚪 ออกจากระบบ
               </button>
@@ -573,79 +414,34 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* DASHBOARD VIEW MODE TABS */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200/80 rounded-2xl p-2 sm:p-2.5 shadow-sm">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => setActiveTab("all")}
-              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeTab === "all"
-                  ? "bg-[#0A2E4D] text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <span>📑</span> แสดงผลทั้งหมด (Dashboard &amp; Bingo)
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("analytics")}
-              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeTab === "analytics"
-                  ? "bg-[#801818] text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <span>📊</span> สรุปผลประเมินความพึงพอใจ
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("bingo")}
-              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeTab === "bingo"
-                  ? "bg-[#801818] text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <span>🎲</span> ระบบเกมบิงโกห้องเรียนรู้ (Lac Bingo)
+        {errorMsg && (
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-[#801818] text-xs font-semibold flex items-center justify-between">
+            <span>⚠️ {errorMsg}</span>
+            <button onClick={fetchData} className="underline cursor-pointer">
+              ลองใหม่อีกครั้ง
             </button>
           </div>
+        )}
 
-          <div className="text-[11px] text-slate-500 font-medium px-2">
-            {activeTab === "bingo" ? (
-              <span className="text-[#801818] font-bold">🎮 โหมดห้องเรียนรู้และฉายโปรเจกเตอร์</span>
-            ) : activeTab === "analytics" ? (
-              <span className="text-[#0A2E4D] font-bold">📈 โหมดวิเคราะห์ข้อมูลประเมินผล</span>
-            ) : (
-              <span>✨ มุมมองครบวงจร</span>
-            )}
-          </div>
-        </div>
-
-        {(activeTab === "all" || activeTab === "analytics") && (
-          <div className="space-y-6">
-
-        {/* MULTI-FILTER BAR */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 text-xs">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-slate-100 text-[#0A2E4D] font-bold text-sm">🎛️</span>
-              <h2 className="font-bold text-slate-800 text-sm">ปรับเลือกเงื่อนไขข้อมูลที่ต้องการดู</h2>
-            </div>
+        {/* Multi-Filter Bar */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 text-xs">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+            <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <span>🎛️</span> ตัวกรองข้อมูลประเมินผล
+            </h2>
             <button
               type="button"
               onClick={handleResetFilter}
-              className="text-slate-500 hover:text-[#801818] font-semibold flex items-center gap-1 text-xs transition-colors cursor-pointer bg-slate-50 hover:bg-rose-50 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-rose-200"
+              className="text-slate-500 hover:text-[#801818] font-semibold text-xs transition-colors cursor-pointer bg-slate-50 hover:bg-rose-50 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-rose-200"
             >
               ✕ ล้างตัวกรอง
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              
-              {/* Filter Year */}
-              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              {/* Year Filter */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
                 <span className="text-[#0A2E4D] font-bold">📅 ปี:</span>
                 <select
                   value={selectedYear}
@@ -653,291 +449,331 @@ export function DashboardPage() {
                     setSelectedYear(e.target.value);
                     setSelectedMonth("ALL");
                   }}
-                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                  className="bg-transparent outline-none cursor-pointer font-semibold text-xs text-slate-800"
                 >
                   <option value="ALL">ทุกปี</option>
-                  {availableYears.map((year) => (
-                    <option key={year} value={year}>
-                      พ.ศ. {Number(year) + 543} ({year})
+                  {availableYears.map((y) => (
+                    <option key={y} value={y}>
+                      พ.ศ. {Number(y) + 543} ({y})
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Filter Month */}
-              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+              {/* Month Filter */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
                 <span className="text-[#0A2E4D] font-bold">🗓️ เดือน:</span>
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                  className="bg-transparent outline-none cursor-pointer font-semibold text-xs text-slate-800"
                 >
                   <option value="ALL">ทุกเดือน</option>
-                  {availableMonths.map((mIdx) => (
-                    <option key={mIdx} value={mIdx.toString()}>
-                      {MONTH_NAMES[mIdx]}
+                  {availableMonths.map((m) => (
+                    <option key={m} value={m.toString()}>
+                      {MONTH_NAMES[m]}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Filter Age */}
-              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+              {/* Age Filter */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
                 <span className="text-[#0A2E4D] font-bold">🎂 ช่วงอายุ:</span>
                 <select
                   value={selectedAge}
                   onChange={(e) => setSelectedAge(e.target.value)}
-                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs"
+                  className="bg-transparent outline-none cursor-pointer font-semibold text-xs text-slate-800"
                 >
                   <option value="ALL">ทุกช่วงอายุ</option>
-                  {ageGroupList.map((age) => (
-                    <option key={age} value={age}>{age}</option>
+                  {ageGroupList.map((a) => (
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
                   ))}
                 </select>
               </div>
 
-              {/* Filter Affiliation */}
-              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 shadow-2xs focus-within:border-[#0A2E4D] transition-colors">
+              {/* Affiliation Filter */}
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
                 <span className="text-[#0A2E4D] font-bold">📌 สังกัด:</span>
                 <select
                   value={selectedAffiliation}
                   onChange={(e) => setSelectedAffiliation(e.target.value)}
-                  className="bg-transparent text-slate-800 outline-none cursor-pointer font-semibold text-xs max-w-[160px] truncate"
+                  className="bg-transparent outline-none cursor-pointer font-semibold text-xs text-slate-800 max-w-[160px] truncate"
                 >
                   <option value="ALL">ทั้งหมด</option>
                   {affiliationsList.map((aff) => (
-                    <option key={aff} value={aff}>{aff}</option>
+                    <option key={aff} value={aff}>
+                      {aff}
+                    </option>
                   ))}
                 </select>
               </div>
-
             </div>
 
-            <div className="flex items-center justify-end gap-1.5 bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2 font-medium">
+            <div className="flex items-center justify-end gap-1.5 bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2 font-medium self-end md:self-auto">
               <span className="text-slate-500">แสดงผล:</span>
-              <span className="text-[#801818] font-bold font-mono text-sm">{filteredData.length}</span>
+              <span className="text-[#801818] font-bold font-mono text-sm">
+                {filteredData.length}
+              </span>
               <span className="text-slate-400">/ {data.length} รายการ</span>
             </div>
           </div>
         </div>
 
-        {/* EXECUTIVE SUMMARY 4 METRIC CARDS */}
+        {/* 4 Executive Metric Cards */}
         {cardMetrics && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* Card 1: จำนวนผู้ประเมิน */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
-              <div className="w-10 h-10 rounded-xl bg-sky-50 text-[#0A2E4D] border border-sky-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-sky-50 text-[#0A2E4D] flex items-center justify-center text-lg font-bold">
                 📋
               </div>
-              <div>
-                <p className="text-xs text-slate-500 font-semibold">จำนวนผู้ตอบแบบประเมิน</p>
-                <div className="flex items-baseline gap-1.5 mt-1">
-                  <span className="text-3xl font-bold text-slate-800 font-mono">{filteredData.length}</span>
-                  <span className="text-xs text-slate-500 font-normal">คน</span>
-                </div>
-                <p className="text-[11px] text-slate-400 mt-1 truncate">จากทั้งหมด {data.length} รายการ</p>
+              <p className="text-xs text-slate-500 font-semibold">จำนวนผู้ตอบแบบประเมิน</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold text-slate-800 font-mono">
+                  {filteredData.length}
+                </span>
+                <span className="text-xs text-slate-400">คน</span>
               </div>
+              <p className="text-[11px] text-slate-400 truncate">จากทั้งหมด {data.length} รายการ</p>
             </div>
 
-            {/* Card 2: คะแนนเฉลี่ยรวม */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#F5B800] border border-amber-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-amber-50 text-[#F5B800] flex items-center justify-center text-lg font-bold">
                 ⭐
               </div>
-              <div>
-                <p className="text-xs text-slate-500 font-semibold">คะแนนเฉลี่ยรวม (ร้อยละ)</p>
-                <div className="flex items-baseline gap-1.5 mt-1">
-                  <span className="text-3xl font-bold text-[#F5B800] font-mono">{cardMetrics.grandAvgPercent}%</span>
-                </div>
-                <p className="text-[11px] text-slate-400 mt-1 truncate">คำนวณจาก {cardMetrics.totalQuestions} หัวข้อประเมิน</p>
+              <p className="text-xs text-slate-500 font-semibold">คะแนนเฉลี่ยรวม (ร้อยละ)</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold text-[#F5B800] font-mono">
+                  {cardMetrics.grandAvgPercent}%
+                </span>
               </div>
+              <p className="text-[11px] text-slate-400 truncate">
+                คำนวณจาก {cardMetrics.totalQuestions} หัวข้อประเมิน
+              </p>
             </div>
 
-            {/* Card 3: หมวดคะแนนสูงสุด */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-[#801818] border border-rose-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-rose-50 text-[#801818] flex items-center justify-center text-lg font-bold">
                 🏅
               </div>
-              <div>
-                <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ได้คะแนนสูงสุด</p>
-                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.highest.title}</p>
-                <div className="flex items-baseline gap-1.5 mt-1">
-                  <span className="text-2xl font-bold text-[#801818] font-mono">{cardMetrics.highest.avg.toFixed(2)}</span>
-                  <span className="text-xs text-slate-400">/ 5.00</span>
-                </div>
+              <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ได้คะแนนสูงสุด</p>
+              <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                {cardMetrics.highest.title}
+              </p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-[#801818] font-mono">
+                  {cardMetrics.highest.avg.toFixed(2)}
+                </span>
+                <span className="text-xs text-slate-400">/ 5.00</span>
               </div>
             </div>
 
-            {/* Card 4: หมวดควรปรับปรุง */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#2D5A27] border border-emerald-100 flex items-center justify-center text-lg mb-3 font-bold group-hover:scale-110 transition-transform">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#2D5A27] flex items-center justify-center text-lg font-bold">
                 🛠️
               </div>
-              <div>
-                <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ควรพัฒนาต่อ</p>
-                <p className="text-xs font-bold text-slate-800 line-clamp-1 mt-1">{cardMetrics.lowest.title}</p>
-                <div className="flex items-baseline gap-1.5 mt-1">
-                  <span className="text-2xl font-bold text-[#2D5A27] font-mono">{cardMetrics.lowest.avg.toFixed(2)}</span>
-                  <span className="text-xs text-slate-400">/ 5.00</span>
-                </div>
+              <p className="text-xs text-slate-500 font-semibold">หัวข้อที่ควรพัฒนาต่อ</p>
+              <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                {cardMetrics.lowest.title}
+              </p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-[#2D5A27] font-mono">
+                  {cardMetrics.lowest.avg.toFixed(2)}
+                </span>
+                <span className="text-xs text-slate-400">/ 5.00</span>
               </div>
             </div>
-
           </div>
         )}
 
-        {/* CHARTS & BREAKDOWN SECTION */}
+        {/* Charts & Breakdown Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* คะแนนตามหมวดหมู่ */}
-          <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-5">
-            <h2 className="text-sm font-bold text-[#0A2E4D] tracking-tight border-b border-slate-100 pb-3 flex items-center gap-2">
-              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (เรียงลำดับสูงสุด - ต่ำสุด)
+          {/* Satisfaction Scores by Category */}
+          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+            <h2 className="text-sm font-bold text-[#0A2E4D] border-b border-slate-100 pb-3 flex items-center gap-2">
+              <span>📊</span> คะแนนความพึงพอใจแยกตามหมวดหมู่ (สูงสุด - ต่ำสุด)
             </h2>
-            
-            <div className="space-y-5 max-h-[460px] overflow-y-auto pr-2">
-              {categoryGroupedScores.map((catGroup, groupIdx) => (
-                <div key={catGroup.category} className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-4 space-y-3.5">
-                  
-                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-[#801818]"></span>
-                      <span className="font-bold text-slate-800 text-sm">
-                        ด้าน{catGroup.category}
-                      </span>
+
+            <div className="space-y-4 max-h-[460px] overflow-y-auto pr-2">
+              {categoryGroupedScores.map((catGroup, gIdx) => (
+                <div
+                  key={catGroup.category}
+                  className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-4 space-y-3"
+                >
+                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                    <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#801818]" />
+                      <span>ด้าน{catGroup.category}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-2xs">
-                      <span className="text-[11px] text-slate-400 font-medium">เฉลี่ยหมวด:</span>
-                      <span className="font-mono font-bold text-[#801818] text-sm">
+                    <div className="bg-white px-2.5 py-0.5 rounded-xl border border-slate-200 text-xs">
+                      <span className="text-slate-400 text-[11px] mr-1">เฉลี่ย:</span>
+                      <span className="font-mono font-bold text-[#801818]">
                         {catGroup.avg.toFixed(2)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pl-1">
-                    {catGroup.items.map((item, itemIdx) => {
-                      const globalIdx = groupIdx * 3 + itemIdx;
-                      return (
-                        <div key={item.key} className="space-y-1.5">
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-700 truncate max-w-[65%] font-medium">
-                              {item.title}
+                  <div className="space-y-2.5 pl-1">
+                    {catGroup.items.map((item, iIdx) => (
+                      <div key={item.key} className="space-y-1">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-700 truncate max-w-[65%] font-medium">
+                            {item.title}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-slate-800">
+                              {item.avg.toFixed(2)}
                             </span>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono font-bold text-slate-800">
-                                {item.avg.toFixed(2)}
-                              </span>
-                              {getScoreBadge(item.avg)}
-                            </div>
-                          </div>
-                          <div className="w-full bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-500 shadow-2xs"
-                              style={{
-                                width: `${(item.avg / 5) * 100}%`,
-                                backgroundColor: COLOR_PALETTE[globalIdx % COLOR_PALETTE.length],
-                              }}
-                            ></div>
+                            {getScoreBadge(item.avg)}
                           </div>
                         </div>
-                      );
-                    })}
+                        <div className="w-full bg-slate-200/70 h-2 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${(item.avg / 5) * 100}%`,
+                              backgroundColor:
+                                COLOR_PALETTE[(gIdx * 3 + iIdx) % COLOR_PALETTE.length],
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-
                 </div>
               ))}
             </div>
           </div>
 
-          {/* สัดส่วนตามสังกัด */}
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-5 flex flex-col justify-between">
+          {/* Affiliation Donut Chart */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4 flex flex-col justify-between">
             <div>
-              <h2 className="text-sm font-bold text-[#0A2E4D] tracking-tight border-b border-slate-100 pb-3 flex items-center gap-2">
+              <h2 className="text-sm font-bold text-[#0A2E4D] border-b border-slate-100 pb-3 flex items-center gap-2">
                 <span>🍕</span> สัดส่วนผู้ตอบจำแนกตามหน่วยงาน
               </h2>
-              
+
               <div className="py-4">
-                {renderPieChart()}
+                {affiliationBreakdown.length > 0 && (
+                  <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
+                    <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                      {(() => {
+                        let acc = 0;
+                        return affiliationBreakdown.map((item, idx) => {
+                          const dash = `${item.percent} ${100 - item.percent}`;
+                          const offset = -acc;
+                          acc += item.percent;
+                          return (
+                            <circle
+                              key={idx}
+                              cx="18"
+                              cy="18"
+                              r="15.91549430918954"
+                              fill="transparent"
+                              stroke={item.color}
+                              strokeWidth="4.5"
+                              strokeDasharray={dash}
+                              strokeDashoffset={offset}
+                              className="transition-all duration-300 hover:opacity-80"
+                            />
+                          );
+                        });
+                      })()}
+                    </svg>
+                    <div className="absolute text-center pointer-events-none">
+                      <p className="text-2xl font-bold text-[#0A2E4D] font-mono">
+                        {filteredData.length}
+                      </p>
+                      <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                        คนทั้งหมด
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="space-y-2.5 pt-3 border-t border-slate-100 max-h-[200px] overflow-y-auto pr-1">
+            <div className="space-y-2 pt-2 border-t border-slate-100 max-h-[200px] overflow-y-auto pr-1">
               {affiliationBreakdown.map((item) => (
-                <div key={item.name} className="flex justify-between items-center text-xs p-1.5 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="flex items-center gap-2.5 truncate max-w-[70%]">
-                    <span className="w-3 h-3 rounded-full shrink-0 shadow-2xs" style={{ backgroundColor: item.color }}></span>
+                <div
+                  key={item.name}
+                  className="flex justify-between items-center text-xs p-1 rounded-lg hover:bg-slate-50"
+                >
+                  <div className="flex items-center gap-2 truncate max-w-[70%]">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: item.color }}
+                    />
                     <span className="text-slate-700 truncate font-medium">{item.name}</span>
                   </div>
-                  <span className="text-slate-500 font-mono shrink-0 font-semibold">{item.count} คน ({item.percent}%)</span>
+                  <span className="text-slate-500 font-mono shrink-0 font-semibold">
+                    {item.count} คน ({item.percent}%)
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
 
-        {/* FEEDBACK & SUGGESTIONS SECTION */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-          
-          <div className="flex justify-between items-start sm:items-center border-b border-slate-100 pb-4">
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                <span>💬</span> ข้อเสนอแนะและความคิดเห็นเพิ่มเติม
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">สรุปประเด็นความคิดเห็นจากผู้ตอบแบบสอบถามจริง</p>
-            </div>
+        {/* Feedback & Suggestions Section */}
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
+          <div className="border-b border-slate-100 pb-3">
+            <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span>💬</span> ข้อเสนอแนะและความคิดเห็นเพิ่มเติม
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              สรุปประเด็นความคิดเห็นจากผู้ตอบแบบสอบถามจริง
+            </p>
           </div>
 
-          {/* 4 Feedback Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-sky-50/70 border border-sky-200/80 rounded-2xl p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-[#0A2E4D] font-mono">{feedbackAnalysis.total}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <div className="bg-sky-50/70 border border-sky-200 rounded-2xl p-3.5 space-y-0.5">
+              <p className="text-2xl font-bold text-[#0A2E4D] font-mono">
+                {feedbackAnalysis.total}
+              </p>
               <p className="text-xs font-semibold text-[#0A2E4D]">🔵 ข้อเสนอแนะทั้งหมด</p>
-              <p className="text-[10px] text-sky-600">รวมทุกหมวดหมู่</p>
             </div>
-
-            <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-[#2D5A27] font-mono">{feedbackAnalysis.positiveCount}</p>
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3.5 space-y-0.5">
+              <p className="text-2xl font-bold text-[#2D5A27] font-mono">
+                {feedbackAnalysis.positiveCount}
+              </p>
               <p className="text-xs font-semibold text-[#2D5A27]">🟢 เชิงบวก / ชื่นชม</p>
-              <p className="text-[10px] text-emerald-600">ประทับใจการจัดงาน</p>
             </div>
-
-            <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-amber-800 font-mono">{feedbackAnalysis.followUpCount}</p>
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-3.5 space-y-0.5">
+              <p className="text-2xl font-bold text-amber-800 font-mono">
+                {feedbackAnalysis.followUpCount}
+              </p>
               <p className="text-xs font-semibold text-amber-900">🟡 ควรติดตาม</p>
-              <p className="text-[10px] text-amber-700">ข้อเสนอแนะพัฒนา</p>
             </div>
-
-            <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-[#801818] font-mono">{feedbackAnalysis.urgentCount}</p>
+            <div className="bg-rose-50/70 border border-rose-200 rounded-2xl p-3.5 space-y-0.5">
+              <p className="text-2xl font-bold text-[#801818] font-mono">
+                {feedbackAnalysis.urgentCount}
+              </p>
               <p className="text-xs font-semibold text-[#801818]">🔴 ควรปรับปรุงเร่งด่วน</p>
-              <p className="text-[10px] text-rose-600">ต้องเร่งแก้ไข</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-            
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-1">
             {/* Topic Breakdown */}
-            <div className="space-y-3.5 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
-              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2.5">
+            <div className="space-y-3 bg-slate-50/70 p-4 rounded-2xl border border-slate-200">
+              <h3 className="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-1.5">
                 <span>🔎</span> ประเด็นสำคัญจำแนกตามเรื่อง
               </h3>
-              
-              <div className="space-y-3.5 pt-1">
+              <div className="space-y-3 pt-1">
                 {Object.entries(feedbackAnalysis.topicCounts).map(([topic, count]) => {
                   const percent = Math.round((count / feedbackAnalysis.maxTopicCount) * 100);
                   return (
-                    <div key={topic} className="space-y-1.5">
+                    <div key={topic} className="space-y-1">
                       <div className="flex justify-between items-center text-xs">
                         <span className="font-medium text-slate-700">{topic}</span>
                         <span className="font-mono font-bold text-slate-800">{count} เรื่อง</span>
                       </div>
-                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#0A2E4D] rounded-full transition-all duration-500"
                           style={{ width: `${percent}%` }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   );
@@ -946,34 +782,50 @@ export function DashboardPage() {
             </div>
 
             {/* Latest Feedback List */}
-            <div className="space-y-3.5 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
-              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2.5">
+            <div className="space-y-3 bg-slate-50/70 p-4 rounded-2xl border border-slate-200">
+              <h3 className="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-1.5">
                 <span>🕐</span> ข้อเสนอแนะล่าสุดจากผู้เข้าร่วม
               </h3>
-
-              <div className="space-y-3 max-h-[240px] overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                 {feedbackAnalysis.latestList.length === 0 ? (
-                  <p className="text-xs text-slate-400 py-8 text-center">ไม่มีข้อเสนอแนะเพิ่มเติม</p>
+                  <p className="text-xs text-slate-400 py-6 text-center">
+                    ไม่มีข้อเสนอแนะเพิ่มเติม
+                  </p>
                 ) : (
                   feedbackAnalysis.latestList.map((item, idx) => {
-                    const statusBadges = {
-                      positive: { bg: "bg-emerald-100 text-[#2D5A27] border-emerald-200", text: "🟢 ปกติ/เชิงบวก" },
-                      followup: { bg: "bg-amber-100 text-amber-800 border-amber-200", text: "🟡 ควรติดตาม" },
-                      urgent: { bg: "bg-rose-100 text-[#801818] border-rose-200", text: "🔴 เร่งด่วน" },
-                      general: { bg: "bg-sky-100 text-[#0A2E4D] border-sky-200", text: "🔵 ข้อมูลทั่วไป" },
+                    const statusMap = {
+                      positive: {
+                        bg: "bg-emerald-100 text-[#2D5A27] border-emerald-200",
+                        label: "🟢 ชื่นชม",
+                      },
+                      followup: {
+                        bg: "bg-amber-100 text-amber-800 border-amber-200",
+                        label: "🟡 ควรติดตาม",
+                      },
+                      urgent: {
+                        bg: "bg-rose-100 text-[#801818] border-rose-200",
+                        label: "🔴 เร่งด่วน",
+                      },
+                      general: {
+                        bg: "bg-sky-100 text-[#0A2E4D] border-sky-200",
+                        label: "🔵 ทั่วไป",
+                      },
                     };
-
-                    const statusStyle = statusBadges[item.status];
-
+                    const badge = statusMap[item.status];
                     return (
-                      <div key={idx} className="bg-white border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-2 shadow-2xs hover:border-slate-300 transition-colors">
-                        <p className="text-slate-800 font-normal leading-relaxed">"{item.text}"</p>
-                        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100">
+                      <div
+                        key={idx}
+                        className="bg-white border border-slate-200 rounded-xl p-3 text-xs space-y-1.5 shadow-2xs"
+                      >
+                        <p className="text-slate-800 leading-relaxed">"{item.text}"</p>
+                        <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
                           <span className="px-2 py-0.5 rounded-md text-[10px] bg-slate-100 text-slate-600 font-medium">
                             {item.tag}
                           </span>
-                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${statusStyle.bg}`}>
-                            {statusStyle.text}
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${badge.bg}`}
+                          >
+                            {badge.label}
                           </span>
                           <span className="text-[10px] text-slate-400 ml-auto font-mono">
                             {item.affiliation}
@@ -985,59 +837,22 @@ export function DashboardPage() {
                 )}
               </div>
             </div>
-
           </div>
-
         </div>
-        </div>
-        )}
-
-        {/* ==================== INTERACTIVE BINGO GAME SECTION ==================== */}
-        {(activeTab === "all" || activeTab === "bingo") && (
-          <section id="bingo-game-section" className="scroll-mt-24 space-y-4">
-            <div className="bg-gradient-to-r from-[#002D62] via-[#801818] to-[#961E1E] text-white rounded-3xl p-6 sm:p-7 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="space-y-1 text-center sm:text-left">
-                <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-[#F5B800] font-bold text-[10px] tracking-wider px-3 py-0.5 rounded-full border border-white/20 uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#F5B800] animate-ping"></span>
-                  Interactive Classroom Module
-                </span>
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                  🎲 ระบบเกมบิงโกวิทยาศาสตร์ครั่งสบปราบ (Lac Bingo Game System)
-                </h2>
-                <p className="text-xs sm:text-sm text-rose-100/90 font-light">
-                  สื่อการเรียนรู้เชิงปฏิสัมพันธ์สำหรับห้องเรียนรู้ครั่งสบปราบ ตรวจจับ 10 สายบิงโกอัตโนมัติ พร้อมพิธีกรพี่ M-Guide
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs bg-white/10 px-3 py-1.5 rounded-xl border border-white/20 text-rose-100">
-                  4x4 Matrix • 16 Keywords • Live Host
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white border border-slate-200/90 rounded-3xl p-2 sm:p-4 shadow-sm">
-              <LacBingoGame />
-            </div>
-          </section>
-        )}
-
       </main>
 
-      {/* FOOTER */}
-      <footer className="bg-[#071F34] text-slate-300 py-10 border-t border-slate-800 mt-16 space-y-3 text-center">
-        <div className="max-w-5xl mx-auto px-4 space-y-2">
-          <p className="text-xs sm:text-sm font-normal text-slate-300 leading-relaxed">
-            งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
-          </p>
-          <p className="text-slate-500 text-xs font-mono">
-            © 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.
-          </p>
-        </div>
+      {/* Footer */}
+      <footer className="bg-[#071F34] text-slate-300 py-8 border-t border-slate-800 mt-12 text-center text-xs">
+        <p>
+          งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์
+          มหาวิทยาลัยมหิดล จังหวัดลำปาง
+        </p>
+        <p className="text-slate-500 font-mono mt-1">
+          © 2026 Faculty of Environment and Resource Studies, Mahidol University.
+        </p>
       </footer>
-
     </div>
   );
 }
 
-
+export default DashboardPage;
