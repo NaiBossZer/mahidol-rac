@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SobprabLacLabGame from "@/components/game";
 import LacBingoGame from "@/components/LacBingoGame";
 
@@ -442,6 +442,40 @@ export function HomePage() {
           </div>
         </section>
 
+        <section className="max-w-6xl mx-auto px-4 pb-6" aria-labelledby="academic-sources-title">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+            <h2 id="academic-sources-title" className="text-lg font-bold text-slate-800">
+              แหล่งข้อมูลประกอบการเรียนรู้
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              ข้อมูลพื้นฐานเรื่องแมลงครั่ง การแปรรูป sticklac, seedlac และ shellac ควรอ่านประกอบจากแหล่งอ้างอิงต่อไปนี้
+              และตรวจทานความเหมาะสมกับบริบทจังหวัดลำปางโดยผู้เชี่ยวชาญก่อนนำข้อมูลสถิติไปใช้อ้างอิง.
+            </p>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li>
+                <a
+                  className="font-semibold text-[#801818] underline underline-offset-2 hover:text-[#600C0C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#801818] focus-visible:ring-offset-2 rounded"
+                  href="https://www.fao.org/4/v8879e/v8879e.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  FAO: Natural colourants and dyestuffs — Lac
+                </a>
+              </li>
+              <li>
+                <a
+                  className="font-semibold text-[#801818] underline underline-offset-2 hover:text-[#600C0C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#801818] focus-visible:ring-offset-2 rounded"
+                  href="https://agrovoc.fao.org/browse/agrovoc/en/page/c_4089?anylang=on&clang=en"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  FAO AGROVOC: Kerria lacca
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+
         {/* Accordion Section */}
         <LacKnowledgeAccordion />
       </main>
@@ -465,6 +499,54 @@ export function HomePage() {
 // --- COMPONENT: Cards Grid (5 โซนหลัก) ---
 function LacKnowledgeCards() {
   const [selectedCard, setSelectedCard] = useState<any | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const closeModal = useCallback(() => {
+    setSelectedCard(null);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCard) return;
+
+    const dialog = dialogRef.current;
+    const originalOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeModal();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialog) return;
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+    closeButtonRef.current?.focus();
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeModal, selectedCard]);
 
   const cards = [
     {
@@ -557,10 +639,14 @@ function LacKnowledgeCards() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {cards.map((card) => (
-          <div
+          <button
             key={card.id}
-            onClick={() => setSelectedCard(card)}
-            className="bg-white border border-slate-200/90 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-[#801818]/30 transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-5 group"
+            type="button"
+            onClick={(event) => {
+              triggerRef.current = event.currentTarget;
+              setSelectedCard(card);
+            }}
+            className="bg-white border border-slate-200/90 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-[#801818]/30 transition-all duration-300 cursor-pointer text-left flex flex-col justify-between space-y-5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#801818] focus-visible:ring-offset-2"
           >
             <div className="space-y-3.5">
               <div className="flex items-center justify-between">
@@ -582,7 +668,7 @@ function LacKnowledgeCards() {
               <span>อ่านรายละเอียดโซนนี้</span>
               <span>→</span>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -590,16 +676,23 @@ function LacKnowledgeCards() {
       {selectedCard && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-opacity"
-          onClick={() => setSelectedCard(null)}
+          onClick={closeModal}
         >
           <div
-            className="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative"
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="knowledge-dialog-title"
+            aria-describedby="knowledge-dialog-overview"
+            className="bg-white border border-slate-200 rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
+              ref={closeButtonRef}
               type="button"
-              onClick={() => setSelectedCard(null)}
+              onClick={closeModal}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full font-bold flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="ปิดรายละเอียดโซนเรียนรู้"
             >
               ✕
             </button>
@@ -611,13 +704,13 @@ function LacKnowledgeCards() {
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${selectedCard.tagBg}`}>
                     {selectedCard.tag}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-800 mt-1">{selectedCard.title}</h3>
+                  <h3 id="knowledge-dialog-title" className="text-xl font-bold text-slate-800 mt-1">{selectedCard.title}</h3>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <h4 className="text-xs font-semibold tracking-wider text-[#801818]">📌 ภาพรวมประจำโซน</h4>
-                <p className="text-sm font-normal leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 text-slate-700">
+                <p id="knowledge-dialog-overview" className="text-sm font-normal leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 text-slate-700">
                   {selectedCard.detail.overview}
                 </p>
               </div>
@@ -636,7 +729,7 @@ function LacKnowledgeCards() {
 
               <button
                 type="button"
-                onClick={() => setSelectedCard(null)}
+                onClick={closeModal}
                 className="w-full bg-[#801818] hover:bg-[#600C0C] text-white font-semibold py-3 rounded-xl transition-colors cursor-pointer shadow-sm"
               >
                 ปิดหน้าต่าง
