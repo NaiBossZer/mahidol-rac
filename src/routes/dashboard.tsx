@@ -1,5 +1,6 @@
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import LacBingoGame from "@/components/LacBingoGame";
 
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxIXYFkonDlYf8sb1VqTDoJXlsZ58Pd53qYSP-rxeLc-9_hiHA4kKIUVAUEM-IdcrLIkQ/exec";
@@ -69,6 +70,7 @@ export function DashboardPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("ALL");
   const [selectedAge, setSelectedAge] = useState<string>("ALL");
   const [selectedAffiliation, setSelectedAffiliation] = useState<string>("ALL");
+  const [activeTab, setActiveTab] = useState<"all" | "analytics" | "bingo">("all");
 
   useEffect(() => {
     const isAuth = sessionStorage.getItem("dashboard_auth") === "true";
@@ -543,6 +545,17 @@ export function DashboardPage() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
+                onClick={() => {
+                  setActiveTab("bingo");
+                  const el = document.getElementById("bingo-game-section");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="px-3.5 py-2 rounded-xl bg-[#F5B800] hover:bg-amber-400 text-[#002D62] text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+              >
+                <span>🎲</span> เล่นเกมบิงโก
+              </button>
+              <button
+                type="button"
                 onClick={fetchData}
                 disabled={loading}
                 className="px-3.5 py-2 rounded-xl bg-white/15 border border-white/25 text-white hover:bg-white/25 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm active:scale-95"
@@ -559,6 +572,58 @@ export function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* DASHBOARD VIEW MODE TABS */}
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200/80 rounded-2xl p-2 sm:p-2.5 shadow-sm">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setActiveTab("all")}
+              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "all"
+                  ? "bg-[#0A2E4D] text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <span>📑</span> แสดงผลทั้งหมด (Dashboard &amp; Bingo)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("analytics")}
+              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "analytics"
+                  ? "bg-[#801818] text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <span>📊</span> สรุปผลประเมินความพึงพอใจ
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("bingo")}
+              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "bingo"
+                  ? "bg-[#801818] text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <span>🎲</span> ระบบเกมบิงโกห้องเรียนรู้ (Lac Bingo)
+            </button>
+          </div>
+
+          <div className="text-[11px] text-slate-500 font-medium px-2">
+            {activeTab === "bingo" ? (
+              <span className="text-[#801818] font-bold">🎮 โหมดห้องเรียนรู้และฉายโปรเจกเตอร์</span>
+            ) : activeTab === "analytics" ? (
+              <span className="text-[#0A2E4D] font-bold">📈 โหมดวิเคราะห์ข้อมูลประเมินผล</span>
+            ) : (
+              <span>✨ มุมมองครบวงจร</span>
+            )}
+          </div>
+        </div>
+
+        {(activeTab === "all" || activeTab === "analytics") && (
+          <div className="space-y-6">
 
         {/* MULTI-FILTER BAR */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 text-xs">
@@ -924,6 +989,38 @@ export function DashboardPage() {
           </div>
 
         </div>
+        </div>
+        )}
+
+        {/* ==================== INTERACTIVE BINGO GAME SECTION ==================== */}
+        {(activeTab === "all" || activeTab === "bingo") && (
+          <section id="bingo-game-section" className="scroll-mt-24 space-y-4">
+            <div className="bg-gradient-to-r from-[#002D62] via-[#801818] to-[#961E1E] text-white rounded-3xl p-6 sm:p-7 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-[#F5B800] font-bold text-[10px] tracking-wider px-3 py-0.5 rounded-full border border-white/20 uppercase">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F5B800] animate-ping"></span>
+                  Interactive Classroom Module
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                  🎲 ระบบเกมบิงโกวิทยาศาสตร์ครั่งสบปราบ (Lac Bingo Game System)
+                </h2>
+                <p className="text-xs sm:text-sm text-rose-100/90 font-light">
+                  สื่อการเรียนรู้เชิงปฏิสัมพันธ์สำหรับห้องเรียนรู้ครั่งสบปราบ ตรวจจับ 10 สายบิงโกอัตโนมัติ พร้อมพิธีกรพี่ M-Guide
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs bg-white/10 px-3 py-1.5 rounded-xl border border-white/20 text-rose-100">
+                  4x4 Matrix • 16 Keywords • Live Host
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-2 sm:p-4 shadow-sm">
+              <LacBingoGame />
+            </div>
+          </section>
+        )}
 
       </main>
 
