@@ -9,21 +9,22 @@ const journey = [
 
 export function LearningJourney() {
   return (
-    <section id="learning-journey" className="scroll-mt-24 bg-rac-surface px-4 py-16 sm:py-20" aria-labelledby="learning-journey-title">
+    <section id="learning-journey" className="scroll-mt-24 bg-rac-surface px-4 py-14 sm:py-20" aria-labelledby="learning-journey-title">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
-          <p className="text-xs font-semibold tracking-[0.2em] text-rac-lac">LEARNING JOURNEY</p>
-          <h2 id="learning-journey-title" className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">เส้นทางการเรียนรู้</h2>
+          <p className="text-[10px] font-semibold tracking-[0.16em] text-rac-lac sm:text-xs sm:tracking-[0.2em]">LEARNING JOURNEY</p>
+          <h2 id="learning-journey-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">เส้นทางการเรียนรู้</h2>
           <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">เรียนรู้เรื่องครั่งเป็นลำดับ จากสิ่งมีชีวิตและระบบนิเวศ ไปสู่การเพาะเลี้ยงและบริบทของลำปาง</p>
         </div>
-        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {journey.map((item) => (
-            <article key={item.no} className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+        <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          {journey.map((item, index) => (
+            <article key={item.no} className="group relative min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {index < journey.length - 1 && <span className="absolute right-5 top-5 hidden font-mono text-[10px] text-rac-lac/45 lg:block" aria-hidden="true">NEXT →</span>}
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs font-bold tracking-[0.2em] text-rac-lac">{item.no}</span>
-                <span className="h-px w-10 bg-rac-lac/30 transition-all group-hover:w-16" aria-hidden="true" />
+                <span className="h-px w-8 bg-rac-lac/30 transition-all group-hover:w-14" aria-hidden="true" />
               </div>
-              <h3 className="mt-8 text-xl font-bold text-slate-900">{item.title}</h3>
+              <h3 className="mt-7 text-lg font-bold leading-snug text-slate-900 sm:text-xl">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-slate-600">{item.text}</p>
             </article>
           ))}
