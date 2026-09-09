@@ -22,8 +22,8 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
           <div className="space-y-5 p-4 sm:space-y-6 sm:p-8">
             <div className="flex min-w-0 flex-col gap-5 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="min-w-0 max-w-2xl space-y-2">
-                <p className="text-[10px] font-semibold tracking-[0.16em] text-amber-300 sm:text-xs sm:tracking-[0.2em]">PHYSICAL ROOM EXPERIENCE</p>
-                <h2 id="media-title" className="rac-display text-2xl font-bold leading-tight sm:text-4xl">รู้จักห้องเรียนรู้ครั่ง</h2>
+                <p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.1em] text-amber-300 sm:text-[10px] sm:tracking-[0.16em]">02 — PHYSICAL ROOM EXPERIENCE</p>
+                <h2 id="media-title" className="rac-display whitespace-nowrap text-xl font-bold leading-tight sm:text-3xl">รู้จักห้องเรียนรู้ครั่ง</h2>
                 <p className="text-sm leading-7 text-slate-300 sm:text-base">ชมบรรยากาศจริงของพื้นที่เรียนรู้ แล้วสำรวจห้องแบบ 3D เพื่อทำความรู้จักพื้นที่และประสบการณ์การเรียนรู้ของศูนย์ลำปาง</p>
               </div>
               <div className="grid w-full grid-cols-2 rounded-xl bg-white/10 p-1 text-[11px] font-semibold sm:w-auto sm:min-w-[19rem] sm:text-xs" role="tablist" aria-label="รูปแบบการสำรวจห้องเรียนรู้ครั่ง">
