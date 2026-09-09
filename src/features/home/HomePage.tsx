@@ -7,6 +7,8 @@ import { MediaSection } from "@/features/home/components/MediaSection";
 import { DataVisualization } from "@/features/home/components/DataVisualization";
 import { LearningJourney } from "@/features/home/components/LearningJourney";
 import { LacLifeCycle } from "@/features/home/components/LacLifeCycle";
+import { LampangLacMap } from "@/features/home/components/LampangLacMap";
+import { LacProductJourney } from "@/features/home/components/LacProductJourney";
 import { ActivitySection } from "@/features/activity/components/ActivitySection";
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 import { useHome } from "@/features/home/hooks/useHome";
@@ -22,6 +24,8 @@ export function HomePage() {
         <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
         <LearningJourney />
         <LacLifeCycle />
+        <LampangLacMap />
+        <LacProductJourney />
 
         <RacSection id="cards-section" className="scroll-mt-24 bg-white/70">
           <RacContainer>
