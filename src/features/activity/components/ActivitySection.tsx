@@ -21,7 +21,7 @@ export function ActivitySection() {
     <>
       <RacSection id="activities" className="scroll-mt-24 bg-white/70">
         <RacContainer>
-          <RacSectionHeader eyebrow="08 — ACTIVITIES & STORIES" title="กิจกรรมและเรื่องราวจากศูนย์เรียนรู้" description="รวมกิจกรรม ข่าวสาร และเรื่องราวการเรียนรู้ พร้อมภาพประกอบจากพื้นที่จริง" />
+          <RacSectionHeader eyebrow="07 — ACTIVITIES & STORIES" title="กิจกรรมและเรื่องราวจากศูนย์เรียนรู้" description="รวมกิจกรรม ข่าวสาร และเรื่องราวการเรียนรู้ พร้อมภาพประกอบจากพื้นที่จริง" />
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{activities.map((activity) => <ActivityCard key={activity.id} activity={activity} onOpen={() => setSelected(activity)} />)}</div>
         </RacContainer>
       </RacSection>
