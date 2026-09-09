@@ -1,4 +1,4 @@
-export type LacSectionId = "knowledge" | "lampang" | "product" | "environment" | "community" | "games";
+export type LacSectionId = "knowledge" | "lampang" | "product" | "community" | "games";
 
 export type LacContentPage = {
   slug: string;
@@ -50,18 +50,6 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
       { slug: "lac-product", title: "จากครั่งดิบสู่ผลิตภัณฑ์", section: "product", status: "existing", source: "existing-feature" },
       { slug: "lac-around-us", title: "ครั่งอยู่รอบตัวเรา", section: "product", status: "planned", source: "content-master" },
       { slug: "product-innovation", title: "Product Innovation", section: "product", status: "planned", source: "content-master" },
-    ],
-  },
-  {
-    id: "environment",
-    label: "สิ่งแวดล้อม",
-    description: "Carbon Footprint วงจรชีวิต และแนวทางสู่ Net Zero",
-    pages: [
-      { slug: "carbon-footprint", title: "Carbon Footprint of Lac", section: "environment", status: "planned", source: "content-master" },
-      { slug: "cfp-vs-cfo", title: "CFP vs CFO", section: "environment", status: "planned", source: "content-master" },
-      { slug: "life-cycle-assessment", title: "Life Cycle of Lac Product", section: "environment", status: "planned", source: "content-master" },
-      { slug: "cfp-assessment", title: "CFP Assessment", section: "environment", status: "planned", source: "content-master" },
-      { slug: "cfp-net-zero", title: "CFP → Net Zero", section: "environment", status: "planned", source: "content-master" },
     ],
   },
   {
