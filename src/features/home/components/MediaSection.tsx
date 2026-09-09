@@ -18,8 +18,8 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
 
   return (
     <section id="media-section" className="relative scroll-mt-24 overflow-hidden bg-[#8f3028] py-10 text-white sm:py-16" aria-labelledby="media-title">
-      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: `url(${homepageSectionImages.learningCenter})` }} aria-hidden="true" />
-      <div className="pointer-events-none absolute inset-0 bg-[#8f3028]/70" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${homepageSectionImages.learningCenter})` }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-[#8f3028]/55" aria-hidden="true" />
       <RacContainer>
         <RacCard variant="featured" className="relative min-w-0 overflow-hidden border-[#f3eadb] bg-[#f3eadb] p-0 text-[#2a211d] shadow-xl">
           <div className="space-y-5 p-4 sm:space-y-6 sm:p-8">
