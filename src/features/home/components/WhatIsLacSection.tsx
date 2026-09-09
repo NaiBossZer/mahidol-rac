@@ -9,11 +9,11 @@ const process = [
 ] as const;
 
 const composition = [
-  ["เรซิน", "68–90%"],
-  ["Wax", "5–6%"],
-  ["Dye", "2–10%"],
-  ["Mineral", "3–7%"],
-  ["Water", "2–3%"],
+  ["🧪", "เรซิน", "68–90%"],
+  ["🕯️", "Wax", "5–6%"],
+  ["🎨", "Dye", "2–10%"],
+  ["🪨", "Mineral", "3–7%"],
+  ["💧", "Water", "2–3%"],
 ] as const;
 
 export function WhatIsLacSection() {
@@ -39,9 +39,7 @@ export function WhatIsLacSection() {
                   <div className="text-2xl" aria-hidden="true">{icon}</div>
                   <p className="mt-2 text-xs font-bold text-slate-800">{title}</p>
                   <p className="mt-1 text-[10px] leading-4 text-slate-500">{desc}</p>
-                  {index < process.length - 1 && (
-                    <span className="absolute -right-2 top-1/2 hidden -translate-y-1/2 text-sm text-[#a56a35] sm:block" aria-hidden="true">→</span>
-                  )}
+                  {index < process.length - 1 && <span className="absolute -right-2 top-1/2 hidden -translate-y-1/2 text-sm text-[#a56a35] sm:block" aria-hidden="true">→</span>}
                 </div>
               ))}
             </div>
@@ -50,9 +48,12 @@ export function WhatIsLacSection() {
           <div className="rounded-[2rem] border border-[#6d4a35]/15 bg-white/70 p-5 sm:p-7">
             <p className="font-mono text-[10px] font-semibold tracking-[0.18em] text-[#8f3328]">COMPOSITION / องค์ประกอบโดยประมาณ</p>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {composition.map(([label, value]) => (
+              {composition.map(([icon, label, value]) => (
                 <div key={label} className="rounded-2xl border border-slate-200 bg-[#faf7f0] p-4">
-                  <p className="text-xs text-slate-500">{label}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl" aria-hidden="true">{icon}</span>
+                    <p className="text-xs text-slate-500">{label}</p>
+                  </div>
                   <p className="mt-1 text-xl font-bold tracking-tight text-slate-900">{value}</p>
                 </div>
               ))}
