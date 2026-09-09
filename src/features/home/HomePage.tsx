@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import AppNavbar from "@/layout/AppNavbar";
 import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
 import { LacKnowledgeAccordion } from "@/features/home/LacKnowledgeAccordion";
@@ -13,9 +12,6 @@ import { ActivitySection } from "@/features/activity/components/ActivitySection"
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 import { useHome } from "@/features/home/hooks/useHome";
 
-const LacBingoGame = lazy(() => import("@/features/bingo/LacBingoGame"));
-const SobprabLacLabGame = lazy(() => import("@/features/home/SobprabLacLabGame"));
-
 export function HomePage() {
   const home = useHome();
 
@@ -23,65 +19,39 @@ export function HomePage() {
     <div data-rac-theme="living" className="min-h-screen overflow-x-hidden bg-rac-surface font-['Mitr'] text-slate-800 selection:bg-rac-lac selection:text-white">
       <AppNavbar />
       <main className="grow">
+        {/* 01 Discover — the entrance to the Learning Center */}
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
-        <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
-        <LearningJourney />
-        <LacLifeCycle />
-        <LampangLacMap />
-        <LacProductJourney />
 
-        <RacSection id="cards-section" className="scroll-mt-24 bg-white/70">
+        {/* 02 Explore — establish the subject before asking visitors to go deeper */}
+        <RacSection id="what-is-lac" className="scroll-mt-24 bg-white/70">
           <RacContainer>
-            <RacSectionHeader eyebrow="Lac Knowledge System" title="องค์ความรู้ครั่งแบบเชื่อมโยง" description="จากต้นกำเนิด วงจรชีวิต พืชอาศัย การเพาะเลี้ยง ไปสู่นวัตกรรมการผลิต — เรียนรู้เป็นระบบในพื้นที่เดียว" />
+            <RacSectionHeader eyebrow="01 · WHAT IS LAC?" title="ครั่งคืออะไร?" description="เริ่มต้นจากพื้นฐาน แล้วค่อยเดินต่อไปยังวงจรชีวิต ระบบนิเวศ การเพาะเลี้ยง และเรื่องราวของครั่งในลำปาง" />
             <LacKnowledgeCards />
           </RacContainer>
         </RacSection>
 
+        {/* Physical Room Experience — Bring the Room Online */}
+        <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
+
+        {/* 03 Understand — a visible learning path rather than a list of sections */}
+        <LearningJourney />
+        <LacLifeCycle />
+
+        {/* 04 Connect — move from scientific knowledge to the real Lampang context */}
+        <LampangLacMap />
+        <LacProductJourney />
+
         <RacSection id="data-viz" className="scroll-mt-24 bg-rac-surface">
           <RacContainer>
-            <RacSectionHeader eyebrow="Regional Intelligence" title="ข้อมูลและภาพรวมศูนย์เรียนรู้" description="มุมมองข้อมูลที่ช่วยเชื่อมโยงองค์ความรู้กับบริบทพื้นที่และการพัฒนาอย่างยั่งยืน" />
+            <RacSectionHeader eyebrow="REGIONAL INTELLIGENCE" title="ข้อมูลและภาพรวมศูนย์เรียนรู้" description="มุมมองข้อมูลที่ช่วยเชื่อมโยงองค์ความรู้กับบริบทพื้นที่และการพัฒนาอย่างยั่งยืน" />
             <DataVisualization />
           </RacContainer>
         </RacSection>
 
+        {/* 05 Apply — keep the existing activity feature visible without making it the hero */}
         <ActivitySection />
 
-        <section id="learning-game" className="scroll-mt-24 px-4 py-14 sm:py-16" aria-labelledby="learning-game-title">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold tracking-[0.2em] text-rac-lac">INTERACTIVE LEARNING</p>
-              <h2 id="learning-game-title" className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">เรียนรู้ผ่านการเล่น</h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">ทดลองความรู้เรื่องครั่งผ่านเกมจำลองและกิจกรรมเชิงโต้ตอบ — เลือก ทดลอง ตัดสินใจ และค้นพบผลลัพธ์ด้วยตัวเอง</p>
-            </div>
-            <div className="grid gap-8 lg:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-                <h3 className="text-xl font-bold text-slate-900">เกมจำลองวิทยาศาสตร์ครั่งสบปราบ</h3>
-                <p className="mt-2 text-sm leading-7 text-slate-600">ทดลองเลือกต้นโฮสต์ ฤดูกาล และกระบวนการแปรรูป แล้วดูผลลัพธ์แบบทันที</p>
-                <Suspense fallback={<div className="mt-5 min-h-48 rounded-2xl bg-slate-50" aria-label="Loading learning lab" />}>
-                  <SobprabLacLabGame />
-                </Suspense>
-              </div>
-              <div className="rounded-3xl border border-rac-lac/15 bg-white p-5 shadow-sm sm:p-7">
-                <h3 className="text-xl font-bold text-slate-900">🎲 เกมบิงโกวิทยาศาสตร์ครั่งสบปราบ</h3>
-                <p className="mt-2 text-sm leading-7 text-slate-600">ท้าทายความรู้ครั่ง 16 คีย์เวิร์ด ตรวจจับสายบิงโกอัตโนมัติ พร้อมพิธีกรพี่ M-Guide</p>
-                <Suspense fallback={<div className="mt-5 min-h-48 rounded-2xl bg-slate-50" aria-label="Loading bingo game" />}>
-                  <LacBingoGame />
-                </Suspense>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-4 pb-6" aria-labelledby="academic-sources-title">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-            <h2 id="academic-sources-title" className="text-lg font-bold text-slate-800">แหล่งข้อมูลประกอบการเรียนรู้</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">ข้อมูลพื้นฐานเรื่องแมลงครั่ง การแปรรูป sticklac, seedlac และ shellac ควรอ่านประกอบจากแหล่งอ้างอิงต่อไปนี้ และตรวจทานความเหมาะสมกับบริบทจังหวัดลำปางโดยผู้เชี่ยวชาญก่อนนำข้อมูลสถิติไปใช้อ้างอิง.</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><a className="font-semibold text-rac-lac underline underline-offset-2" href="https://www.fao.org/4/v8879e/v8879e.pdf" target="_blank" rel="noreferrer">FAO: Natural colourants and dyestuffs — Lac</a></li>
-              <li><a className="font-semibold text-rac-lac underline underline-offset-2" href="https://agrovoc.fao.org/browse/agrovoc/en/page/c_4089?anylang=on&clang=en" target="_blank" rel="noreferrer">FAO AGROVOC: Kerria lacca</a></li>
-            </ul>
-          </div>
-        </section>
+        {/* Existing long-form knowledge remains available as a secondary reference layer. */}
         <LacKnowledgeAccordion />
       </main>
 
