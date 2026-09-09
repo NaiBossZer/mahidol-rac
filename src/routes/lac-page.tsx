@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { getLacPage } from "@/features/lac/lacInformationArchitecture";
 import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
 import { RacContainer } from "@/components/rac";
+import AppNavbar from "@/layout/AppNavbar";
+import AppFooter from "@/layout/AppFooter";
 
 const journey = [
   { number: "01", title: "ครั่งคืออะไร?", href: "/lac/what-is-lac" },
@@ -86,11 +88,11 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
 
   return (
     <main
-      className="relative h-[calc(100vh-60px)] overflow-hidden bg-[#f3eadb] bg-cover bg-center bg-no-repeat text-slate-900"
+      className="relative min-h-[calc(100vh-60px)] overflow-hidden bg-[#f3eadb] bg-cover bg-center bg-no-repeat text-slate-900"
       style={{ backgroundImage: `url(${lesson.background})` }}
     >
       <div className="absolute inset-0 bg-[#f3eadb]/88" aria-hidden="true" />
-      <RacContainer className="relative flex h-full flex-col px-3 sm:px-4">
+      <RacContainer className="relative flex min-h-[calc(100vh-60px)] flex-col px-3 sm:px-4">
         <header className="shrink-0 pt-3 sm:pt-4">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -160,8 +162,35 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
 export function LacPage() {
   const { slug = "" } = useParams();
   const page = getLacPage(slug);
-  if (!page) return <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900"><div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"><p className="text-sm text-rac-lac">LAC LEARNING CENTER</p><h1 className="mt-2 text-3xl font-bold">ไม่พบหน้าการเรียนรู้</h1><Link to="/" className="mt-6 inline-flex rounded-xl bg-rac-blue px-4 py-2 text-sm font-semibold text-white">กลับหน้าแรก</Link></div></main>;
-  if (slug === "knowledge") return <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900"><div className="mx-auto max-w-6xl"><div className="mb-10 max-w-3xl"><p className="text-xs font-semibold tracking-[0.18em] text-rac-lac">ความรู้เรื่องครั่ง</p><h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">ภาพรวมความรู้เรื่องครั่ง</h1><p className="mt-3 text-slate-600">เลือกหัวข้อเพื่อเข้าสู่ห้องเรียนรู้แบบ Interactive Lesson</p></div><LacKnowledgeCards /></div></main>;
-  if (["what-is-lac", "life-cycle", "habitat", "host-plants", "lac-farming"].includes(slug)) return <LessonRoom slug={slug as LessonSlug} />;
-  return <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900"><div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8"><p className="text-sm font-semibold text-rac-lac">{page.title}</p><h1 className="mt-2 text-3xl font-bold">หน้านี้อยู่ระหว่างพัฒนา</h1><p className="mt-3 text-slate-600">องค์ความรู้ส่วนนี้จะเชื่อมเข้าสู่ LessonRoom ในขั้นถัดไป</p><Link to="/lac/knowledge" className="mt-6 inline-flex rounded-xl bg-rac-lac px-4 py-2 text-sm font-semibold text-white">กลับไปความรู้ทั้งหมด</Link></div></main>;
+
+  if (!page) return (
+    <div className="min-h-screen bg-rac-surface font-['Mitr'] text-slate-900">
+      <AppNavbar />
+      <main className="min-h-[calc(100vh-60px)] px-4 py-20">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <p className="text-sm text-rac-lac">LAC LEARNING CENTER</p>
+          <h1 className="mt-2 text-3xl font-bold">ไม่พบหน้าการเรียนรู้</h1>
+          <Link to="/" className="mt-6 inline-flex rounded-xl bg-rac-blue px-4 py-2 text-sm font-semibold text-white">กลับหน้าแรก</Link>
+        </div>
+      </main>
+      <AppFooter />
+    </div>
+  );
+
+  let content: React.ReactNode;
+  if (slug === "knowledge") {
+    content = <main className="min-h-[calc(100vh-60px)] bg-rac-surface px-4 py-20 text-slate-900"><div className="mx-auto max-w-6xl"><div className="mb-10 max-w-3xl"><p className="text-xs font-semibold tracking-[0.18em] text-rac-lac">ความรู้เรื่องครั่ง</p><h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">ภาพรวมความรู้เรื่องครั่ง</h1><p className="mt-3 text-slate-600">เลือกหัวข้อเพื่อเข้าสู่ห้องเรียนรู้แบบ Interactive Lesson</p></div><LacKnowledgeCards /></div></main>;
+  } else if (["what-is-lac", "life-cycle", "habitat", "host-plants", "lac-farming"].includes(slug)) {
+    content = <LessonRoom slug={slug as LessonSlug} />;
+  } else {
+    content = <main className="min-h-[calc(100vh-60px)] bg-rac-surface px-4 py-20 text-slate-900"><div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8"><p className="text-sm font-semibold text-rac-lac">{page.title}</p><h1 className="mt-2 text-3xl font-bold">หน้านี้อยู่ระหว่างพัฒนา</h1><p className="mt-3 text-slate-600">องค์ความรู้ส่วนนี้จะเชื่อมเข้าสู่ LessonRoom ในขั้นถัดไป</p><Link to="/lac/knowledge" className="mt-6 inline-flex rounded-xl bg-rac-lac px-4 py-2 text-sm font-semibold text-white">กลับไปความรู้ทั้งหมด</Link></div></main>;
+  }
+
+  return (
+    <div className="min-h-screen font-['Mitr'] text-slate-800">
+      <AppNavbar />
+      {content}
+      <AppFooter />
+    </div>
+  );
 }
