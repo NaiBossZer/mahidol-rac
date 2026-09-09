@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { Link } from "react-router-dom";
 import AppNavbar from "@/layout/AppNavbar";
 import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
 import { LacKnowledgeAccordion } from "@/features/home/LacKnowledgeAccordion";
@@ -8,9 +8,6 @@ import { DataVisualization } from "@/features/home/components/DataVisualization"
 import { ActivitySection } from "@/features/activity/components/ActivitySection";
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 import { useHome } from "@/features/home/hooks/useHome";
-
-const LacBingoGame = lazy(() => import("@/features/bingo/LacBingoGame"));
-const SobprabLacLabGame = lazy(() => import("@/features/home/SobprabLacLabGame"));
 
 export function HomePage() {
   const home = useHome();
@@ -60,55 +57,26 @@ export function HomePage() {
 
         <section
           id="learning-game"
-          className="scroll-mt-24 px-4 py-12"
+          className="scroll-mt-24 bg-gradient-to-b from-rac-lac/5 via-white to-rac-lac/5 px-4 py-14 sm:py-16"
           aria-labelledby="learning-game-title"
         >
-          <div className="mx-auto max-w-6xl space-y-3 text-center">
-            <p className="text-xs font-semibold tracking-widest text-rac-lac">INTERACTIVE LEARNING LAB</p>
-            <h2 id="learning-game-title" className="text-2xl font-bold text-slate-800">
-              เกมจำลองวิทยาศาสตร์ครั่งสบปราบ
+          <div className="mx-auto max-w-5xl rounded-3xl border border-rac-lac/15 bg-white p-6 text-center shadow-sm sm:p-10">
+            <p className="text-xs font-semibold tracking-[0.2em] text-rac-lac">INTERACTIVE LEARNING</p>
+            <h2 id="learning-game-title" className="mt-3 text-2xl font-bold text-slate-800 sm:text-3xl">
+              เรียนรู้ผ่านการเล่น
             </h2>
-            <p className="text-sm text-slate-500">
-              ทดลองเลือกต้นโฮสต์ ฤดูกาล และกระบวนการแปรรูป แล้วดูผลลัพธ์แบบทันที
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base">
+              ทดลองความรู้เรื่องครั่งผ่านเกมจำลองและกิจกรรมเชิงโต้ตอบ — เลือกเกม ทดลอง ตัดสินใจ และค้นพบผลลัพธ์ด้วยตัวเอง
             </p>
-            <Suspense
-              fallback={
-                <div
-                  className="mx-auto min-h-48 max-w-4xl rounded-2xl border border-slate-200 bg-white/60"
-                  aria-label="Loading learning lab"
-                />
-              }
-            >
-              <SobprabLacLabGame />
-            </Suspense>
-          </div>
-        </section>
-
-        <section
-          id="bingo-section"
-          className="scroll-mt-24 bg-gradient-to-b from-transparent via-rac-lac/5 to-transparent px-4 py-12"
-          aria-labelledby="bingo-game-title"
-        >
-          <div className="mx-auto max-w-6xl space-y-4 text-center">
-            <span className="rounded-full bg-rac-lac px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-              CLASSROOM INTERACTIVE BINGO
-            </span>
-            <h2 id="bingo-game-title" className="text-2xl font-bold text-slate-800 sm:text-3xl">
-              🎲 เกมบิงโกวิทยาศาสตร์ครั่งสบปราบ
-            </h2>
-            <p className="mx-auto max-w-xl text-sm text-slate-500">
-              ท้าทายความรู้ครั่ง 16 คีย์เวิร์ด ตรวจจับสายบิงโกอัตโนมัติ 10 รูปแบบ พร้อมพิธีกรพี่ M-Guide
-            </p>
-            <Suspense
-              fallback={
-                <div
-                  className="mx-auto min-h-48 max-w-4xl rounded-2xl border border-rac-lac/10 bg-white/60"
-                  aria-label="Loading bingo game"
-                />
-              }
-            >
-              <LacBingoGame />
-            </Suspense>
+            <div className="mt-6">
+              <Link
+                to="/learning-games"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-rac-lac px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rac-lac/40 focus:ring-offset-2"
+              >
+                เข้าสู่ LAC Learning Games
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </section>
 

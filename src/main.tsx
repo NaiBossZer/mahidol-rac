@@ -7,6 +7,7 @@ import { ProtectedRoute, AdminRoute } from "./features/auth/RouteGuards";
 
 const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
 const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
+const LearningGamesPage = lazy(() => import("./routes/learning-games").then((m) => ({ default: m.LearningGamesPage })));
 const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.LoginPage })));
 const DashboardPage = lazy(() => import("./routes/dashboard").then((m) => ({ default: m.DashboardPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/bingo" element={<BingoPage />} />
+            <Route path="/learning-games" element={<LearningGamesPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/survey" element={<SurveyPage />} />
