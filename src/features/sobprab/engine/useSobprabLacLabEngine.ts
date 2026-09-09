@@ -36,5 +36,5 @@ export function useSobprabLacLabEngine() {
     reset: useCallback(() => dispatch({ type: "reset" }), []),
   };
 
-  return { state, dispatch, field, fabric, bcg, actions };
+  return { state, field, fabric, bcg, actions };
 }
