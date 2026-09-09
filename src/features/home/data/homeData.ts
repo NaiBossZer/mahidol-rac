@@ -15,7 +15,7 @@ export const HERO_SLIDES = [
     title: "กำเนิดครั่ง",
     subtitle: "รู้จักต้นกำเนิด ประวัติศาสตร์ และความหลากหลายของแมลงครั่ง",
     buttonText: "ศึกษาเรื่องกำเนิดครั่ง",
-    buttonLink: "#cards-section",
+    buttonLink: "#learning-journey",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const HERO_SLIDES = [
     title: "มหัศจรรย์วงจรชีวิต",
     subtitle: "สำรวจวงจรชีวิตและชีววิทยาของแมลงครั่ง",
     buttonText: "ชมวงจรชีวิตแมลงครั่ง",
-    buttonLink: "#cards-section",
+    buttonLink: "#life-cycle",
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const HERO_SLIDES = [
     title: "พืชอาศัยและนิเวศวิทยา",
     subtitle: "เรียนรู้ความสัมพันธ์ระหว่างครั่ง ต้นพิงอาศัย และระบบนิเวศ",
     buttonText: "ดูข้อมูลพืชอาศัย",
-    buttonLink: "#cards-section",
+    buttonLink: "#learning-journey",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ export const HERO_SLIDES = [
     title: "การเพาะเลี้ยงและการจัดการ",
     subtitle: "เรียนรู้ฤดูกาล เทคนิคการเพาะเลี้ยง และการจัดการครั่ง",
     buttonText: "ดูคู่มือการเพาะเลี้ยง",
-    buttonLink: "#cards-section",
+    buttonLink: "#learning-journey",
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ export const HERO_SLIDES = [
     title: "ครั่งสู่นวัตกรรมการผลิต",
     subtitle: "จากครั่งดิบสู่การแปรรูป ผลิตภัณฑ์ และนวัตกรรม",
     buttonText: "ชมนวัตกรรมแปรรูปครั่ง",
-    buttonLink: "#cards-section",
+    buttonLink: "#lac-product",
   },
 ] as const;
 
