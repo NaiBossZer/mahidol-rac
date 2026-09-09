@@ -1,6 +1,6 @@
 # Learning Games — Phase 1 Architecture
 
-The learning games use a domain-first architecture so gameplay rules do not depend on React rendering.
+Phase 1 is complete. The learning games use a domain-first architecture so gameplay rules do not depend on React rendering.
 
 ## Layers
 
@@ -38,6 +38,8 @@ Content / Data
 - leaderboard state transitions
 - reset transitions
 
+`features/bingo/engine/useLacBingoEngine.ts` is the React controller. UI code consumes named controller actions rather than dispatching domain actions directly.
+
 React remains responsible for presentation, sound, confetti, dialogs, and DOM lifecycle.
 
 ## Sobprab Lac Lab
@@ -53,16 +55,28 @@ React remains responsible for presentation, sound, confetti, dialogs, and DOM li
 - BCG scoring and tiers
 - simulation state transitions
 
+`features/sobprab/engine/useSobprabLacLabEngine.ts` is the React controller. `SobprabLacLabGame.tsx` now consumes controller state, derived calculations, and named actions without owning simulation state or calculation logic.
+
 React remains responsible for controls, Framer Motion presentation, SVG visualization, and responsive layout.
 
-## Phase 1 rules
+## Phase 1 completion criteria
 
-1. No Supabase/backend work.
-2. No Phaser/Three.js migration is required.
-3. No gameplay feature expansion in this phase.
-4. Keep existing UI behavior stable while the domain layer is extracted.
-5. Future FX should use `requestAnimationFrame` or bounded CSS/Framer Motion effects instead of driving high-frequency visual state through React.
-6. Any future particle-heavy effects should use pooling or bounded reuse.
+1. Pure domain engines exist for both current learning games.
+2. Both games expose React controller hooks.
+3. UI components do not call game reducers directly.
+4. Derived calculations remain outside React rendering logic.
+5. Existing gameplay behavior and presentation are preserved while moving state transitions behind controller actions.
+6. No Supabase/backend work was introduced.
+7. No Phaser/Three.js migration was introduced.
+8. No Phase 2 gameplay progression was mixed into the architecture extraction.
+
+## Engineering rules carried forward
+
+1. Keep game rules in pure engines and controllers.
+2. Keep educational content/data separate from rendering code.
+3. Do not put network/database calls in the render/update loop.
+4. Future FX should use `requestAnimationFrame` or bounded CSS/Framer Motion effects instead of high-frequency React state.
+5. Any future particle-heavy effects should use pooling or bounded reuse.
 
 ## Next phase
 
