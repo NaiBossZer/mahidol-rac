@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { BINGO_KEYWORDS_POOL } from "@/features/bingo/bingoKeywords";
 import { QUESTION_DECK } from "@/features/bingo/questionDeck";
 import type { BingoTile, LeaderboardEntry } from "@/types/bingo";
@@ -26,6 +26,7 @@ function createInitialBoard(): BingoTile[] {
 
 export function useLacBingoEngine() {
   const [state, dispatch] = useReducer(lacBingoReducer, undefined, () => getInitialBingoState(createInitialBoard(), DEFAULT_LEADERBOARD));
+  const pendingOptionRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (state.phase === "victory") return;
@@ -53,10 +54,25 @@ export function useLacBingoEngine() {
     return question;
   }, [state.activeQuestion, state.boardTiles]);
 
-  const selectOption = useCallback((optionIndex: number) => dispatch({ type: "select_option", optionIndex }), []);
-  const submitAnswer = useCallback((optionIndex?: number) => dispatch({ type: "submit_answer", optionIndex }), []);
-  const closeQuestion = useCallback(() => dispatch({ type: "close_question" }), []);
-  const reshuffle = useCallback(() => dispatch({ type: "reset", boardTiles: createInitialBoard() }), []);
+  const selectOption = useCallback((optionIndex: number) => {
+    pendingOptionRef.current = optionIndex;
+    dispatch({ type: "select_option", optionIndex });
+  }, []);
+
+  const submitAnswer = useCallback((optionIndex?: number) => {
+    const selected = optionIndex ?? pendingOptionRef.current;
+    dispatch({ type: "submit_answer", optionIndex: selected ?? undefined });
+    pendingOptionRef.current = null;
+  }, []);
+
+  const closeQuestion = useCallback(() => {
+    pendingOptionRef.current = null;
+    dispatch({ type: "close_question" });
+  }, []);
+  const reshuffle = useCallback(() => {
+    pendingOptionRef.current = null;
+    dispatch({ type: "reset", boardTiles: createInitialBoard() });
+  }, []);
   const setTeamName = useCallback((teamName: string) => dispatch({ type: "set_team_name", teamName }), []);
   const inspectTile = useCallback((tile: BingoTile | null) => dispatch({ type: "inspect_tile", tile }), []);
   const setSoundEnabled = useCallback((enabled: boolean) => dispatch({ type: "set_sound_enabled", enabled }), []);
