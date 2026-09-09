@@ -1,4 +1,3 @@
-import AppNavbar from "@/layout/AppNavbar";
 import { HeroSection } from "@/features/home/components/HeroSection";
 import { MediaSection } from "@/features/home/components/MediaSection";
 import { LearningJourney } from "@/features/home/components/LearningJourney";
@@ -7,6 +6,8 @@ import { LampangLacMap } from "@/features/home/components/LampangLacMap";
 import { LacProductJourney } from "@/features/home/components/LacProductJourney";
 import { useHome } from "@/features/home/hooks/useHome";
 import { WhatIsLacSection } from "@/features/home/components/WhatIsLacSection";
+import AppNavbar from "@/layout/AppNavbar";
+import AppFooter from "@/layout/AppFooter";
 
 export function HomePage() {
   const home = useHome();
@@ -22,7 +23,7 @@ export function HomePage() {
         <LampangLacMap />
         <LacProductJourney />
       </main>
-      <footer className="border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300"><div className="mx-auto max-w-5xl space-y-2 px-4"><p className="text-xs leading-relaxed sm:text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p><p className="font-mono text-xs text-slate-500">© 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.</p></div></footer>
+      <AppFooter />
     </div>
   );
 }
