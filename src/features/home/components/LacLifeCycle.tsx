@@ -7,23 +7,23 @@ const stages = [
 
 export function LacLifeCycle() {
   return (
-    <section id="life-cycle" className="scroll-mt-24 bg-rac-blue-deep px-4 py-16 text-white sm:py-20" aria-labelledby="life-cycle-title">
+    <section id="life-cycle" className="scroll-mt-24 bg-rac-blue-deep px-4 py-14 text-white sm:py-20" aria-labelledby="life-cycle-title">
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-10">
           <div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-amber-300">LIFE CYCLE</p>
-            <h2 id="life-cycle-title" className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">วงจรชีวิตครั่ง</h2>
+            <p className="text-[10px] font-semibold tracking-[0.16em] text-amber-300 sm:text-xs sm:tracking-[0.2em]">LIFE CYCLE</p>
+            <h2 id="life-cycle-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">วงจรชีวิตครั่ง</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">จากไข่สู่ตัวอ่อน ตัวผู้ และตัวเมีย — วงจรชีวิตเชื่อมโยงโดยตรงกับการแพร่พันธุ์และการเพาะเลี้ยงครั่งบนพืชอาศัย</p>
           </div>
-          <div className="relative grid gap-4 sm:grid-cols-2">
+          <div className="relative grid gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="pointer-events-none absolute left-8 right-8 top-8 hidden h-px bg-white/15 sm:block" aria-hidden="true" />
             {stages.map((stage) => (
-              <article key={stage.no} className="relative rounded-3xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur-sm">
+              <article key={stage.no} className="relative min-w-0 rounded-3xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-sm sm:p-6">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-amber-300 font-mono text-sm font-bold text-rac-blue-deep">{stage.no}</span>
-                  <h3 className="text-xl font-bold">{stage.title}</h3>
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-amber-300 font-mono text-sm font-bold text-rac-blue-deep">{stage.no}</span>
+                  <h3 className="text-lg font-bold sm:text-xl">{stage.title}</h3>
                 </div>
-                <p className="mt-5 text-sm leading-7 text-slate-300">{stage.text}</p>
+                <p className="mt-4 text-sm leading-7 text-slate-300 sm:mt-5">{stage.text}</p>
               </article>
             ))}
           </div>
