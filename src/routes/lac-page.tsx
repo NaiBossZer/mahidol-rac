@@ -1,0 +1,33 @@
+import { Link, useParams } from "react-router-dom";
+import { getLacPage } from "@/features/lac/lacInformationArchitecture";
+
+export function LacPage() {
+  const { slug = "" } = useParams();
+  const page = getLacPage(slug);
+
+  if (!page) {
+    return (
+      <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <p className="text-sm text-rac-lac">LAC LEARNING CENTER</p>
+          <h1 className="mt-2 text-3xl font-bold">ไม่พบหน้าการเรียนรู้</h1>
+          <Link to="/" className="mt-6 inline-flex rounded-xl bg-rac-blue px-4 py-2 text-sm font-semibold text-white">กลับหน้าแรก</Link>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
+        <p className="text-xs font-semibold tracking-[0.18em] text-rac-lac">{page.section.toUpperCase()}</p>
+        <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{page.title}</h1>
+        <p className="mt-4 text-sm leading-7 text-slate-600">โครงสร้างหน้านี้ถูกกำหนดไว้ใน LAC Information Architecture และจะเติมเนื้อหาจริงในขั้น Knowledge UX ของโครงการ</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link to="/" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50">กลับหน้าแรก</Link>
+          <Link to="/bingo" className="rounded-xl bg-rac-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90">ไป Learning Games</Link>
+        </div>
+      </div>
+    </main>
+  );
+}
