@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+:root {
+  --lac-dark: #2A211D;
+  --wood: #5A4030;
+  --lac-red: #8F3028;
+  --amber: #C58A3A;
+  --cream: #F3EBDD;
+  --cream-deep: #EAD9C4;
+  --exhibition-blue: #29A9C7;
+  --text: #252525;
+  --text-muted: #6B5B4E;
+  --border: rgba(90,64,48,0.18);
+  --border-strong: rgba(90,64,48,0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans Thai', 'Lora', sans-serif;
+  background-color: var(--cream);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Lora', 'Noto Sans Thai', serif;
+}
+
+.font-display { font-family: 'Lora', 'Noto Sans Thai', serif; }
+.font-body { font-family: 'Noto Sans Thai', sans-serif; }
+.font-mono { font-family: 'DM Mono', monospace; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--wood); border-radius: 2px; opacity: 0.5; }
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--exhibition-blue);
+  outline-offset: 2px;
+}
+
+/* Section label */
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+/* Gradient overlays */
+.hero-gradient {
+  background: linear-gradient(135deg, var(--lac-dark) 0%, #3D2B22 40%, #4A3020 70%, #3A2518 100%);
+}
+
+.wood-texture {
+  background: linear-gradient(160deg, var(--wood) 0%, #4A3228 35%, #6B4A35 65%, var(--wood) 100%);
+}
+
+/* Interactive states */
+.interactive-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(42,33,29,0.16);
+}
+
+/* Timeline connector */
+.timeline-connector {
+  background: linear-gradient(90deg, var(--amber) 0%, var(--lac-red) 100%);
+}
+
+/* Nav */
+.nav-glass {
+  background: rgba(243,235,221,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.nav-dark-glass {
+  background: rgba(42,33,29,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Source tag */
+.source-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-left: 2px solid var(--amber);
+  padding-left: 8px;
+  color: var(--text-muted);
+}
+
+/* Animtions */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeInUp { animation: fadeInUp 0.5s ease forwards; }
+.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+.animate-scaleIn { animation: scaleIn 0.3s ease forwards; }
+
+/* Drawer backdrop */
+.drawer-backdrop {
+  background: rgba(42,33,29,0.5);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slideIn { animation: slideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* Map marker pulse */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.marker-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--exhibition-blue);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
