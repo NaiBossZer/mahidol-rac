@@ -1,10 +1,4 @@
-export type LacSectionId =
-  | "knowledge"
-  | "lampang"
-  | "product"
-  | "environment"
-  | "community"
-  | "games";
+export type LacSectionId = "knowledge" | "lampang" | "product" | "environment" | "community" | "games";
 
 export type LacContentPage = {
   slug: string;
@@ -21,13 +15,7 @@ export type LacNavSection = {
   pages: LacContentPage[];
 };
 
-/**
- * LAC Learning Center Information Architecture v1.
- *
- * This is the content/route map for the production application. It does not
- * replace the existing feature implementations; Phase 1 establishes where
- * those features belong before route and UI changes are made.
- */
+/** LAC Learning Center Information Architecture v1. */
 export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
   {
     id: "knowledge",
