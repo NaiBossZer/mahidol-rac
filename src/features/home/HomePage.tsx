@@ -9,6 +9,7 @@ import { DataVisualization } from "@/features/home/components/DataVisualization"
 import { ActivitySection } from "@/features/activity/components/ActivitySection";
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 import { useHome } from "@/features/home/hooks/useHome";
+import { WhatIsLacSection } from "@/features/home/components/WhatIsLacSection";
 
 export function HomePage() {
   const home = useHome();
@@ -19,6 +20,7 @@ export function HomePage() {
       <main className="grow">
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
 
+        <WhatIsLacSection />
         <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
 
         <LearningJourney />
