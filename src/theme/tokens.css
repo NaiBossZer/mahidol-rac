@@ -1,0 +1,60 @@
+/* Mahidol RAC Design Tokens — single source of truth */
+:root {
+  /* Brand */
+  --rac-brand-blue: #0a2e4d;
+  --rac-brand-blue-light: #002d62;
+  --rac-brand-blue-deep: #071f34;
+  --rac-brand-red: #801818;
+  --rac-brand-red-dark: #600c0c;
+  --rac-brand-gold: #f5b800;
+  --rac-brand-green: #2d5a27;
+
+  /* Semantic surfaces */
+  --rac-surface-page: #faf8f5;
+  --rac-surface-card: #ffffff;
+  --rac-surface-muted: #f4f1ec;
+  --rac-text-primary: #1e293b;
+  --rac-text-secondary: #64748b;
+  --rac-text-inverse: #ffffff;
+  --rac-border-default: #e2e8f0;
+
+  /* Status */
+  --rac-success: #2d5a27;
+  --rac-warning: #f5b800;
+  --rac-danger: #b42318;
+  --rac-info: #0a2e4d;
+
+  /* Shape / layout */
+  --rac-radius-sm: 0.375rem;
+  --rac-radius-md: 0.625rem;
+  --rac-radius-lg: 1rem;
+  --rac-radius-xl: 1.5rem;
+  --rac-radius-pill: 999px;
+  --rac-container: 80rem;
+
+  /* Elevation */
+  --rac-shadow-card: 0 8px 30px rgb(15 23 42 / 0.06);
+  --rac-shadow-elevated: 0 18px 50px rgb(15 23 42 / 0.12);
+
+  /* Typography */
+  --rac-font-sans: "Mitr", system-ui, sans-serif;
+  --rac-font-data: "IBM Plex Sans Thai", "Inter", system-ui, sans-serif;
+  --rac-font-display: "Chakra Petch", "IBM Plex Sans Thai", system-ui, sans-serif;
+  --rac-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@theme inline {
+  --color-rac-blue: var(--rac-brand-blue);
+  --color-rac-blue-light: var(--rac-brand-blue-light);
+  --color-rac-blue-deep: var(--rac-brand-blue-deep);
+  --color-rac-lac: var(--rac-brand-red);
+  --color-rac-lac-dark: var(--rac-brand-red-dark);
+  --color-rac-gold: var(--rac-brand-gold);
+  --color-rac-green: var(--rac-brand-green);
+  --color-rac-surface: var(--rac-surface-page);
+  --color-rac-border: var(--rac-border-default);
+  --font-rac-sans: var(--rac-font-sans);
+  --font-rac-data: var(--rac-font-data);
+  --font-rac-display: var(--rac-font-display);
+  --font-rac-mono: var(--rac-font-mono);
+}

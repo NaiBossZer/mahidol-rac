@@ -1,0 +1,35 @@
+/* Mahidol RAC visual themes */
+:root {
+  --rac-space-1: 0.25rem;
+  --rac-space-2: 0.5rem;
+  --rac-space-3: 0.75rem;
+  --rac-space-4: 1rem;
+  --rac-space-6: 1.5rem;
+  --rac-space-8: 2rem;
+  --rac-space-12: 3rem;
+  --rac-space-16: 4rem;
+  --rac-space-24: 6rem;
+  --rac-card-padding: var(--rac-space-6);
+  --rac-focus-ring: 0 0 0 3px rgb(245 184 0 / 35%);
+}
+
+[data-rac-theme="living"] {
+  --rac-theme-surface: var(--rac-surface-page);
+  --rac-theme-accent: var(--rac-brand-red);
+  --rac-theme-accent-soft: #f8e9e7;
+  --rac-theme-content: var(--rac-text-primary);
+}
+
+[data-rac-theme="executive"] {
+  --rac-theme-surface: #101b2d;
+  --rac-theme-accent: var(--rac-brand-gold);
+  --rac-theme-accent-soft: rgb(245 184 0 / 12%);
+  --rac-theme-content: #f8fafc;
+}
+
+[data-rac-theme="play"] {
+  --rac-theme-surface: #fffaf5;
+  --rac-theme-accent: var(--rac-brand-red);
+  --rac-theme-accent-soft: #fff0ed;
+  --rac-theme-content: var(--rac-text-primary);
+}

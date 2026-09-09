@@ -12,7 +12,11 @@ const CharacterStage: React.FC<Props> = ({ character, emotion }) => {
   return (
     <div
       className="relative w-full flex flex-col items-center justify-end rounded-2xl overflow-hidden border-2"
-      style={{ borderColor: character.themeColor, backgroundColor: `${character.themeColor}0D`, minHeight: 260 }}
+      style={{
+        borderColor: character.themeColor,
+        backgroundColor: `${character.themeColor}0D`,
+        minHeight: 260,
+      }}
     >
       <AnimatePresence mode="wait">
         <motion.img

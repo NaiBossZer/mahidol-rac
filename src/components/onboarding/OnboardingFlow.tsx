@@ -16,9 +16,7 @@ interface State {
 }
 
 type Action =
-  | { type: "INTRO_DONE" }
-  | { type: "CHOICE_MADE"; choice: Choice }
-  | { type: "CONTINUE_TO_GAME" };
+  { type: "INTRO_DONE" } | { type: "CHOICE_MADE"; choice: Choice } | { type: "CONTINUE_TO_GAME" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -45,7 +43,7 @@ function reducer(state: State, action: Action): State {
 }
 
 interface Props {
-  gameId: string;                 // "smart-farm" | "sobprab-lac" | "building-safety"
+  gameId: string; // "smart-farm" | "sobprab-lac" | "building-safety"
   user: UserProfile;
   onComplete: (session: GameSession) => void; // ส่งค่าไปเข้า Simulator จริง
 }
@@ -85,20 +83,39 @@ const OnboardingFlow: React.FC<Props> = ({ gameId, user, onComplete }) => {
 
       <AnimatePresence mode="wait">
         {state.phase === "intro" && (
-          <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <DialogueBox lines={script.intro} onFinished={() => dispatch({ type: "INTRO_DONE" })} />
           </motion.div>
         )}
 
         {state.phase === "choice" && (
-          <motion.div key="choice" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+          <motion.div
+            key="choice"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-3"
+          >
             <p className="text-sm text-slate-500 text-center">เลือกแนวทางของคุณ</p>
-            <ChoiceButtons choices={script.choices} onSelect={(choice) => dispatch({ type: "CHOICE_MADE", choice })} />
+            <ChoiceButtons
+              choices={script.choices}
+              onSelect={(choice) => dispatch({ type: "CHOICE_MADE", choice })}
+            />
           </motion.div>
         )}
 
         {state.phase === "feedback" && feedbackEntry && (
-          <motion.div key="feedback" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            key="feedback"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <FeedbackOverlay feedback={feedbackEntry} onContinue={handleContinueToGame} />
           </motion.div>
         )}

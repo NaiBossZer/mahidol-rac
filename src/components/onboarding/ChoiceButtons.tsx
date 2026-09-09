@@ -12,7 +12,9 @@ const ChoiceButtons: React.FC<Props> = ({ choices, onSelect }) => {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {choices.map((choice) => {
-        const IconComp = (Icons as any)[choice.iconName] ?? Icons.HelpCircle;
+        const IconComp =
+          (Icons as Record<string, React.ComponentType<{ className?: string }>>)[choice.iconName] ??
+          Icons.HelpCircle;
         return (
           <button
             key={choice.id}

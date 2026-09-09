@@ -1,26 +1,39 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
-import { HomePage } from "./routes/index";
-import { LoginPage } from "./routes/login";
-import { DashboardPage } from "./routes/dashboard";
-import { SurveyPage } from "./routes/survey";
-import { BingoPage } from "./routes/bingo";
+
+const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
+const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
+const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.LoginPage })));
+const DashboardPage = lazy(() =>
+  import("./routes/dashboard").then((m) => ({ default: m.DashboardPage })),
+);
+const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
+
+function RouteFallback() {
+  return <div className="min-h-screen" aria-label="Loading" />;
+}
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/bingo" element={<BingoPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/survey" element={<SurveyPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/bingo" element={<BingoPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/survey" element={<SurveyPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
-createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
 
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

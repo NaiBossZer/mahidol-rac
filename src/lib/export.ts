@@ -18,7 +18,10 @@ export async function exportExcel(a: Analysis, headers: string[], rows: string[]
     ["จำนวนผู้ตอบแบบสอบถาม", a.responses],
     ["ค่าเฉลี่ยความพึงพอใจโดยรวม (เต็ม 5)", a.overall ? Number(fmt(a.overall.mean)) : "-"],
     ["ระดับความพึงพอใจ (%)", a.overall ? Number(fmt(a.overall.percent, 1)) : "-"],
-    ["Learning Impact Score (%)", a.learningImpactScore ? Number(fmt(a.learningImpactScore, 1)) : "-"],
+    [
+      "Learning Impact Score (%)",
+      a.learningImpactScore ? Number(fmt(a.learningImpactScore, 1)) : "-",
+    ],
     ["Event Experience Score (%)", a.experienceScore ? Number(fmt(a.experienceScore, 1)) : "-"],
     ["Event Success Score", a.successScore ? Number(fmt(a.successScore.score, 1)) : "-"],
     ["ระดับความสำเร็จ", a.successScore?.label ?? "-"],
@@ -34,7 +37,14 @@ export async function exportExcel(a: Analysis, headers: string[], rows: string[]
     ["อันดับ", "หัวข้อ", "จำนวนผู้ตอบ", "ค่าเฉลี่ย (เต็ม 5)", "SD", "ร้อยละ"],
     ...[...a.ratings]
       .sort((x, y) => y.percent - x.percent)
-      .map((r, i) => [i + 1, r.header, r.n, Number(fmt(toMean5(r))), Number(fmt(r.sd)), Number(fmt(r.percent, 1))]),
+      .map((r, i) => [
+        i + 1,
+        r.header,
+        r.n,
+        Number(fmt(toMean5(r))),
+        Number(fmt(r.sd)),
+        Number(fmt(r.percent, 1)),
+      ]),
   ];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ratingRows), "Satisfaction");
 
@@ -51,17 +61,23 @@ export async function exportExcel(a: Analysis, headers: string[], rows: string[]
   if (a.openAnswers.length)
     XLSX.utils.book_append_sheet(
       wb,
-      XLSX.utils.aoa_to_sheet([["คำถาม", "คำตอบ"], ...a.openAnswers.map((o) => [o.header, o.text])]),
+      XLSX.utils.aoa_to_sheet([
+        ["คำถาม", "คำตอบ"],
+        ...a.openAnswers.map((o) => [o.header, o.text]),
+      ]),
       "Feedback",
     );
 
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([headers, ...rows]), "Raw Data");
-  XLSX.writeFile(wb, `Mahidol-Lac-Learning-Room-Summary-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  XLSX.writeFile(
+    wb,
+    `Mahidol-Lac-Learning-Room-Summary-${new Date().toISOString().slice(0, 10)}.xlsx`,
+  );
 }
 
 export async function exportPptx(a: Analysis, insight: InsightResult | null) {
   const mod = await import("pptxgenjs");
-  const PptxGenJS = (mod as unknown as { default: new () => any }).default;
+  const PptxGenJS = (mod as typeof import("pptxgenjs")).default;
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_16x9";
 
@@ -99,7 +115,10 @@ export async function exportPptx(a: Analysis, insight: InsightResult | null) {
       ["ค่าเฉลี่ยความพึงพอใจ (เต็ม 5)", a.overall ? fmt(a.overall.mean) : "-"],
       ["ระดับความพึงพอใจ (%)", a.overall ? fmt(a.overall.percent, 1) : "-"],
       ["Learning Impact Score (%)", a.learningImpactScore ? fmt(a.learningImpactScore, 1) : "-"],
-      ["Event Success Score", a.successScore ? `${fmt(a.successScore.score, 1)} (${a.successScore.label})` : "-"],
+      [
+        "Event Success Score",
+        a.successScore ? `${fmt(a.successScore.score, 1)} (${a.successScore.label})` : "-",
+      ],
       [
         "ความต้องการเข้าร่วมในอนาคต (%)",
         a.futureParticipation ? fmt(a.futureParticipation.percentYes, 1) : "-",
@@ -130,7 +149,10 @@ export async function exportPptx(a: Analysis, insight: InsightResult | null) {
   if (insight) {
     const aiSlide = slide("AI Event Insight");
     aiSlide.addText(
-      (insight.insights.length ? insight.insights : ["ไม่สามารถวิเคราะห์ในประเด็นนี้ได้ เนื่องจากข้อมูลไม่เพียงพอ"])
+      (insight.insights.length
+        ? insight.insights
+        : ["ไม่สามารถวิเคราะห์ในประเด็นนี้ได้ เนื่องจากข้อมูลไม่เพียงพอ"]
+      )
         .map((t) => `• ${t}`)
         .join("\n"),
       { x: 0.5, y: 1.0, w: 9, h: 4, fontSize: 12, color: WHITE },
@@ -166,4 +188,3 @@ export async function exportPptx(a: Analysis, insight: InsightResult | null) {
 export function exportPdf() {
   window.print();
 }
-

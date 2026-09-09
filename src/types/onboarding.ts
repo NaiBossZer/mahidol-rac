@@ -19,7 +19,7 @@ export interface DialogueLine {
 export interface Choice {
   id: string;
   label: string;
-  iconName: string;              // ชื่อ icon จาก lucide-react เช่น "Sprout", "ShieldCheck"
+  iconName: string; // ชื่อ icon จาก lucide-react เช่น "Sprout", "ShieldCheck"
   resultTag: ResultTag;
   paramPatch: Record<string, unknown>;
 }
@@ -32,7 +32,7 @@ export interface FeedbackEntry {
 }
 
 export interface GameScript {
-  gameId: string;                // "smart-farm" | "sobprab-lac" | "building-safety" | ...
+  gameId: string; // "smart-farm" | "sobprab-lac" | "building-safety" | ...
   gameTitle: string;
   characterId: string;
   intro: DialogueLine[];

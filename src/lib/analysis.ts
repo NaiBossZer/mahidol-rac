@@ -343,8 +343,7 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
     }
   }
 
-  const futureActivities =
-    categoricals.find((c) => FUTURE_ACT_RE.test(c.header)) ?? null;
+  const futureActivities = categoricals.find((c) => FUTURE_ACT_RE.test(c.header)) ?? null;
 
   // Success score
   const parts: { label: string; value: number }[] = [];
@@ -419,7 +418,8 @@ export function analyse(headers: string[], rows: string[][], columns: ColumnInfo
   const matrix = matrixSource.map((r) => {
     const highSat = r.percent >= satMedian;
     const highImp = r.importance >= impMedian;
-    const quadrant = highSat && highImp ? "KEEP" : highSat ? "PROMOTE" : highImp ? "PRIORITY" : "IMPROVE";
+    const quadrant =
+      highSat && highImp ? "KEEP" : highSat ? "PROMOTE" : highImp ? "PRIORITY" : "IMPROVE";
     return {
       label: r.header,
       satisfaction: Number(r.percent.toFixed(1)),
@@ -470,4 +470,3 @@ export function ratingColor(mean5: number) {
 export function toMean5(stat: { mean: number; scaleMax: number }) {
   return (stat.mean / stat.scaleMax) * 5;
 }
-
