@@ -1,4 +1,5 @@
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
+import { homepageSectionImages } from "@/features/home/homepageSectionImages";
 
 const process = [
   ["🪲", "แมลงครั่ง", "อาศัยอยู่บนกิ่งไม้"],
@@ -18,9 +19,10 @@ const composition = [
 
 export function WhatIsLacSection() {
   return (
-    <RacSection id="what-is-lac" className="scroll-mt-24 bg-[#f3eadb]">
+    <RacSection id="what-is-lac" className="relative scroll-mt-24 overflow-hidden bg-[#f3eadb]">
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-cover bg-center opacity-20 lg:block" style={{ backgroundImage: `url(${homepageSectionImages.whatIsLac})` }} aria-hidden="true" />
       <RacContainer>
-        <div className="grid gap-7 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:gap-10">
+        <div className="relative grid gap-7 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:gap-10">
           <div>
             <RacSectionHeader
               className="mb-6"
@@ -46,20 +48,23 @@ export function WhatIsLacSection() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#6d4a35]/15 bg-white/70 p-4 sm:p-5">
-            <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#8f3328] sm:text-[10px]">COMPOSITION / องค์ประกอบโดยประมาณ</p>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5 lg:grid-cols-2">
-              {composition.map(([icon, label, value]) => (
-                <div key={label} className="rounded-xl border border-slate-200 bg-[#faf7f0] px-3 py-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-lg" aria-hidden="true">{icon}</span>
-                    <p className="text-[11px] text-slate-500">{label}</p>
+          <div className="relative overflow-hidden rounded-3xl border border-[#6d4a35]/15 bg-white/80 p-4 sm:p-5">
+            <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: `url(${homepageSectionImages.whatIsLac})` }} aria-hidden="true" />
+            <div className="relative">
+              <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#8f3328] sm:text-[10px]">COMPOSITION / องค์ประกอบโดยประมาณ</p>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5 lg:grid-cols-2">
+                {composition.map(([icon, label, value]) => (
+                  <div key={label} className="rounded-xl border border-slate-200 bg-[#faf7f0]/90 px-3 py-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg" aria-hidden="true">{icon}</span>
+                      <p className="text-[11px] text-slate-500">{label}</p>
+                    </div>
+                    <p className="mt-0.5 text-lg font-bold tracking-tight text-slate-900">{value}</p>
                   </div>
-                  <p className="mt-0.5 text-lg font-bold tracking-tight text-slate-900">{value}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+              <p className="mt-3 text-[10px] leading-4 text-slate-500">ช่วงค่าขึ้นกับแหล่งข้อมูลและตัวอย่างครั่ง</p>
             </div>
-            <p className="mt-3 text-[10px] leading-4 text-slate-500">ช่วงค่าขึ้นกับแหล่งข้อมูลและตัวอย่างครั่ง</p>
           </div>
         </div>
       </RacContainer>
