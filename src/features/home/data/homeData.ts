@@ -4,8 +4,7 @@ export const HERO_SLIDES = [
     image: "/Banner 1.jpg",
     badge: "MAHIDOL LAC LEARNING CENTER",
     title: "ห้องเรียนรู้ครั่งครบวงจร",
-    subtitle:
-      "งานพันธกิจเพื่อสังคม คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล อ.สบปราบ จ.ลำปาง",
+    subtitle: "เรียนรู้เรื่องครั่งผ่านพื้นที่จัดแสดงและองค์ความรู้ของศูนย์ลำปาง",
     buttonText: "สำรวจศูนย์เรียนรู้ 3D",
     buttonLink: "#media-section",
   },
@@ -14,8 +13,7 @@ export const HERO_SLIDES = [
     image: "/Banner 2.jpg",
     badge: "ZONE 01 // THE ORIGIN",
     title: "กำเนิดครั่ง (The Origin)",
-    subtitle:
-      "ประวัติศาสตร์ ภูมิปัญญาดั้งเดิม อนุกรมวิธาน และถิ่นกำเนิดแมลงครั่งในเอเชียใต้และตะวันออกเฉียงใต้",
+    subtitle: "รู้จักต้นกำเนิด ประวัติศาสตร์ และความหลากหลายของแมลงครั่ง",
     buttonText: "ศึกษาเรื่องกำเนิดครั่ง",
     buttonLink: "#cards-section",
   },
@@ -24,8 +22,7 @@ export const HERO_SLIDES = [
     image: "/Banner 3.jpg",
     badge: "ZONE 02 // LIFE CYCLE",
     title: "มหัศจรรย์วงจรชีวิต (The Life Cycle)",
-    subtitle:
-      "เรียนรู้ชีววิทยา วงจรชีวิต ตัวอ่อน การขับชันยาง และสรีรวิทยาของแมลงครั่งอย่างครอบคลุม",
+    subtitle: "สำรวจวงจรชีวิตและชีววิทยาของแมลงครั่ง",
     buttonText: "ชมวงจรชีวิตแมลงครั่ง",
     buttonLink: "#cards-section",
   },
@@ -34,8 +31,7 @@ export const HERO_SLIDES = [
     image: "/Banner 4.jpg",
     badge: "ZONE 03 // THE HABITATS",
     title: "พืชอาศัยและนิเวศวิทยา (The Habitats)",
-    subtitle:
-      "พืชอาศัยที่เหมาะแก่การเพาะเลี้ยง เช่น ต้นจามจุรี (ก้ามปู) ต้นปลัก สีเสียด พร้อมการกักเก็บคาร์บอน",
+    subtitle: "เรียนรู้ความสัมพันธ์ระหว่างครั่ง ต้นพิงอาศัย และระบบนิเวศ",
     buttonText: "ดูข้อมูลพืชอาศัย",
     buttonLink: "#cards-section",
   },
@@ -44,8 +40,7 @@ export const HERO_SLIDES = [
     image: "/Banner 5.jpg",
     badge: "ZONE 04 // CULTIVATION",
     title: "การเพาะเลี้ยงและการจัดการ",
-    subtitle:
-      "รอบปฏิทินฤดูกาล (ฤดูร้อน/ฤดูฝน) เทคนิคการคัดแม่พันธุ์ การคุมศัตรูครั่ง และการเก็บเกี่ยวอย่างมีประสิทธิภาพ",
+    subtitle: "เรียนรู้ฤดูกาล เทคนิคการเพาะเลี้ยง และการจัดการครั่ง",
     buttonText: "ดูคู่มือการเพาะเลี้ยง",
     buttonLink: "#cards-section",
   },
@@ -53,9 +48,8 @@ export const HERO_SLIDES = [
     id: 6,
     image: "/Banner 6.jpg",
     badge: "ZONE 05 // PRODUCT INNOVATION",
-    title: "ครั่ง สู่ นวัตกรรมการผลิต",
-    subtitle:
-      "การแปรรูปครั่งดิบสู่ครั่งเมล็ด เชลแลกเกรดอุตสาหกรรม สีย้อมผ้าธรรมชาติ และสารเคลือบผิวระดับสูง",
+    title: "ครั่งสู่นวัตกรรมการผลิต",
+    subtitle: "จากครั่งดิบสู่การแปรรูป ผลิตภัณฑ์ และนวัตกรรม",
     buttonText: "ชมนวัตกรรมแปรรูปครั่ง",
     buttonLink: "#cards-section",
   },
