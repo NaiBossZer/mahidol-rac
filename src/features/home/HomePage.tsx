@@ -5,7 +5,6 @@ import { LearningJourney } from "@/features/home/components/LearningJourney";
 import { LacLifeCycle } from "@/features/home/components/LacLifeCycle";
 import { LampangLacMap } from "@/features/home/components/LampangLacMap";
 import { LacProductJourney } from "@/features/home/components/LacProductJourney";
-import { ActivitySection } from "@/features/activity/components/ActivitySection";
 import { useHome } from "@/features/home/hooks/useHome";
 import { WhatIsLacSection } from "@/features/home/components/WhatIsLacSection";
 
@@ -22,9 +21,8 @@ export function HomePage() {
         <LacLifeCycle />
         <LampangLacMap />
         <LacProductJourney />
-        <ActivitySection />
       </main>
-      <footer className="mt-16 border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300"><div className="mx-auto max-w-5xl space-y-2 px-4"><p className="text-xs leading-relaxed sm:text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p><p className="font-mono text-xs text-slate-500">© 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.</p></div></footer>
+      <footer className="border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300"><div className="mx-auto max-w-5xl space-y-2 px-4"><p className="text-xs leading-relaxed sm:text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p><p className="font-mono text-xs text-slate-500">© 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.</p></div></footer>
     </div>
   );
 }
