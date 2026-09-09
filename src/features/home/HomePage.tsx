@@ -13,38 +13,23 @@ import { WhatIsLacSection } from "@/features/home/components/WhatIsLacSection";
 
 export function HomePage() {
   const home = useHome();
-
   return (
     <div data-rac-theme="living" className="min-h-screen overflow-x-hidden bg-rac-surface font-['Mitr'] text-slate-800 selection:bg-rac-lac selection:text-white">
       <AppNavbar />
       <main className="grow">
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
-
         <WhatIsLacSection />
         <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
-
         <LearningJourney />
         <LacLifeCycle />
-
         <LampangLacMap />
         <LacProductJourney />
-
         <RacSection id="data-viz" className="scroll-mt-24 bg-rac-surface">
-          <RacContainer>
-            <RacSectionHeader eyebrow="REGIONAL INTELLIGENCE" title="ข้อมูลและภาพรวมศูนย์เรียนรู้" description="มุมมองข้อมูลที่ช่วยเชื่อมโยงองค์ความรู้กับบริบทพื้นที่และการพัฒนาอย่างยั่งยืน" />
-            <DataVisualization />
-          </RacContainer>
+          <RacContainer><RacSectionHeader eyebrow="07 — REGIONAL INTELLIGENCE" title="ข้อมูลและภาพรวมศูนย์เรียนรู้" description="มุมมองข้อมูลที่ช่วยเชื่อมโยงองค์ความรู้กับบริบทพื้นที่และการพัฒนาอย่างยั่งยืน" /><DataVisualization /></RacContainer>
         </RacSection>
-
         <ActivitySection />
       </main>
-
-      <footer className="mt-16 border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300">
-        <div className="mx-auto max-w-5xl space-y-2 px-4">
-          <p className="text-xs leading-relaxed sm:text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p>
-          <p className="font-mono text-xs text-slate-500">© 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.</p>
-        </div>
-      </footer>
+      <footer className="mt-16 border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300"><div className="mx-auto max-w-5xl space-y-2 px-4"><p className="text-xs leading-relaxed sm:text-sm">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง</p><p className="font-mono text-xs text-slate-500">© 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights reserved.</p></div></footer>
     </div>
   );
 }
