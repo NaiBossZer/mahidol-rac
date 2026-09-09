@@ -8,7 +8,13 @@ const PRIMARY_NAV = [
   { label: "ความรู้", sectionIds: ["knowledge", "environment"] },
   { label: "ผลิตภัณฑ์", sectionIds: ["product"] },
   { label: "เกษตรกรและชุมชน", sectionIds: ["lampang", "community"] },
-  { label: "เกมการเรียนรู้", href: "/bingo" },
+  {
+    label: "เกมการเรียนรู้",
+    gameLinks: [
+      { label: "Sobprab Lac Lab", href: "/sobprab-lac-lab" },
+      { label: "Lac Bingo", href: "/bingo" },
+    ],
+  },
   { label: "แบบประเมินความพึงพอใจ", href: "/survey" },
   { label: "ผลสรุปแบบประเมินความพึงพอใจ", href: "/dashboard" },
 ];
@@ -24,6 +30,7 @@ export const AppNavbar: React.FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+  const isGameActive = location.pathname === "/sobprab-lac-lab" || location.pathname === "/bingo";
   const isNavGroupActive = (sectionIds: string[]) =>
     getSections(sectionIds).some((section) =>
       section.pages.some((page) => location.pathname === `/lac/${page.slug}`),
@@ -58,6 +65,27 @@ export const AppNavbar: React.FC = () => {
                   <Link key={item.href} to={item.href} className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs transition 2xl:px-2.5 ${isActive(item.href) ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`}>
                     {item.label}
                   </Link>
+                );
+              }
+
+              if ("gameLinks" in item) {
+                return (
+                  <div key={item.label} className="relative shrink-0" onMouseEnter={() => setOpenSection(item.label)} onMouseLeave={() => setOpenSection(null)}>
+                    <button type="button" onClick={() => setOpenSection((value) => value === item.label ? null : item.label)} className={`inline-flex items-center gap-0.5 whitespace-nowrap rounded-md px-2 py-1.5 text-xs transition 2xl:px-2.5 ${isGameActive ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`} aria-expanded={openSection === item.label}>
+                      {item.label}<ChevronDown size={13} className={`shrink-0 transition-transform ${openSection === item.label ? "rotate-180" : ""}`} />
+                    </button>
+                    {openSection === item.label && (
+                      <div className="absolute right-0 top-full w-56 pt-2">
+                        <div className="rounded-xl border border-white/10 bg-rac-blue-deep/95 p-2 shadow-2xl backdrop-blur-xl">
+                          {item.gameLinks.map((game) => (
+                            <Link key={game.href} to={game.href} onClick={closeMenus} className={`block rounded-lg px-2.5 py-2.5 text-xs transition ${isActive(game.href) ? "bg-rac-lac/15 font-semibold text-cyan-300" : "text-slate-200 hover:bg-white/10 hover:text-white"}`}>
+                              {game.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               }
 
@@ -100,6 +128,25 @@ export const AppNavbar: React.FC = () => {
               {PRIMARY_NAV.map((item) => {
                 if ("href" in item) {
                   return <Link key={item.href} to={item.href} onClick={closeMenus} className={`rounded-xl px-4 py-3 text-sm ${isActive(item.href) ? "bg-white/10 font-bold text-rac-gold" : "text-white hover:bg-white/10"}`}>{item.label}</Link>;
+                }
+
+                if ("gameLinks" in item) {
+                  return (
+                    <div key={item.label} className="rounded-xl border border-white/5 bg-white/[0.02]">
+                      <button type="button" onClick={() => setOpenSection((value) => value === item.label ? null : item.label)} className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold ${isGameActive ? "text-rac-gold" : "text-white"}`} aria-expanded={openSection === item.label}>
+                        {item.label}<ChevronDown size={16} className={`transition-transform ${openSection === item.label ? "rotate-180" : ""}`} />
+                      </button>
+                      {openSection === item.label && (
+                        <div className="space-y-1 px-2 pb-2">
+                          {item.gameLinks.map((game) => (
+                            <Link key={game.href} to={game.href} onClick={closeMenus} className={`block rounded-lg px-3 py-2 text-sm ${isActive(game.href) ? "bg-rac-lac/15 text-cyan-300" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}>
+                              {game.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
                 }
 
                 const sections = getSections(item.sectionIds);
