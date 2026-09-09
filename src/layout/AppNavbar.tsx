@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ChevronDown, Menu, X } from "lucide-react";
+
+const NAV_ITEMS = [
+  { label: "หน้าแรก", href: "/", type: "route" as const },
+  { label: "องค์ความรู้", href: "/#cards-section", type: "anchor" as const },
+  { label: "ข้อมูลศูนย์", href: "/#data-viz", type: "anchor" as const },
+  { label: "กิจกรรม", href: "/#activities", type: "anchor" as const },
+  { label: "แบบสอบถาม", href: "/survey", type: "route" as const },
+];
 
 export const AppNavbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -7,164 +16,119 @@ export const AppNavbar: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const handleAnchorClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname !== "/") return;
+    const id = href.split("#")[1];
+    if (id) window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-rac-blue text-white shadow-md border-b-2 border-rac-lac">
-      <nav className="max-w-7xl mx-auto px-4 lg:px-6 py-2.5">
-        <div className="flex items-center justify-between gap-4">
-          {/* Left: Logos & Title */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img
-                  src="/envi-logo.jpg"
-                  alt="Envi Mahidol Logo"
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.innerText = "🌍 Envi";
-                    }
-                  }}
-                />
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-rac-blue/95 text-white shadow-lg backdrop-blur-md">
+      <nav className="mx-auto max-w-7xl px-4 lg:px-6" aria-label="เมนูหลัก">
+        <div className="flex min-h-[68px] items-center justify-between gap-4">
+          <Link to="/" className="flex min-w-0 items-center gap-3 rounded-xl py-1 focus:outline-none focus:ring-2 focus:ring-rac-gold">
+            <div className="flex shrink-0 items-center gap-1.5">
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-white p-1 shadow-sm sm:h-11 sm:w-11">
+                <img src="/envi-logo.jpg" alt="Envi Mahidol" className="h-full w-full object-contain" />
               </div>
-
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img
-                  src="/mahidol-logo.png"
-                  alt="Mahidol University Logo"
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.innerText = "🏛️ Mahidol";
-                    }
-                  }}
-                />
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-white p-1 shadow-sm sm:h-11 sm:w-11">
+                <img src="/mahidol-logo.png" alt="Mahidol University" className="h-full w-full object-contain" />
               </div>
-
-              <div className="bg-white p-1 rounded-lg h-9 sm:h-11 flex items-center justify-center shrink-0 shadow-sm">
-                <img
-                  src="/social-engagement-logo.png"
-                  alt="Social Engagement Logo"
-                  className="h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.innerText = "🤝 Social";
-                    }
-                  }}
-                />
+              <div className="hidden h-11 w-11 items-center justify-center overflow-hidden rounded-lg bg-white p-1 shadow-sm sm:flex">
+                <img src="/social-engagement-logo.png" alt="Social Engagement" className="h-full w-full object-contain" />
               </div>
             </div>
 
-            <div className="w-[1px] h-8 sm:h-10 bg-white/20 shrink-0 hidden sm:block"></div>
-
-            <div className="hidden sm:block">
-              <span className="text-xs sm:text-sm font-semibold tracking-tight text-white block leading-snug">
+            <span className="hidden h-9 w-px bg-white/20 sm:block" />
+            <span className="min-w-0">
+              <span className="block truncate text-xs font-semibold leading-snug text-white sm:text-sm">
                 งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ
               </span>
-              <span className="text-[10px] sm:text-xs font-medium text-rac-gold block leading-tight mt-0.5">
+              <span className="mt-0.5 hidden text-[10px] font-medium leading-tight text-rac-gold sm:block sm:text-xs">
                 คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล จังหวัดลำปาง
               </span>
-            </div>
-          </div>
+            </span>
+          </Link>
 
-          {/* Right: Nav Links */}
-          <div className="hidden xl:flex items-center space-x-6 text-xs sm:text-sm font-normal text-slate-200 shrink-0">
-            <Link
-              to="/"
-              className={`py-1 transition-colors ${
-                isActive("/") ? "text-rac-gold font-bold" : "hover:text-rac-gold"
-              }`}
-            >
-              หน้าแรก
-            </Link>
-            <Link
-              to="/bingo"
-              className={`py-1 flex items-center gap-1 transition-colors ${
-                isActive("/bingo") ? "text-rac-gold font-bold" : "hover:text-rac-gold"
-              }`}
-            >
-              <span>🎲</span> เกมบิงโก
-            </Link>
-            <Link
-              to="/survey"
-              className={`py-1 transition-colors ${
-                isActive("/survey") ? "text-rac-gold font-bold" : "hover:text-rac-gold"
-              }`}
-            >
-              แบบสอบถาม
-            </Link>
+          <div className="hidden items-center gap-1 xl:flex">
+            {NAV_ITEMS.map((item) => {
+              const active = item.type === "route" && isActive(item.href);
+              if (item.type === "route") {
+                return (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className={`rounded-lg px-3 py-2 text-sm transition ${active ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  onClick={() => handleAnchorClick(item.href)}
+                  className="rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-white/10 hover:text-rac-gold"
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <Link
               to="/dashboard"
-              className={`py-1 transition-colors ${
-                isActive("/dashboard") ? "text-rac-gold font-bold" : "hover:text-rac-gold"
-              }`}
+              className={`ml-2 inline-flex items-center rounded-lg border px-3 py-2 text-sm font-semibold transition ${isActive("/dashboard") ? "border-rac-gold bg-rac-gold/10 text-rac-gold" : "border-white/15 text-white hover:border-rac-gold hover:text-rac-gold"}`}
             >
-              สรุปผลแบบประเมิน
+              Dashboard
             </Link>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="xl:hidden shrink-0">
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-white hover:text-rac-gold focus:outline-none focus:ring-2 focus:ring-rac-gold rounded-lg"
-              aria-label={isMobileMenuOpen ? "ปิดเมนู" : "เปิดเมนู"}
-            >
-              {isMobileMenuOpen ? "✕" : "☰"}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            className="rounded-lg p-2 text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-rac-gold xl:hidden"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={isMobileMenuOpen ? "ปิดเมนู" : "เปิดเมนู"}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-        {/* Mobile Dropdown */}
         {isMobileMenuOpen && (
-          <div className="xl:hidden mt-3 pt-3 border-t border-white/15 space-y-2 text-sm font-normal">
-            <Link
-              to="/"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-3 py-2 rounded-lg transition-colors ${
-                isActive("/")
-                  ? "bg-white/15 text-rac-gold font-bold"
-                  : "hover:bg-white/10 text-white"
-              }`}
-            >
-              หน้าแรก
-            </Link>
-            <Link
-              to="/bingo"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-3 py-2 rounded-lg transition-colors ${
-                isActive("/bingo")
-                  ? "bg-rac-lac font-bold text-white"
-                  : "hover:bg-white/10 text-white"
-              }`}
-            >
-              🎲 เกมบิงโกห้องเรียนรู้
-            </Link>
-            <Link
-              to="/survey"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-3 py-2 rounded-lg transition-colors ${
-                isActive("/survey")
-                  ? "bg-white/15 text-rac-gold font-bold"
-                  : "hover:bg-white/10 text-white"
-              }`}
-            >
-              แบบสอบถาม
-            </Link>
-            <Link
-              to="/dashboard"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block px-3 py-2 rounded-lg transition-colors ${
-                isActive("/dashboard")
-                  ? "bg-white/15 text-rac-gold font-bold"
-                  : "hover:bg-white/10 text-white"
-              }`}
-            >
-              สรุปผลแบบประเมินความพึงพอใจ
-            </Link>
+          <div id="mobile-navigation" className="border-t border-white/10 pb-4 pt-3 xl:hidden">
+            <div className="grid gap-1">
+              {NAV_ITEMS.map((item) =>
+                item.type === "route" ? (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`rounded-xl px-4 py-3 text-sm ${isActive(item.href) ? "bg-white/10 font-bold text-rac-gold" : "text-white hover:bg-white/10"}`}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => handleAnchorClick(item.href)}
+                    className="rounded-xl px-4 py-3 text-sm text-white hover:bg-white/10"
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="mt-1 flex items-center justify-between rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:border-rac-gold hover:text-rac-gold"
+              >
+                Dashboard
+                <ChevronDown size={16} className="-rotate-90" />
+              </Link>
+            </div>
           </div>
         )}
       </nav>
