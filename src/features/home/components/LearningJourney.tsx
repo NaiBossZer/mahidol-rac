@@ -12,7 +12,8 @@ const journey = [
 export function LearningJourney() {
   return (
     <section id="learning-journey" className="relative scroll-mt-24 overflow-hidden bg-[#f3eadb] px-4 py-14 sm:py-20" aria-labelledby="learning-journey-title">
-      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.08]" style={{ backgroundImage: `url(${homepageSectionImages.learningJourney})` }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.24]" style={{ backgroundImage: `url(${homepageSectionImages.learningJourney})` }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-[#f3eadb]/55" aria-hidden="true" />
       <div className="relative mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.12em] text-[#8f3328] sm:text-[10px] sm:tracking-[0.2em]">03 — LEARNING JOURNEY</p>
@@ -24,8 +25,8 @@ export function LearningJourney() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {journey.map((item, index) => (
               <Link key={item.no} to={item.href} aria-label={`เรียนรู้: ${item.title}`} className="group relative min-h-[310px] min-w-0 overflow-hidden rounded-3xl border border-[#6d4a35]/15 bg-[#2f241d] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3028] focus-visible:ring-offset-2">
-                <img src={item.image} alt={item.alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-[0.32] transition duration-500 group-hover:scale-105 group-hover:opacity-[0.46]" />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#241b17]/35 via-[#241b17]/60 to-[#241b17]/95" aria-hidden="true" />
+                <img src={item.image} alt={item.alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-[0.52] transition duration-500 group-hover:scale-105 group-hover:opacity-[0.68]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#241b17]/20 via-[#241b17]/45 to-[#241b17]/88" aria-hidden="true" />
                 <div className="relative z-10 flex min-h-[310px] flex-col p-5 sm:p-6">
                   <div className="flex items-center justify-between"><div className="flex items-center gap-2"><span className="font-mono text-xs font-bold tracking-[0.2em] text-[#c58a3a]">{item.no}</span><span className="text-xl" aria-hidden="true">{item.icon}</span></div>{index < journey.length - 1 && <span className="hidden font-mono text-[10px] tracking-[0.12em] text-white/55 lg:block" aria-hidden="true">NEXT →</span>}</div>
                   <h3 className="mt-6 w-fit max-w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-lg font-bold leading-snug text-white shadow-sm backdrop-blur-[2px] sm:text-xl">{item.title}</h3>
