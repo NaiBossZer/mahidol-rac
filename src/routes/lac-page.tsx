@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { getLacPage } from "@/features/lac/lacInformationArchitecture";
+import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
 
 export function LacPage() {
   const { slug = "" } = useParams();
@@ -17,6 +18,27 @@ export function LacPage() {
     );
   }
 
+  if (slug === "knowledge") {
+    return (
+      <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 max-w-3xl">
+            <p className="text-xs font-semibold tracking-[0.18em] text-rac-lac">ความรู้เรื่องครั่ง</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">ภาพรวมความรู้เรื่องครั่ง</h1>
+            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+              สำรวจองค์ความรู้หลักที่เชื่อมโยงตั้งแต่ความรู้พื้นฐาน ระบบนิเวศ การเพาะเลี้ยง ไปจนถึงการแปรรูปและการใช้ประโยชน์จากครั่ง
+            </p>
+          </div>
+          <LacKnowledgeCards />
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link to="/" className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50">กลับหน้าแรก</Link>
+            <Link to="/lac/what-is-lac" className="rounded-xl bg-rac-lac px-4 py-2 text-sm font-semibold text-white hover:opacity-90">เริ่มจาก ครั่งคืออะไร</Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900">
       <div className="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
@@ -25,6 +47,7 @@ export function LacPage() {
         <p className="mt-4 text-sm leading-7 text-slate-600">โครงสร้างหน้านี้ถูกกำหนดไว้ใน LAC Information Architecture และจะเติมเนื้อหาจริงในขั้น Knowledge UX ของโครงการ</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link to="/" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50">กลับหน้าแรก</Link>
+          <Link to="/lac/knowledge" className="rounded-xl bg-rac-lac px-4 py-2 text-sm font-semibold text-white hover:opacity-90">ความรู้เรื่องครั่ง</Link>
           <Link to="/bingo" className="rounded-xl bg-rac-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90">ไป Learning Games</Link>
         </div>
       </div>
