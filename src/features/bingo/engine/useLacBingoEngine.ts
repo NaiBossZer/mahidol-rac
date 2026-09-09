@@ -47,20 +47,22 @@ export function useLacBingoEngine() {
   const formattedTime = formatBingoTimer(state.secondsElapsed);
 
   const drawQuestion = useCallback(() => {
-    if (state.activeQuestion) return null;
+    if (state.activeQuestion || state.isFullBingo) return null;
     const question = getNextQuestion(state.boardTiles, QUESTION_DECK);
     if (!question) return null;
     dispatch({ type: "draw_question", question });
     return question;
-  }, [state.activeQuestion, state.boardTiles]);
+  }, [state.activeQuestion, state.boardTiles, state.isFullBingo]);
 
   const drawQuestionForTile = useCallback((tileId: string) => {
-    if (state.activeQuestion) return null;
+    if (state.activeQuestion || state.isFullBingo) return null;
+    const tile = state.boardTiles.find((item) => item.id === tileId);
+    if (!tile || tile.isMarked) return null;
     const question = QUESTION_DECK.find((item) => item.targetKeywordId === tileId);
     if (!question) return null;
     dispatch({ type: "draw_question", question });
     return question;
-  }, [state.activeQuestion]);
+  }, [state.activeQuestion, state.boardTiles, state.isFullBingo]);
 
   const selectOption = useCallback((optionIndex: number) => {
     pendingOptionRef.current = optionIndex;
