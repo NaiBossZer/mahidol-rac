@@ -1,4 +1,4 @@
-export type LacSectionId = "knowledge" | "lampang" | "product" | "environment" | "community" | "center" | "games";
+export type LacSectionId = "knowledge" | "lampang" | "product" | "environment" | "community" | "games";
 
 export type LacContentPage = {
   slug: string;
@@ -72,14 +72,6 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
       { slug: "community", title: "ครั่งกับชุมชน", section: "community", status: "planned", source: "content-master" },
       { slug: "circular-economy", title: "Circular Economy", section: "community", status: "planned", source: "content-master" },
       { slug: "learning-network", title: "Learning Network", section: "community", status: "planned", source: "content-master" },
-    ],
-  },
-  {
-    id: "center",
-    label: "ศูนย์ลำปาง",
-    description: "ข้อมูลและภาพรวมศูนย์เรียนรู้ พื้นที่ และบริบทของศูนย์ลำปาง",
-    pages: [
-      { slug: "center-overview", title: "ข้อมูลและภาพรวมศูนย์เรียนรู้", section: "center", status: "existing", source: "existing-feature" },
     ],
   },
   {
