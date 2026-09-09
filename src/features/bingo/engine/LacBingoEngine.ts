@@ -151,6 +151,5 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
 export function getNextQuestion(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): QuestionCard | null {
   const unmarked = new Set(boardTiles.filter((tile) => !tile.isMarked).map((tile) => tile.id));
   const available = questionDeck.filter((question) => unmarked.has(question.targetKeywordId));
-  const pool = available.length > 0 ? available : questionDeck;
-  return pool[Math.floor(Math.random() * pool.length)] ?? null;
+  return available[Math.floor(Math.random() * available.length)] ?? null;
 }
