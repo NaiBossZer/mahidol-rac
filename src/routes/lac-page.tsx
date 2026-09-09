@@ -63,9 +63,9 @@ function LessonNavigator({ current }: { current: LessonSlug }) {
         const active = item.href === `/lac/${current}`;
         return (
           <Link key={item.number} to={item.href} aria-current={active ? "page" : undefined}
-            className={`min-w-0 rounded-xl border px-2 py-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c58a3a] sm:px-3 ${active ? "border-[#c58a3a]/60 bg-[#c58a3a]/10" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07]"}`}>
-            <p className="font-mono text-[9px] text-[#c58a3a] sm:text-[10px]">{item.number}</p>
-            <p className="mt-0.5 truncate text-[10px] leading-4 text-white/80 sm:text-xs">{item.title}</p>
+            className={`min-w-0 rounded-xl border px-2 py-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3328] sm:px-3 ${active ? "border-[#8f3328]/45 bg-[#8f3328]/10" : "border-[#8f3328]/10 bg-white/55 hover:bg-white"}`}>
+            <p className="font-mono text-[9px] text-[#8f3328] sm:text-[10px]">{item.number}</p>
+            <p className="mt-0.5 truncate text-[10px] leading-4 text-slate-700 sm:text-xs">{item.title}</p>
           </Link>
         );
       })}
@@ -80,23 +80,23 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
   const next = index < journey.length - 1 ? journey[index + 1] : null;
 
   return (
-    <main className="h-[calc(100vh-64px)] overflow-hidden bg-[#f3eadb] text-slate-900">
+    <main className="h-[calc(100vh-60px)] overflow-hidden bg-[#f3eadb] text-slate-900">
       <RacContainer className="flex h-full flex-col px-3 sm:px-4">
-        <header className="shrink-0 pt-4 sm:pt-5">
+        <header className="shrink-0 pt-3 sm:pt-4">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="font-mono text-[9px] font-semibold tracking-[0.18em] text-[#8f3328] sm:text-[10px]">{lesson.no} — {lesson.code}</p>
               <h1 className="mt-1 truncate text-2xl font-bold tracking-tight sm:text-3xl">{lesson.title}</h1>
               <p className="mt-1 hidden max-w-3xl truncate text-xs text-slate-600 sm:block">{lesson.intro}</p>
             </div>
-            <span className="hidden shrink-0 rounded-full border border-[#6d4a35]/15 bg-white/60 px-3 py-1.5 text-[10px] text-slate-500 sm:inline-flex">Interactive Lesson</span>
+            <span className="hidden shrink-0 rounded-full border border-[#8f3328]/15 bg-white/60 px-3 py-1.5 text-[10px] text-[#8f3328] sm:inline-flex">Interactive Lesson</span>
           </div>
-          <div className="mt-4"><LessonNavigator current={slug} /></div>
+          <div className="mt-3"><LessonNavigator current={slug} /></div>
         </header>
 
-        <section className="min-h-0 flex-1 py-3 sm:py-4" aria-labelledby="lesson-room-title">
-          <div className="grid h-full min-h-0 overflow-hidden rounded-[24px] bg-[#211914] lg:grid-cols-[minmax(0,1.55fr)_minmax(260px,0.75fr)]">
-            <div className="relative min-h-0 bg-[#30231c]">
+        <section className="min-h-0 flex-1 py-2.5 sm:py-3" aria-labelledby="lesson-room-title">
+          <div className="grid h-full min-h-0 overflow-hidden rounded-[24px] bg-[#8f3328] lg:grid-cols-[minmax(0,1.55fr)_minmax(260px,0.75fr)]">
+            <div className="relative min-h-0 bg-black">
               {lesson.video ? (
                 <video
                   className="h-full w-full object-contain bg-black"
@@ -111,36 +111,36 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
               ) : (
                 <div className="absolute inset-0 grid place-items-center">
                   <div className="text-center">
-                    <div className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-[#c58a3a]/40 bg-[#c58a3a]/10 text-xl text-[#ead9c4] sm:h-16 sm:w-16 sm:text-2xl" aria-hidden="true">▶</div>
-                    <p id="lesson-room-title" className="mt-3 text-sm font-semibold text-[#f3ebdd]">Animation Room</p>
-                    <p className="mt-1 text-[11px] text-[#f3ebdd]/45">พื้นที่สำหรับ Animation / Motion Graphic</p>
+                    <div className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-[#f3eadb]/45 bg-[#f3eadb]/10 text-xl text-[#f3eadb] sm:h-16 sm:w-16 sm:text-2xl" aria-hidden="true">▶</div>
+                    <p id="lesson-room-title" className="mt-3 text-sm font-semibold text-[#f3eadb]">Animation Room</p>
+                    <p className="mt-1 text-[11px] text-[#f3eadb]/65">พื้นที่สำหรับ Animation / Motion Graphic</p>
                   </div>
                 </div>
               )}
-              {lesson.video && <div className="pointer-events-none absolute left-3 top-3 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1 text-[10px] text-white/70 backdrop-blur-sm">Animation Room</div>}
+              {lesson.video && <div className="pointer-events-none absolute left-3 top-3 rounded-lg border border-white/15 bg-black/45 px-2.5 py-1 text-[10px] text-white/80 backdrop-blur-sm">Animation Room</div>}
             </div>
 
-            <aside className="min-h-0 overflow-hidden border-t border-white/10 p-4 text-[#f3ebdd] lg:border-l lg:border-t-0 sm:p-5">
+            <aside className="min-h-0 overflow-hidden bg-[#f3eadb] p-4 text-slate-900 sm:p-5">
               <div>
-                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#c58a3a]">LEARN</p>
-                <ul className="mt-3 space-y-2">{lesson.objectives.map((objective) => <li key={objective} className="flex gap-2 text-xs leading-5 text-[#f3ebdd]/80"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#c58a3a]" aria-hidden="true" /><span>{objective}</span></li>)}</ul>
+                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#8f3328]">LEARN</p>
+                <ul className="mt-3 space-y-2">{lesson.objectives.map((objective) => <li key={objective} className="flex gap-2 text-xs leading-5 text-slate-700"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8f3328]" aria-hidden="true" /><span>{objective}</span></li>)}</ul>
               </div>
-              <div className="mt-5 border-t border-white/10 pt-4">
-                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#c58a3a]">KEY FACTS</p>
-                <div className="mt-3 space-y-2">{lesson.facts.map((fact) => <p key={fact} className="rounded-xl bg-white/[0.05] px-3 py-2 text-xs leading-5 text-[#f3ebdd]/80">{fact}</p>)}</div>
+              <div className="mt-4 border-t border-[#8f3328]/15 pt-3">
+                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#8f3328]">KEY FACTS</p>
+                <div className="mt-2 space-y-1.5">{lesson.facts.map((fact) => <p key={fact} className="rounded-xl bg-white/70 px-3 py-2 text-xs leading-5 text-slate-700">{fact}</p>)}</div>
               </div>
-              <div className="mt-5 border-t border-white/10 pt-4">
-                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#c58a3a]">TAKEAWAY</p>
-                <p className="mt-2 text-xs font-semibold leading-6 text-[#ead9c4]">{lesson.takeaway}</p>
+              <div className="mt-4 border-t border-[#8f3328]/15 pt-3">
+                <p className="font-mono text-[9px] font-semibold tracking-[0.16em] text-[#8f3328]">TAKEAWAY</p>
+                <p className="mt-2 text-xs font-semibold leading-6 text-[#8f3328]">{lesson.takeaway}</p>
               </div>
             </aside>
           </div>
         </section>
 
-        <footer className="shrink-0 pb-3 sm:pb-4">
+        <footer className="shrink-0 pb-2.5 sm:pb-3">
           <div className="flex items-center justify-between gap-3">
-            {previous ? <Link to={previous.href} className="min-w-0 truncate rounded-xl border border-[#6d4a35]/15 bg-white/60 px-3 py-2 text-xs font-semibold hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c58a3a]">← {previous.title}</Link> : <span />}
-            {next ? <Link to={next.href} className="min-w-0 truncate rounded-xl bg-[#8f3328] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c58a3a]">บทถัดไป: {next.title} →</Link> : <Link to="/" className="rounded-xl bg-[#8f3328] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c58a3a]">กลับสู่ศูนย์การเรียนรู้ →</Link>}
+            {previous ? <Link to={previous.href} className="min-w-0 truncate rounded-xl border border-[#8f3328]/15 bg-white/65 px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3328]">← {previous.title}</Link> : <span />}
+            {next ? <Link to={next.href} className="min-w-0 truncate rounded-xl bg-[#8f3328] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3328]">บทถัดไป: {next.title} →</Link> : <Link to="/" className="rounded-xl bg-[#8f3328] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3328]">กลับสู่ศูนย์การเรียนรู้ →</Link>}
           </div>
         </footer>
       </RacContainer>
