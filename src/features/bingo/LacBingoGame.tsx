@@ -4,7 +4,6 @@ import {
   Star, Trophy, Tv, Volume2, VolumeX,
 } from "lucide-react";
 import type { BingoTile } from "@/types/bingo";
-import { QUESTION_DECK } from "@/features/bingo/questionDeck";
 import { playChime } from "@/features/bingo/soundEngine";
 import { BingoConfetti } from "@/features/bingo/components/BingoConfetti";
 import { MGuidePopup } from "@/features/bingo/components/MGuidePopup";
@@ -13,14 +12,14 @@ import { TileInspectModal } from "@/features/bingo/components/TileInspectModal";
 import { useLacBingoEngine } from "@/features/bingo/engine/useLacBingoEngine";
 
 export const LacBingoGame: React.FC = () => {
-  const { state, dispatch, completedLines, winningIndices, accuracy, formattedTime, actions } = useLacBingoEngine();
+  const { state, completedLines, winningIndices, accuracy, formattedTime, actions } = useLacBingoEngine();
   const isPopupOpen = state.activeQuestion !== null;
 
   useEffect(() => {
     if (!state.showBingoBanner) return;
-    const timer = window.setTimeout(() => dispatch({ type: "hide_bingo_banner" }), 5000);
+    const timer = window.setTimeout(actions.hideBingoBanner, 5000);
     return () => window.clearTimeout(timer);
-  }, [state.showBingoBanner, dispatch]);
+  }, [state.showBingoBanner, actions.hideBingoBanner]);
 
   const handleDrawQuestion = useCallback(() => {
     if (isPopupOpen) return;
@@ -34,10 +33,9 @@ export const LacBingoGame: React.FC = () => {
       actions.inspectTile(tile);
       return;
     }
-    const question = QUESTION_DECK.find((item) => item.targetKeywordId === tile.id);
-    if (question) dispatch({ type: "draw_question", question });
-    else actions.inspectTile(tile);
-  }, [actions, dispatch, state.soundEnabled]);
+    const question = actions.drawQuestionForTile(tile.id);
+    if (!question) actions.inspectTile(tile);
+  }, [actions, state.soundEnabled]);
 
   const handleReshuffle = useCallback(() => {
     if (state.soundEnabled) playChime("click");
@@ -45,10 +43,8 @@ export const LacBingoGame: React.FC = () => {
   }, [actions, state.soundEnabled]);
 
   const handleAnswer = useCallback((optionIndex: number) => {
-    actions.selectOption(optionIndex);
-    dispatch({ type: "select_option", optionIndex });
-    actions.submitAnswer();
-  }, [actions, dispatch]);
+    actions.submitAnswer(optionIndex);
+  }, [actions]);
 
   const handleNextQuestion = useCallback(() => {
     actions.closeQuestion();
@@ -111,7 +107,7 @@ export const LacBingoGame: React.FC = () => {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700"><Trophy className="h-7 w-7" /></div>
               <div><span className="rounded-full bg-rac-lac px-2 py-0.5 text-[10px] font-bold text-white">BINGO WINNER!</span><h3 className="mt-0.5 text-lg font-bold text-slate-900">🎉 ยินดีด้วย! สำเร็จสายบิงโก {completedLines.at(-1)?.label ?? ""}</h3><p className="text-xs text-slate-600">รับคะแนนโบนัส +500 แต้ม!</p></div>
             </div>
-            <button onClick={() => dispatch({ type: "hide_bingo_banner" })} className="rounded-xl bg-rac-lac px-4 py-2 text-xs font-semibold text-white">เล่นต่อเลย!</button>
+            <button onClick={actions.hideBingoBanner} className="rounded-xl bg-rac-lac px-4 py-2 text-xs font-semibold text-white">เล่นต่อเลย!</button>
           </div>
         </div>
       )}
