@@ -1,10 +1,4 @@
-import type {
-  BingoTile,
-  HostEmotion,
-  LeaderboardEntry,
-  QuestionCard,
-  WinningLine,
-} from "@/types/bingo";
+import type { BingoTile, HostEmotion, LeaderboardEntry, QuestionCard, WinningLine } from "@/types/bingo";
 
 export type BingoHostMode = "player" | "screen";
 export type LacBingoPhase = "ready" | "question" | "answering" | "answer-result" | "bingo" | "victory";
@@ -77,10 +71,10 @@ export function calculateWinningLines(boardTiles: readonly BingoTile[]): Winning
     const indices = Array.from({ length: LINE_LENGTH }, (_, row) => row * GRID_SIZE + column);
     if (indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "col", index: column + 1, indices, label: `แนวตั้งแถวที่ ${column + 1}` });
   }
-  const diagonals = [
+  const diagonals: Array<{ index: number; indices: number[]; label: string }> = [
     { index: 1, indices: [0, 5, 10, 15], label: "แนวทแยง (ซ้ายบน ↘ ขวาล่าง)" },
     { index: 2, indices: [3, 6, 9, 12], label: "แนวทแยง (ขวาบน ↙ ซ้ายล่าง)" },
-  ] as const;
+  ];
   for (const diagonal of diagonals) if (diagonal.indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "diag", ...diagonal });
   return lines;
 }
@@ -113,10 +107,8 @@ export function getInitialBingoState(boardTiles: BingoTile[], leaderboard: Leade
 
 export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): LacBingoState {
   switch (action.type) {
-    case "draw_question":
-      return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
-    case "select_option":
-      return state.isAnswerChecked ? state : { ...state, selectedOption: action.optionIndex };
+    case "draw_question": return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
+    case "select_option": return state.isAnswerChecked ? state : { ...state, selectedOption: action.optionIndex };
     case "submit_answer": {
       if (!state.activeQuestion || state.isAnswerChecked) return state;
       const selectedOption = action.optionIndex ?? state.selectedOption;
@@ -140,24 +132,16 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
         isFullBingo = nextBoard.length > 0 && nextBoard.every((tile) => tile.isMarked);
         if (isFullBingo && !state.isFullBingo) nextScore += FULL_BINGO_BONUS;
       }
-      return {
-        ...state, boardTiles: nextBoard, score: nextScore, streak: nextStreak,
-        questionsAnswered: nextQuestionsAnswered, correctAnswers: nextCorrectAnswers,
-        selectedOption, isAnswerChecked: true, isCorrect, hostEmotion: isCorrect ? "happy" : "concerned",
-        showBingoBanner: showBingoBanner || state.showBingoBanner, isFullBingo,
-        phase: isFullBingo ? "victory" : showBingoBanner ? "bingo" : "answer-result",
-      };
+      return { ...state, boardTiles: nextBoard, score: nextScore, streak: nextStreak, questionsAnswered: nextQuestionsAnswered, correctAnswers: nextCorrectAnswers, selectedOption, isAnswerChecked: true, isCorrect, hostEmotion: isCorrect ? "happy" : "concerned", showBingoBanner: showBingoBanner || state.showBingoBanner, isFullBingo, phase: isFullBingo ? "victory" : showBingoBanner ? "bingo" : "answer-result" };
     }
-    case "close_question":
-      return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isFullBingo ? "victory" : "ready" };
+    case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isFullBingo ? "victory" : "ready" };
     case "set_sound_enabled": return { ...state, soundEnabled: action.enabled };
     case "set_host_mode": return { ...state, hostMode: action.mode };
     case "inspect_tile": return { ...state, inspectTile: action.tile };
     case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
     case "tick": return { ...state, secondsElapsed: state.secondsElapsed + Math.max(0, action.seconds ?? 1) };
     case "set_team_name": return { ...state, teamName: action.teamName };
-    case "save_score":
-      return state.isSavedToLeaderboard ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
+    case "save_score": return state.isSavedToLeaderboard ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
     case "hide_bingo_banner": return { ...state, showBingoBanner: false, phase: state.isFullBingo ? "victory" : state.isAnswerChecked ? "answer-result" : "ready" };
     case "reset": return getInitialBingoState(action.boardTiles, state.leaderboard);
     default: return state;
