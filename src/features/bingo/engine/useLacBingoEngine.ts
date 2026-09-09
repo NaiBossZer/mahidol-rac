@@ -96,7 +96,7 @@ export function useLacBingoEngine() {
   }, [accuracy, completedLines.length, formattedTime, state.isSavedToLeaderboard, state.score, state.teamName]);
 
   return {
-    state, dispatch, completedLines, winningIndices, accuracy, formattedTime,
+    state, completedLines, winningIndices, accuracy, formattedTime,
     actions: { drawQuestion, drawQuestionForTile, selectOption, submitAnswer, closeQuestion, hideBingoBanner, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
     utilities: { shuffleBingoTiles },
   };
