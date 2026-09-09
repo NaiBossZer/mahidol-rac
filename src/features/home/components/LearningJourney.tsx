@@ -12,11 +12,10 @@ export function LearningJourney() {
     <section id="learning-journey" className="scroll-mt-24 bg-rac-surface px-4 py-14 sm:py-20" aria-labelledby="learning-journey-title">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
-          <p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.12em] text-rac-lac sm:text-[10px] sm:tracking-[0.2em]">05 — LEARNING JOURNEY</p>
+          <p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.12em] text-rac-lac sm:text-[10px] sm:tracking-[0.2em]">03 — LEARNING JOURNEY</p>
           <h2 id="learning-journey-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">เส้นทางการเรียนรู้</h2>
           <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">เรียนรู้เรื่องครั่งเป็นลำดับ จากสิ่งมีชีวิตและระบบนิเวศ ไปสู่การเพาะเลี้ยงและบริบทของลำปาง</p>
         </div>
-
         <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {journey.map((item, index) => (
             <article key={item.no} className="group relative min-h-[300px] min-w-0 overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
