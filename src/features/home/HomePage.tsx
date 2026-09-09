@@ -1,6 +1,4 @@
 import AppNavbar from "@/layout/AppNavbar";
-import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
-import { LacKnowledgeAccordion } from "@/features/home/LacKnowledgeAccordion";
 import { HeroSection } from "@/features/home/components/HeroSection";
 import { MediaSection } from "@/features/home/components/MediaSection";
 import { LearningJourney } from "@/features/home/components/LearningJourney";
@@ -22,22 +20,14 @@ export function HomePage() {
         {/* 01 Discover — the entrance to the Learning Center */}
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
 
-        {/* 02 Explore — establish the subject before asking visitors to go deeper */}
-        <RacSection id="what-is-lac" className="scroll-mt-24 bg-white/70">
-          <RacContainer>
-            <RacSectionHeader eyebrow="01 · WHAT IS LAC?" title="ครั่งคืออะไร?" description="เริ่มต้นจากพื้นฐาน แล้วค่อยเดินต่อไปยังวงจรชีวิต ระบบนิเวศ การเพาะเลี้ยง และเรื่องราวของครั่งในลำปาง" />
-            <LacKnowledgeCards />
-          </RacContainer>
-        </RacSection>
-
         {/* Physical Room Experience — Bring the Room Online */}
         <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
 
-        {/* 03 Understand — a visible learning path rather than a list of sections */}
+        {/* 02 Explore — the learning path replaces the old knowledge-card index */}
         <LearningJourney />
         <LacLifeCycle />
 
-        {/* 04 Connect — move from scientific knowledge to the real Lampang context */}
+        {/* 03 Connect — move from scientific knowledge to the real Lampang context */}
         <LampangLacMap />
         <LacProductJourney />
 
@@ -48,11 +38,8 @@ export function HomePage() {
           </RacContainer>
         </RacSection>
 
-        {/* 05 Apply — keep the existing activity feature visible without making it the hero */}
+        {/* 04 Apply — keep the existing activity feature visible without making it the hero */}
         <ActivitySection />
-
-        {/* Existing long-form knowledge remains available as a secondary reference layer. */}
-        <LacKnowledgeAccordion />
       </main>
 
       <footer className="mt-16 border-t border-slate-800 bg-rac-blue-deep py-10 text-center text-slate-300">
