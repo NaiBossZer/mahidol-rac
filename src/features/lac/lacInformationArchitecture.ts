@@ -22,6 +22,7 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
     label: "ความรู้เรื่องครั่ง",
     description: "พื้นฐาน วิทยาศาสตร์ ระบบนิเวศ และการเพาะเลี้ยงครั่ง",
     pages: [
+      { slug: "knowledge", title: "ภาพรวมความรู้เรื่องครั่ง", section: "knowledge", status: "existing", source: "figma-reference" },
       { slug: "what-is-lac", title: "ครั่งคืออะไร", section: "knowledge", status: "planned", source: "content-master" },
       { slug: "origin", title: "ต้นกำเนิดครั่ง", section: "knowledge", status: "planned", source: "content-master" },
       { slug: "life-cycle", title: "วงจรชีวิตครั่ง", section: "knowledge", status: "existing", source: "existing-feature" },
