@@ -21,12 +21,12 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
       <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${homepageSectionImages.learningCenter})` }} aria-hidden="true" />
       <div className="pointer-events-none absolute inset-0 bg-[#8f3028]/55" aria-hidden="true" />
       <RacContainer>
-        <RacCard variant="featured" className="relative min-w-0 overflow-hidden border-[#f3eadb] bg-[#f3eadb] p-0 text-[#2a211d] shadow-xl">
+        <RacCard variant="default" className="relative min-w-0 overflow-hidden border-[#8f3028]/15 bg-[#f3eadb] p-0 text-[#2a211d] shadow-xl">
           <div className="space-y-5 p-4 sm:space-y-6 sm:p-8">
             <div className="flex min-w-0 flex-col gap-5 border-b border-[#8f3028]/15 pb-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="min-w-0 max-w-2xl space-y-2">
                 <p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.1em] text-[#8f3028] sm:text-[10px] sm:tracking-[0.16em]">02 — PHYSICAL ROOM EXPERIENCE</p>
-                <h2 id="media-title" className="rac-display whitespace-nowrap text-xl font-bold leading-tight text-[#2a211d] sm:text-3xl">ชมบรรยากาศจริงของพื้นที่เรียนรู้</h2>
+                <h2 id="media-title" className="rac-display whitespace-nowrap text-xl font-bold leading-tight text-[#8f3028] sm:text-3xl">ชมบรรยากาศจริงของพื้นที่เรียนรู้</h2>
               </div>
               <div className="grid w-full grid-cols-2 rounded-xl bg-[#8f3028]/10 p-1 text-[11px] font-semibold sm:w-auto sm:min-w-[19rem] sm:text-xs" role="tablist" aria-label="รูปแบบการสำรวจห้องเรียนรู้ครั่ง">
                 <button type="button" role="tab" aria-selected={activeTab === "video"} aria-controls="media-panel-video" onClick={() => onTabChange("video")} className={`min-w-0 rounded-lg px-2 py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3028] sm:px-3 ${activeTab === "video" ? "bg-[#8f3028] text-white shadow-sm" : "text-[#8f3028] hover:bg-[#8f3028]/10"}`}>
