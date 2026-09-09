@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { getLacPage } from "@/features/lac/lacInformationArchitecture";
 import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
+import { DataVisualization } from "@/features/home/components/DataVisualization";
+import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 
 export function LacPage() {
   const { slug = "" } = useParams();
@@ -25,9 +27,7 @@ export function LacPage() {
           <div className="mb-10 max-w-3xl">
             <p className="text-xs font-semibold tracking-[0.18em] text-rac-lac">ความรู้เรื่องครั่ง</p>
             <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">ภาพรวมความรู้เรื่องครั่ง</h1>
-            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-              สำรวจองค์ความรู้หลักที่เชื่อมโยงตั้งแต่ความรู้พื้นฐาน ระบบนิเวศ การเพาะเลี้ยง ไปจนถึงการแปรรูปและการใช้ประโยชน์จากครั่ง
-            </p>
+            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">สำรวจองค์ความรู้หลักที่เชื่อมโยงตั้งแต่ความรู้พื้นฐาน ระบบนิเวศ การเพาะเลี้ยง ไปจนถึงการแปรรูปและการใช้ประโยชน์จากครั่ง</p>
           </div>
           <LacKnowledgeCards />
           <div className="mt-10 flex flex-wrap gap-3">
@@ -35,6 +35,19 @@ export function LacPage() {
             <Link to="/lac/what-is-lac" className="rounded-xl bg-rac-lac px-4 py-2 text-sm font-semibold text-white hover:opacity-90">เริ่มจาก ครั่งคืออะไร</Link>
           </div>
         </div>
+      </main>
+    );
+  }
+
+  if (slug === "center-overview") {
+    return (
+      <main className="min-h-screen bg-rac-surface px-4 py-20 text-slate-900">
+        <RacContainer>
+          <RacSection className="py-0">
+            <RacSectionHeader eyebrow="REGIONAL INTELLIGENCE" title="ข้อมูลและภาพรวมศูนย์เรียนรู้" description="มุมมองข้อมูลที่ช่วยเชื่อมโยงองค์ความรู้กับบริบทพื้นที่และการพัฒนาอย่างยั่งยืน" />
+            <div className="mt-8"><DataVisualization /></div>
+          </RacSection>
+        </RacContainer>
       </main>
     );
   }
