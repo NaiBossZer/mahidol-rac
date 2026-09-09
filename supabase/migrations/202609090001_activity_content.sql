@@ -1,3 +1,12 @@
+-- ============================================================
+-- Activity Content schema
+-- NOTE: The canonical Supabase project is the Facility-Safety
+-- project (rdnbodadxvvykfrxmeqn). This migration is kept here
+-- only as a schema reference for the Mahidol RAC application.
+-- Apply the canonical shared migration from Facility-Safety to
+-- the central project instead of creating a separate project.
+-- ============================================================
+
 create extension if not exists pgcrypto;
 
 create table if not exists public.activities (
