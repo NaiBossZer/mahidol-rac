@@ -5,7 +5,7 @@ import { LAC_INFORMATION_ARCHITECTURE } from "@/features/lac/lacInformationArchi
 
 const PRIMARY_NAV = [
   { label: "หน้าแรก", href: "/" },
-  { label: "ความรู้", sectionIds: ["knowledge", "environment"] },
+  { label: "ความรู้", sectionIds: ["knowledge"] },
   { label: "ผลิตภัณฑ์", sectionIds: ["product"] },
   { label: "เกษตรกรและชุมชน", sectionIds: ["lampang", "community"] },
   {
