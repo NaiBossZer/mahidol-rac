@@ -1,0 +1,49 @@
+import { useEffect, useState } from "react";
+import { X, Target, ListChecks, Trophy, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import type { Activity } from "../types";
+
+export function ActivityDetailModal({ activity, onClose }: { activity: Activity; onClose: () => void }) {
+  const images = activity.images?.length ? activity.images : activity.coverImage ? [activity.coverImage] : [];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") setIndex((v) => Math.max(0, v - 1));
+      if (e.key === "ArrowRight") setIndex((v) => Math.min(images.length - 1, v + 1));
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [images.length, onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true">
+      <button type="button" aria-label="ปิด" onClick={onClose} className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X className="size-5" /></button>
+      <div className="grid max-h-[92vh] w-full max-w-6xl overflow-auto rounded-3xl bg-white shadow-2xl lg:grid-cols-[1.35fr_.65fr]">
+        <div className="bg-slate-950 p-3 sm:p-5">
+          <div className="relative aspect-video overflow-hidden rounded-2xl bg-slate-900">
+            {images[index] ? <img src={images[index]} alt={`${activity.title} ${index + 1}`} className="h-full w-full object-contain" /> : <div className="flex h-full items-center justify-center text-slate-400">ยังไม่มีรูปภาพ</div>}
+            {index > 0 && <button type="button" onClick={() => setIndex(index - 1)} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white"><ChevronLeft /></button>}
+            {index < images.length - 1 && <button type="button" onClick={() => setIndex(index + 1)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white"><ChevronRight /></button>}
+          </div>
+          {images.length > 0 && <div className="mt-3 flex gap-2 overflow-x-auto pb-1">{images.map((src, i) => <button key={`${src}-${i}`} type="button" onClick={() => setIndex(i)} className={`h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 ${i === index ? "border-rac-lac" : "border-transparent"}`}><img src={src} alt="" className="h-full w-full object-cover" /></button>)}</div>}
+        </div>
+        <div className="p-5 sm:p-7">
+          <p className="text-xs font-bold text-rac-lac">{activity.date}{activity.category ? ` • ${activity.category}` : ""}</p>
+          <h2 className="mt-2 text-xl font-black text-slate-800 sm:text-2xl">{activity.title}</h2>
+          <div className="mt-6 space-y-5 text-sm text-slate-600">
+            <Detail icon={<Target />} title="วัตถุประสงค์" value={activity.objective} />
+            <Detail icon={<ListChecks />} title="กิจกรรมสำคัญ" value={activity.keyActivities?.join(" • ") || "-"} />
+            <Detail icon={<Trophy />} title="ผลลัพธ์" value={activity.outcomes} />
+            <Detail icon={<Users />} title="ผู้เข้าร่วม" value={activity.participants} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Detail({ icon, title, value }: { icon: React.ReactNode; title: string; value: string }) {
+  return <section><div className="flex items-center gap-2 font-bold text-slate-800"><span className="text-rac-lac">{icon}</span>{title}</div><p className="mt-1.5 leading-relaxed">{value || "-"}</p></section>;
+}
