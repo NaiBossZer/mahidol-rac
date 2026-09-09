@@ -16,6 +16,7 @@ const lessonPages = {
     no: "01", code: "WHAT IS LAC?", title: "ครั่งคืออะไร?",
     intro: "ทำความเข้าใจครั่งจากแมลงครั่ง ต้นพิงอาศัย และเรซินธรรมชาติ",
     video: "/intro-lac.mp4",
+    background: "/Lessonroom_whatisshellac.jpeg",
     objectives: ["รู้จักแมลงครั่ง", "เข้าใจต้นพิงอาศัย", "เข้าใจการเกิดเรซินและครั่ง"],
     facts: ["ครั่งเป็นยางธรรมชาติ", "แมลงครั่งอาศัยบนกิ่งไม้", "เรซินสีแดงคือจุดเริ่มต้นของครั่ง"],
     takeaway: "แมลงครั่ง → ต้นพิงอาศัย → น้ำเลี้ยง → Resin → ครั่ง",
@@ -24,6 +25,7 @@ const lessonPages = {
     no: "02", code: "LIFE CYCLE", title: "วงจรชีวิต",
     intro: "ติดตามการเปลี่ยนแปลงของแมลงครั่งตั้งแต่ระยะเริ่มต้นจนถึงตัวเต็มวัย",
     video: null,
+    background: "/Lessonroom_Lifecycle.jpeg",
     objectives: ["เห็นลำดับวงจรชีวิต", "เข้าใจแต่ละระยะ", "เชื่อมโยงกับการเพาะเลี้ยง"],
     facts: ["ตัวผู้ประมาณ 55–60 วัน", "ตัวเมียให้ตัวอ่อนประมาณ 200–500 ตัว", "วงจรชีวิตเชื่อมโยงกับการสร้างเรซิน"],
     takeaway: "ไข่ → ตัวอ่อน → ตัวผู้/ตัวเมีย → รุ่นใหม่",
@@ -32,6 +34,7 @@ const lessonPages = {
     no: "03", code: "HABITAT & HOST PLANTS", title: "ระบบนิเวศ & ต้นพิงอาศัย",
     intro: "มองความสัมพันธ์ระหว่างแมลงครั่ง ต้นพิงอาศัย น้ำเลี้ยง และสภาพแวดล้อม",
     video: null,
+    background: "/Lessonroom_Ecosystem.jpeg",
     objectives: ["เห็นองค์ประกอบของระบบ", "เข้าใจความสัมพันธ์แมลงกับพืช", "เชื่อมโยงสภาพแวดล้อม"],
     facts: ["แมลงครั่งอาศัยบนกิ่งไม้", "ต้นพิงอาศัยเป็นแหล่งน้ำเลี้ยง", "สภาพแวดล้อมเกี่ยวข้องกับการเจริญเติบโต"],
     takeaway: "แมลง + ต้นพิงอาศัย + น้ำเลี้ยง + สภาพแวดล้อม",
@@ -40,6 +43,7 @@ const lessonPages = {
     no: "04", code: "HOST PLANTS", title: "ต้นพิงอาศัย",
     intro: "ทำความรู้จักต้นไม้ที่ครั่งอาศัยและดูดกินน้ำเลี้ยง",
     video: null,
+    background: "/Lessonroom_Branchtree.jpeg",
     objectives: ["รู้จักต้นพิงอาศัย", "เปรียบเทียบชนิดพืช", "เข้าใจบทบาทของต้นไม้"],
     facts: ["จามจุรี", "ลิ้นจี่ และ ลำไย", "พุทรา ปันแถ/แถ/แข และถั่วมะแฮะ"],
     takeaway: "ต้นพิงอาศัยคือฐานที่ครั่งใช้ดำรงชีวิต",
@@ -48,6 +52,7 @@ const lessonPages = {
     no: "05", code: "LAC FARMING", title: "การเพาะเลี้ยงครั่ง",
     intro: "จากชีววิทยาสู่การปฏิบัติ: เตรียมพันธุ์ ดูแล และเก็บเกี่ยว",
     video: null,
+    background: "/Lessonroom_Culvitation.jpeg",
     objectives: ["เข้าใจการเตรียมพันธุ์", "เข้าใจการดูแล", "เข้าใจการเก็บเกี่ยว"],
     facts: ["เตรียมพันธุ์", "ดูแลระหว่างเพาะเลี้ยง", "เก็บเกี่ยวในช่วงที่เหมาะสม"],
     takeaway: "เตรียมพันธุ์ → ดูแล → เก็บเกี่ยว → แปรรูป",
@@ -80,8 +85,12 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
   const next = index < journey.length - 1 ? journey[index + 1] : null;
 
   return (
-    <main className="h-[calc(100vh-60px)] overflow-hidden bg-[#f3eadb] text-slate-900">
-      <RacContainer className="flex h-full flex-col px-3 sm:px-4">
+    <main
+      className="relative h-[calc(100vh-60px)] overflow-hidden bg-[#f3eadb] bg-cover bg-center bg-no-repeat text-slate-900"
+      style={{ backgroundImage: `url(${lesson.background})` }}
+    >
+      <div className="absolute inset-0 bg-[#f3eadb]/88" aria-hidden="true" />
+      <RacContainer className="relative flex h-full flex-col px-3 sm:px-4">
         <header className="shrink-0 pt-3 sm:pt-4">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -109,7 +118,7 @@ function LessonRoom({ slug }: { slug: LessonSlug }) {
                   เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
                 </video>
               ) : (
-                <div className="absolute inset-0 grid place-items-center">
+                <div className="absolute inset-0 grid place-items-center bg-[#8f3328]/20">
                   <div className="text-center">
                     <div className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-[#f3eadb]/45 bg-[#f3eadb]/10 text-xl text-[#f3eadb] sm:h-16 sm:w-16 sm:text-2xl" aria-hidden="true">▶</div>
                     <p id="lesson-room-title" className="mt-3 text-sm font-semibold text-[#f3eadb]">Animation Room</p>
