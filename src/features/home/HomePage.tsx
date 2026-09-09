@@ -6,7 +6,6 @@ import { LacLifeCycle } from "@/features/home/components/LacLifeCycle";
 import { LampangLacMap } from "@/features/home/components/LampangLacMap";
 import { LacProductJourney } from "@/features/home/components/LacProductJourney";
 import { DataVisualization } from "@/features/home/components/DataVisualization";
-import { LacKnowledgeCards } from "@/features/home/LacKnowledgeCards";
 import { ActivitySection } from "@/features/activity/components/ActivitySection";
 import { RacContainer, RacSection, RacSectionHeader } from "@/components/rac";
 import { useHome } from "@/features/home/hooks/useHome";
@@ -20,22 +19,11 @@ export function HomePage() {
       <main className="grow">
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
 
-        {/* 01 Discover — answer the first question before moving into the room */}
-        <RacSection id="cards-section" className="scroll-mt-24 bg-rac-surface">
-          <RacContainer>
-            <RacSectionHeader eyebrow="01 // DISCOVER" title="ครั่งคืออะไร?" description="เริ่มต้นทำความรู้จักครั่งผ่านองค์ความรู้พื้นฐาน นิเวศวิทยา การเพาะเลี้ยง และการใช้ประโยชน์" />
-            <LacKnowledgeCards />
-          </RacContainer>
-        </RacSection>
-
-        {/* Physical Room Experience — Bring the Room Online */}
         <MediaSection activeTab={home.activeMediaTab} onTabChange={home.setActiveMediaTab} />
 
-        {/* 02 Explore — the learning path follows the first knowledge encounter */}
         <LearningJourney />
         <LacLifeCycle />
 
-        {/* 03 Connect — move from scientific knowledge to the real Lampang context */}
         <LampangLacMap />
         <LacProductJourney />
 
@@ -46,7 +34,6 @@ export function HomePage() {
           </RacContainer>
         </RacSection>
 
-        {/* 04 Apply — keep the existing activity feature visible without making it the hero */}
         <ActivitySection />
       </main>
 
