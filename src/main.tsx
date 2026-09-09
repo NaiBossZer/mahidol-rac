@@ -13,6 +13,7 @@ const DashboardPage = lazy(() => import("./routes/dashboard").then((m) => ({ def
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
 const ActivityAdminPage = lazy(() => import("./routes/admin-activity").then((m) => ({ default: m.ActivityAdminPage })));
 const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
+const LacApplicationPage = lazy(() => import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })));
 
 function RouteFallback() { return <div className="min-h-screen" aria-label="Loading" />; }
 
@@ -23,6 +24,7 @@ function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/lac/application" element={<LacApplicationPage />} />
             <Route path="/lac/:slug" element={<LacPage />} />
             <Route path="/sobprab-lac-lab" element={<SobprabLacLabPage />} />
             <Route path="/bingo" element={<BingoPage />} />
