@@ -54,6 +54,14 @@ export function useLacBingoEngine() {
     return question;
   }, [state.activeQuestion, state.boardTiles]);
 
+  const drawQuestionForTile = useCallback((tileId: string) => {
+    if (state.activeQuestion) return null;
+    const question = QUESTION_DECK.find((item) => item.targetKeywordId === tileId);
+    if (!question) return null;
+    dispatch({ type: "draw_question", question });
+    return question;
+  }, [state.activeQuestion]);
+
   const selectOption = useCallback((optionIndex: number) => {
     pendingOptionRef.current = optionIndex;
     dispatch({ type: "select_option", optionIndex });
@@ -69,6 +77,7 @@ export function useLacBingoEngine() {
     pendingOptionRef.current = null;
     dispatch({ type: "close_question" });
   }, []);
+  const hideBingoBanner = useCallback(() => dispatch({ type: "hide_bingo_banner" }), []);
   const reshuffle = useCallback(() => {
     pendingOptionRef.current = null;
     dispatch({ type: "reset", boardTiles: createInitialBoard() });
@@ -88,7 +97,7 @@ export function useLacBingoEngine() {
 
   return {
     state, dispatch, completedLines, winningIndices, accuracy, formattedTime,
-    actions: { drawQuestion, selectOption, submitAnswer, closeQuestion, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
+    actions: { drawQuestion, drawQuestionForTile, selectOption, submitAnswer, closeQuestion, hideBingoBanner, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
     utilities: { shuffleBingoTiles },
   };
 }
