@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
 import { AuthProvider } from "./features/auth/AuthProvider";
 import { ProtectedRoute, AdminRoute } from "./features/auth/RouteGuards";
+import { AppBottomBar } from "./layout/AppBottomBar";
 
 const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
 const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
@@ -35,6 +36,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+        <AppBottomBar />
       </AuthProvider>
     </BrowserRouter>
   );
