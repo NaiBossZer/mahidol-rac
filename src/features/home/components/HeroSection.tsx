@@ -30,7 +30,7 @@ export function HeroSection({ currentSlide, onPrevious, onNext, onSelectSlide, o
                 <span className="text-xs font-medium text-white/70">{String(index + 1).padStart(2, "0")} / {String(HERO_SLIDES.length).padStart(2, "0")}</span>
               </div>
               <h1 className="rac-display max-w-3xl text-3xl font-bold leading-[1.18] tracking-tight drop-shadow-md sm:text-5xl lg:text-6xl">{item.title}</h1>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-white/85 drop-shadow sm:text-lg sm:leading-8">{item.subtitle}</p>
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-white/85 drop-shadow sm:text-base sm:leading-7 lg:text-lg">{item.subtitle}</p>
               <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
                 <RacButton type="button" onClick={() => onScrollToSection(item.buttonLink.replace("#", ""))} variant="primary" className="w-full justify-center border border-white/20 px-6 py-3.5 shadow-xl hover:shadow-2xl sm:w-auto"><span>{item.buttonText}</span><span className="font-bold text-rac-gold">›</span></RacButton>
                 <button type="button" onClick={() => onScrollToSection("activities")} className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-rac-gold sm:w-auto">ดูกิจกรรมล่าสุด</button>
