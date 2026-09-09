@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AppNavbar } from "@/layout/AppNavbar";
+import AppFooter from "@/layout/AppFooter";
 import { RacContainer } from "@/components/rac";
 
 const stories = [
@@ -26,10 +27,10 @@ export function LacApplicationPage() {
   const selected = stories.find((story) => story.id === selectedId) ?? stories[0];
 
   return (
-    <div className="h-screen overflow-hidden bg-[#f3eadb] text-slate-900">
+    <div className="min-h-screen bg-[#f3eadb] text-slate-900">
       <AppNavbar />
-      <main className="h-[calc(100vh-60px)] overflow-hidden">
-        <RacContainer className="flex h-full flex-col px-3 py-3 sm:px-4 sm:py-4">
+      <main className="min-h-[calc(100vh-60px)]">
+        <RacContainer className="flex min-h-[calc(100vh-60px)] flex-col px-3 py-3 sm:px-4 sm:py-4">
           <header className="shrink-0">
             <p className="font-mono text-[9px] font-semibold tracking-[0.18em] text-[#8f3328] sm:text-[10px]">FROM LAC TO APPLICATION</p>
             <div className="mt-1 flex items-end justify-between gap-4">
@@ -96,16 +97,17 @@ export function LacApplicationPage() {
             </div>
           </section>
 
-          <footer className="shrink-0">
+          <div className="shrink-0 pb-2 pt-1">
             <div className="flex items-center justify-center gap-1.5 text-[10px] font-semibold text-[#8f3328] sm:text-xs">
               <span>ครั่ง</span><span aria-hidden="true">→</span>
               <span>แปรรูป</span><span aria-hidden="true">→</span>
               <span>ต่อยอด</span><span aria-hidden="true">→</span>
               <span>ใช้ประโยชน์</span>
             </div>
-          </footer>
+          </div>
         </RacContainer>
       </main>
+      <AppFooter />
     </div>
   );
 }
