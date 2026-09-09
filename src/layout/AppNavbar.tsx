@@ -5,8 +5,6 @@ import { ChevronDown, Menu, X } from "lucide-react";
 const NAV_ITEMS = [
   { label: "หน้าแรก", href: "/", type: "route" as const },
   { label: "องค์ความรู้", href: "/#cards-section", type: "anchor" as const },
-  { label: "ข้อมูลศูนย์", href: "/#data-viz", type: "anchor" as const },
-  { label: "กิจกรรม", href: "/#activities", type: "anchor" as const },
   { label: "แบบสอบถาม", href: "/survey", type: "route" as const },
 ];
 
