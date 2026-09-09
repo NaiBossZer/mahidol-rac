@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.
 const DashboardPage = lazy(() => import("./routes/dashboard").then((m) => ({ default: m.DashboardPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
 const ActivityAdminPage = lazy(() => import("./routes/admin-activity").then((m) => ({ default: m.ActivityAdminPage })));
+const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
 
 function RouteFallback() { return <div className="min-h-screen" aria-label="Loading" />; }
 
@@ -21,6 +22,7 @@ function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/lac/:slug" element={<LacPage />} />
             <Route path="/bingo" element={<BingoPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
