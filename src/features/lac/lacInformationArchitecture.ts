@@ -44,12 +44,10 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
   },
   {
     id: "product",
-    label: "ครั่ง → ผลิตภัณฑ์",
-    description: "การแปรรูป การใช้งาน และนวัตกรรมจากครั่ง",
+    label: "จากครั่งสู่การใช้ประโยชน์",
+    description: "เรื่องราวจากครั่งสู่การต่อยอดและการใช้ประโยชน์จริง",
     pages: [
-      { slug: "lac-product", title: "จากครั่งดิบสู่ผลิตภัณฑ์", section: "product", status: "existing", source: "existing-feature" },
-      { slug: "lac-around-us", title: "ครั่งอยู่รอบตัวเรา", section: "product", status: "planned", source: "content-master" },
-      { slug: "product-innovation", title: "Product Innovation", section: "product", status: "planned", source: "content-master" },
+      { slug: "application", title: "จากครั่งสู่การใช้ประโยชน์", section: "product", status: "existing", source: "existing-feature" },
     ],
   },
   {
