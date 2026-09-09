@@ -111,15 +111,6 @@ export function LearningJourney() {
             ))}
           </div>
         </div>
-
-        <div className="mt-7 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#6d4a35]/15 bg-white/60 px-4 py-3 sm:px-5">
-          <p className="text-xs leading-5 text-slate-600 sm:text-sm">
-            เส้นทางนี้เป็นจุดเริ่มต้นของ Knowledge UX และเชื่อมต่อไปยังองค์ความรู้รายหัวข้อในระบบ
-          </p>
-          <Link to="/lac/knowledge" className="shrink-0 rounded-xl bg-[#8f3028] px-4 py-2.5 text-xs font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3028] focus-visible:ring-offset-2 sm:text-sm">
-            ดูองค์ความรู้ทั้งหมด
-          </Link>
-        </div>
       </div>
     </section>
   );
