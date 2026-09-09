@@ -7,7 +7,7 @@ Phase 1 establishes the production information architecture before changing the 
 ## Experience model
 
 ```text
-Discover → Explore → Understand → Connect → Apply → Sustainability
+Discover → Explore → Understand → Connect → Apply
 ```
 
 The homepage is the exhibition entrance and story layer. Detailed knowledge belongs to dedicated learning pages. Interactive games belong to a Learning Games area. Dashboard, Survey, Authentication, and Activity Administration remain utility/system areas.
@@ -33,13 +33,7 @@ LAC LEARNING CENTER
 │   ├── จากครั่งดิบสู่ผลิตภัณฑ์
 │   ├── ครั่งอยู่รอบตัวเรา
 │   └── Product Innovation
-├── 04 สิ่งแวดล้อม
-│   ├── Carbon Footprint of Lac
-│   ├── CFP vs CFO
-│   ├── Life Cycle of Lac Product
-│   ├── CFP Assessment
-│   └── CFP → Net Zero
-├── 05 ชุมชน & เครือข่าย
+├── 04 ชุมชน & เครือข่าย
 │   ├── ครั่งกับชุมชน
 │   ├── Circular Economy
 │   └── Learning Network
@@ -90,7 +84,7 @@ These are intentionally outside the LAC knowledge hierarchy.
 ## Phase 1 definition of done
 
 - Information hierarchy is explicit.
-- Every Content Master topic has a target home.
+- Every Content Master topic retained in the current architecture has a target home.
 - Existing features have a target role.
 - Games have a dedicated conceptual destination.
 - Utility routes are separated from learning content.
