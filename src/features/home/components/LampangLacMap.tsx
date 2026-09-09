@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { homepageSectionImages } from "@/features/home/homepageSectionImages";
 
 const districts = [
   { no: "01", name: "วังเหนือ", note: "พื้นที่ข้อมูลครั่ง", lat: 19.1442, lng: 99.6387 },
@@ -30,10 +31,11 @@ export function LampangLacMap() {
   }, []);
 
   return (
-    <section id="lampang-map" className="scroll-mt-24 bg-[#f3eadb] px-4 py-14 sm:py-20" aria-labelledby="lampang-map-title">
-      <div className="mx-auto max-w-6xl"><div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-10">
-        <div><p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.12em] text-rac-lac sm:text-[10px] sm:tracking-[0.2em]">05 — LAMPANG LAC MAP</p><h2 id="lampang-map-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">ครั่งกับพื้นที่ลำปาง</h2><p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">เชื่อมโยงองค์ความรู้เรื่องครั่งกับพื้นที่ที่มีข้อมูลในศูนย์เรียนรู้ เพื่อมองเห็นบริบทของเกษตรกรและเครือข่ายการผลิตในจังหวัดลำปาง</p><div className="mt-5 rounded-2xl border border-rac-lac/15 bg-white/70 p-4 text-sm leading-6 text-slate-600 sm:mt-6"><span className="font-semibold text-slate-900">MARKS:</span> จุดแสดงตำแหน่งระดับอำเภอของพื้นที่ที่ระบุในข้อมูลเนื้อหาของศูนย์</div></div>
-        <div className="overflow-hidden rounded-[2rem] border border-[#6f3d2e]/15 bg-white p-3 shadow-sm sm:p-5"><div ref={mapRef} className="h-[360px] w-full overflow-hidden rounded-[1.5rem] bg-[#efe1cc] sm:h-[430px]" aria-label="แผนที่จังหวัดลำปางพร้อมตำแหน่งพื้นที่ข้อมูลครั่ง" /><div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{districts.map((district) => <div key={district.no} className="flex min-w-0 items-center gap-2 rounded-xl border border-[#6f3d2e]/10 bg-[#fffaf1] p-2.5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-rac-lac text-[10px] font-bold text-white">{district.no}</span><span className="truncate text-xs font-semibold text-slate-800">อ.{district.name}</span></div>)}</div></div>
+    <section id="lampang-map" className="relative scroll-mt-24 overflow-hidden bg-[#f3eadb] px-4 py-14 sm:py-20" aria-labelledby="lampang-map-title">
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.12]" style={{ backgroundImage: `url(${homepageSectionImages.northThai})` }} aria-hidden="true" />
+      <div className="relative mx-auto max-w-6xl"><div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-10">
+        <div><p className="whitespace-nowrap text-[9px] font-semibold tracking-[0.12em] text-rac-lac sm:text-[10px] sm:tracking-[0.2em]">05 — LAMPANG LAC MAP</p><h2 id="lampang-map-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">ครั่งกับพื้นที่ลำปาง</h2><p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">เชื่อมโยงองค์ความรู้เรื่องครั่งกับพื้นที่ที่มีข้อมูลในศูนย์เรียนรู้ เพื่อมองเห็นบริบทของเกษตรกรและเครือข่ายการผลิตในจังหวัดลำปาง</p><div className="mt-5 rounded-2xl border border-rac-lac/15 bg-white/80 p-4 text-sm leading-6 text-slate-600 sm:mt-6"><span className="font-semibold text-slate-900">MARKS:</span> จุดแสดงตำแหน่งระดับอำเภอของพื้นที่ที่ระบุในข้อมูลเนื้อหาของศูนย์</div></div>
+        <div className="overflow-hidden rounded-[2rem] border border-[#6f3d2e]/15 bg-white/90 p-3 shadow-sm backdrop-blur-sm sm:p-5"><div ref={mapRef} className="h-[360px] w-full overflow-hidden rounded-[1.5rem] bg-[#efe1cc] sm:h-[430px]" aria-label="แผนที่จังหวัดลำปางพร้อมตำแหน่งพื้นที่ข้อมูลครั่ง" /><div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{districts.map((district) => <div key={district.no} className="flex min-w-0 items-center gap-2 rounded-xl border border-[#6f3d2e]/10 bg-[#fffaf1] p-2.5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-rac-lac text-[10px] font-bold text-white">{district.no}</span><span className="truncate text-xs font-semibold text-slate-800">อ.{district.name}</span></div>)}</div></div>
       </div></div>
     </section>
   );
