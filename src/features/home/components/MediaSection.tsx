@@ -17,7 +17,7 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
   }, []);
 
   return (
-    <section id="media-section" className="relative scroll-mt-24 overflow-hidden bg-[#8f3028] py-10 text-white sm:py-16" aria-labelledby="media-title">
+    <section id="media-section" className="relative flex min-h-0 scroll-mt-24 items-center overflow-hidden bg-[#8f3028] py-10 text-white sm:py-16 lg:min-h-[720px]" aria-labelledby="media-title">
       <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${homepageSectionImages.learningCenter})` }} aria-hidden="true" />
       <div className="pointer-events-none absolute inset-0 bg-[#8f3028]/55" aria-hidden="true" />
       <RacContainer>
@@ -37,13 +37,13 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
                 </button>
               </div>
             </div>
-            <div id={activeTab === "video" ? "media-panel-video" : "media-panel-3d"} role="tabpanel" className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#8f3028]/20 bg-[#2a211d] shadow-inner">
+            <div id={activeTab === "video" ? "media-panel-video" : "media-panel-3d"} role="tabpanel" className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#8f3028]/20 bg-[#f3eadb] p-2 shadow-inner sm:p-3">
               {activeTab === "video" ? (
-                <video className="h-full w-full object-cover" controls playsInline preload="metadata">
+                <video className="h-full w-full rounded-xl bg-black object-cover" controls playsInline preload="metadata">
                   <source src="/intro-lac.mp4" type="video/mp4" />
                 </video>
               ) : (
-                <div className="relative flex h-full w-full items-center justify-center bg-slate-100">
+                <div className="relative h-full w-full overflow-hidden rounded-xl bg-slate-100">
                   <model-viewer src="/rac-room3d.glb" alt="โมเดล 3D ห้องเรียนรู้ครั่ง" auto-rotate camera-controls shadow-intensity="1" style={{ width: "100%", height: "100%" }} />
                   <div className="pointer-events-none absolute bottom-3 left-3 right-3 rounded-lg border border-white/20 bg-slate-900/80 px-3 py-1.5 text-center text-[10px] text-white shadow-md backdrop-blur-md sm:left-auto sm:right-3 sm:text-left sm:text-[11px]">
                     🖱️ คลิกและลากเพื่อหมุนดูโมเดล 3D แบบ 360°
