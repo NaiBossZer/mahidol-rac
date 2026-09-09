@@ -25,11 +25,7 @@ function createInitialBoard(): BingoTile[] {
 }
 
 export function useLacBingoEngine() {
-  const [state, dispatch] = useReducer(
-    lacBingoReducer,
-    undefined,
-    () => getInitialBingoState(createInitialBoard(), DEFAULT_LEADERBOARD),
-  );
+  const [state, dispatch] = useReducer(lacBingoReducer, undefined, () => getInitialBingoState(createInitialBoard(), DEFAULT_LEADERBOARD));
 
   useEffect(() => {
     if (state.phase === "victory") return;
@@ -40,9 +36,7 @@ export function useLacBingoEngine() {
   useEffect(() => {
     const highlighted = state.boardTiles.filter((tile) => tile.isHighlighted);
     if (highlighted.length === 0) return;
-    const timerIds = highlighted.map((tile) =>
-      window.setTimeout(() => dispatch({ type: "clear_tile_highlight", tileId: tile.id }), 2500),
-    );
+    const timerIds = highlighted.map((tile) => window.setTimeout(() => dispatch({ type: "clear_tile_highlight", tileId: tile.id }), 2500));
     return () => timerIds.forEach((timerId) => window.clearTimeout(timerId));
   }, [state.boardTiles]);
 
@@ -59,73 +53,26 @@ export function useLacBingoEngine() {
     return question;
   }, [state.activeQuestion, state.boardTiles]);
 
-  const selectOption = useCallback((optionIndex: number) => {
-    dispatch({ type: "select_option", optionIndex });
-  }, []);
-
-  const submitAnswer = useCallback(() => {
-    dispatch({ type: "submit_answer" });
-  }, []);
-
-  const closeQuestion = useCallback(() => {
-    dispatch({ type: "close_question" });
-  }, []);
-
-  const reshuffle = useCallback(() => {
-    dispatch({ type: "reset", boardTiles: createInitialBoard() });
-  }, []);
-
-  const setTeamName = useCallback((teamName: string) => {
-    dispatch({ type: "set_team_name", teamName });
-  }, []);
+  const selectOption = useCallback((optionIndex: number) => dispatch({ type: "select_option", optionIndex }), []);
+  const submitAnswer = useCallback((optionIndex?: number) => dispatch({ type: "submit_answer", optionIndex }), []);
+  const closeQuestion = useCallback(() => dispatch({ type: "close_question" }), []);
+  const reshuffle = useCallback(() => dispatch({ type: "reset", boardTiles: createInitialBoard() }), []);
+  const setTeamName = useCallback((teamName: string) => dispatch({ type: "set_team_name", teamName }), []);
+  const inspectTile = useCallback((tile: BingoTile | null) => dispatch({ type: "inspect_tile", tile }), []);
+  const setSoundEnabled = useCallback((enabled: boolean) => dispatch({ type: "set_sound_enabled", enabled }), []);
+  const setHostMode = useCallback((mode: "player" | "screen") => dispatch({ type: "set_host_mode", mode }), []);
 
   const saveScore = useCallback(() => {
     if (state.isSavedToLeaderboard || state.score <= 0) return;
-    dispatch({
-      type: "save_score",
-      entry: {
-        id: Date.now().toString(),
-        teamName: state.teamName.trim() || "ทีมนิรนาม",
-        score: state.score,
-        lines: completedLines.length,
-        accuracy,
-        timeSpent: formattedTime,
-        date: "วันนี้",
-      },
-    });
+    dispatch({ type: "save_score", entry: {
+      id: Date.now().toString(), teamName: state.teamName.trim() || "ทีมนิรนาม", score: state.score,
+      lines: completedLines.length, accuracy, timeSpent: formattedTime, date: "วันนี้",
+    }});
   }, [accuracy, completedLines.length, formattedTime, state.isSavedToLeaderboard, state.score, state.teamName]);
 
-  const inspectTile = useCallback((tile: BingoTile | null) => {
-    dispatch({ type: "inspect_tile", tile });
-  }, []);
-
-  const setSoundEnabled = useCallback((enabled: boolean) => {
-    dispatch({ type: "set_sound_enabled", enabled });
-  }, []);
-
-  const setHostMode = useCallback((mode: "player" | "screen") => {
-    dispatch({ type: "set_host_mode", mode });
-  }, []);
-
   return {
-    state,
-    dispatch,
-    completedLines,
-    winningIndices,
-    accuracy,
-    formattedTime,
-    actions: {
-      drawQuestion,
-      selectOption,
-      submitAnswer,
-      closeQuestion,
-      reshuffle,
-      setTeamName,
-      saveScore,
-      inspectTile,
-      setSoundEnabled,
-      setHostMode,
-    },
+    state, dispatch, completedLines, winningIndices, accuracy, formattedTime,
+    actions: { drawQuestion, selectOption, submitAnswer, closeQuestion, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
     utilities: { shuffleBingoTiles },
   };
 }
