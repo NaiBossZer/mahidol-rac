@@ -16,7 +16,7 @@ const journey = [
     title: "วงจรชีวิตครั่ง",
     text: "ติดตามชีววิทยาและการเปลี่ยนแปลงของแมลงครั่ง ตั้งแต่ระยะเริ่มต้นจนถึงการสร้างเรซิน",
     href: "/lac/life-cycle",
-    image: "https://images.unsplash.com/photo-1473445361085-b9a07f76ae86?w=900&h=700&fit=crop",
+    image: "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?w=900&h=700&fit=crop",
     alt: "ภาพธรรมชาติสำหรับวงจรชีวิตครั่ง",
   },
   {
