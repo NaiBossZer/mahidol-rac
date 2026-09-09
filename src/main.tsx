@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
+import { AuthProvider } from "./features/auth/AuthProvider";
+import { ProtectedRoute, AdminRoute } from "./features/auth/RouteGuards";
 
 const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
 const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
@@ -13,15 +15,23 @@ const ActivityAdminPage = lazy(() => import("./routes/admin-activity").then((m) 
 function RouteFallback() { return <div className="min-h-screen" aria-label="Loading" />; }
 
 function App() {
-  return <BrowserRouter><Suspense fallback={<RouteFallback />}><Routes>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/bingo" element={<BingoPage />} />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/dashboard" element={<DashboardPage />} />
-    <Route path="/survey" element={<SurveyPage />} />
-    <Route path="/admin/activity" element={<ActivityAdminPage />} />
-    <Route path="*" element={<Navigate to="/" replace />} />
-  </Routes></Suspense></BrowserRouter>;
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/bingo" element={<BingoPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/survey" element={<SurveyPage />} />
+            <Route path="/admin/activity" element={<AdminRoute><ActivityAdminPage /></AdminRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
 createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
