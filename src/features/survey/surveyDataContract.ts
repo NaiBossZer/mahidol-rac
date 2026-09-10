@@ -1,4 +1,4 @@
-export const SURVEY_CONTRACT_VERSION = "7.2" as const;
+export const SURVEY_CONTRACT_VERSION = "8.0" as const;
 
 export interface SurveyActivityContext {
   activityId: string;
@@ -37,10 +37,7 @@ export function getSurveyActivityId(search = window.location.search): string | n
   return value?.trim() || null;
 }
 
-export function withSurveyActivityContext(
-  url: string,
-  context: SurveyActivityContext,
-): string {
+export function withSurveyActivityContext(url: string, context: SurveyActivityContext): string {
   const target = new URL(url);
   target.searchParams.set("activity_id", context.activityId);
   target.searchParams.set("survey_contract", SURVEY_CONTRACT_VERSION);
