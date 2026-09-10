@@ -1,15 +1,15 @@
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import type { Activity } from "../types";
-import { activityData, loadActivities as loadLocalActivities, saveActivities as saveLocalActivities } from "./activityData";
+import { activityData, loadActivities as loadLocalActivities } from "./activityData";
 
 const BUCKET = "activity-images";
 
 type ActivityRow = {
   id: string;
   title: string;
-  date: string;
+  activity_date: string;
   category: string | null;
-  cover_image: string | null;
+  featured_image: string | null;
   images: string[];
   objective: string;
   key_activities: string[];
@@ -24,9 +24,9 @@ function fromRow(row: ActivityRow): Activity {
   return {
     id: row.id,
     title: row.title,
-    date: row.date,
+    activityDate: row.activity_date,
     category: row.category || "",
-    coverImage: row.cover_image || "",
+    featuredImage: row.featured_image || "",
     images: Array.isArray(row.images) ? row.images : [],
     objective: row.objective,
     keyActivities: Array.isArray(row.key_activities) ? row.key_activities : [],
@@ -38,62 +38,16 @@ function fromRow(row: ActivityRow): Activity {
   };
 }
 
-function toRow(activity: Activity) {
-  return {
-    id: activity.id,
-    title: activity.title.trim(),
-    date: activity.date,
-    category: activity.category?.trim() || null,
-    cover_image: activity.coverImage || null,
-    images: activity.images,
-    objective: activity.objective,
-    key_activities: activity.keyActivities.filter(Boolean),
-    outcomes: activity.outcomes,
-    participants: activity.participants,
-    status: activity.status,
-  };
-}
-
 export async function getActivities(): Promise<Activity[]> {
   if (!isSupabaseConfigured || !supabase) return loadLocalActivities();
 
   const { data, error } = await supabase
     .from("activities")
     .select("*")
-    .order("date", { ascending: false });
+    .order("activity_date", { ascending: false });
 
   if (error) throw error;
   return (data as ActivityRow[]).map(fromRow);
-}
-
-export async function saveActivity(activity: Activity): Promise<Activity> {
-  if (!isSupabaseConfigured || !supabase) {
-    const items = loadLocalActivities();
-    const next = items.some((item) => item.id === activity.id)
-      ? items.map((item) => (item.id === activity.id ? activity : item))
-      : [activity, ...items];
-    saveLocalActivities(next);
-    return activity;
-  }
-
-  const { data, error } = await supabase
-    .from("activities")
-    .upsert(toRow(activity), { onConflict: "id" })
-    .select("*")
-    .single();
-
-  if (error) throw error;
-  return fromRow(data as ActivityRow);
-}
-
-export async function deleteActivity(id: string): Promise<void> {
-  if (!isSupabaseConfigured || !supabase) {
-    saveLocalActivities(loadLocalActivities().filter((item) => item.id !== id));
-    return;
-  }
-
-  const { error } = await supabase.from("activities").delete().eq("id", id);
-  if (error) throw error;
 }
 
 export async function uploadActivityImage(file: File, activityId: string): Promise<string> {
