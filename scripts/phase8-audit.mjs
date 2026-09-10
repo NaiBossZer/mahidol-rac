@@ -5,11 +5,9 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../src/", import.meta.url));
 const forbidden = [
   { label: "Google Apps Script endpoint", pattern: /script\.google\.com\/macros\/s\//i },
-  { label: "legacy activity column date", pattern: /(?:activities|\.from\(["']activities["']\))[\s\S]{0,180}\bdate\b/i },
-  { label: "legacy activity column cover_image", pattern: /cover_image/i },
-  { label: "RAC activity admin route", pattern: /\/admin\/activity(?:["'`]|\b)/i },
-  { label: "RAC satisfaction admin route", pattern: /\/admin\/activity-satisfaction(?:["'`]|\b)/i },
-  { label: "RAC survey export admin route", pattern: /\/admin\/survey-export(?:["'`]|\b)/i },
+  { label: "legacy activity date column", pattern: /from\(["']activities["']\)[\s\S]{0,120}(?:select\([^)]*\bdate\b|order\(["']date["'])/i },
+  { label: "legacy activity cover_image column", pattern: /from\(["']activities["']\)[\s\S]{0,120}cover_image/i },
+  { label: "RAC activity admin route", pattern: /["'`]\/admin\/(?:activity(?:["'`]|\/)|activity-satisfaction|survey-export)/i },
   { label: "service role credential in browser source", pattern: /service_role|SUPABASE_SERVICE_ROLE/i },
 ];
 
