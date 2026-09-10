@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.
 const DashboardPage = lazy(() => import("./routes/dashboard").then((m) => ({ default: m.DashboardPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
 const ActivityAdminPage = lazy(() => import("./routes/admin-activity").then((m) => ({ default: m.ActivityAdminPage })));
+const SurveyExportAdminPage = lazy(() => import("./features/dashboard/SurveyExportAdminPage").then((m) => ({ default: m.SurveyExportAdminPage })));
 const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
 const LacApplicationPage = lazy(() => import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })));
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/survey" element={<SurveyPage />} />
             <Route path="/admin/activity" element={<AdminRoute><ActivityAdminPage /></AdminRoute>} />
+            <Route path="/admin/survey-export" element={<AdminRoute><SurveyExportAdminPage /></AdminRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
