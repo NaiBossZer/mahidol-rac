@@ -6,12 +6,14 @@ const files = [
   "vite.config.ts",
   "package.json",
   "src/features/bingo/LacBingoGame.tsx",
+  "src/features/bingo/BingoPage.tsx",
   "src/features/bingo/engine/LacBingoEngine.ts",
   "src/features/bingo/engine/useLacBingoEngine.ts",
   "src/features/bingo/questionDeck.ts",
   "src/features/bingo/bingoKeywords.ts",
   "src/features/bingo/components/MGuidePopup.tsx",
   "src/features/bingo/components/BingoVictoryOverlay.tsx",
+  "src/features/bingo/components/BingoRallyPanel.tsx",
 ];
 let failed = 0;
 
@@ -34,6 +36,9 @@ for (const forbidden of [
 
 const bingoEngine = readFileSync("src/features/bingo/engine/LacBingoEngine.ts", "utf8");
 const bingoHook = readFileSync("src/features/bingo/engine/useLacBingoEngine.ts", "utf8");
+const bingoGame = readFileSync("src/features/bingo/LacBingoGame.tsx", "utf8");
+const bingoPage = readFileSync("src/features/bingo/BingoPage.tsx", "utf8");
+const rallyPanel = readFileSync("src/features/bingo/components/BingoRallyPanel.tsx", "utf8");
 const questionDeck = readFileSync("src/features/bingo/questionDeck.ts", "utf8");
 const keywordPool = readFileSync("src/features/bingo/bingoKeywords.ts", "utf8");
 const mGuidePopup = readFileSync("src/features/bingo/components/MGuidePopup.tsx", "utf8");
@@ -58,6 +63,13 @@ check("question modal locks background scroll", mGuidePopup.includes('document.b
 check("question modal announces answer feedback", mGuidePopup.includes('aria-live="polite"'));
 check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
 check("victory overlay supports keyboard replay", victoryOverlay.includes('e.key === "Escape"'));
+check("Rally exposes 8 exhibition points", (rallyPanel.match(/id: "/g) || []).length === 8);
+check("Rally accepts QR deep-link point", rallyPanel.includes('params.get("rallyPoint")') && rallyPanel.includes('params.get("rally")'));
+check("Rally opens the mapped bingo question", bingoGame.includes("onScanPoint={handleRallyScan}") && bingoGame.includes("actions.drawQuestionForTile(point.keywordId)"));
+check("Bingo page has no page scroll", bingoPage.includes("h-[100dvh] flex-col overflow-hidden"));
+check("Bingo game uses no-scroll viewport", bingoGame.includes("h-full min-h-0 w-full overflow-hidden"));
+check("scoreboard redesigned as podium + Top 5", bingoGame.includes("Top 5") && bingoGame.includes("🥇") && bingoGame.includes("ทีมของคุณ"));
+check("victory overlay is integrated", bingoGame.includes("<BingoVictoryOverlay") && bingoGame.includes("onReplay={actions.reshuffle}"));
 
 console.log(`Smoke test: ${failed ? "FAIL" : "PASS"}`);
 process.exitCode = failed ? 1 : 0;
