@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QUESTION_MAP } from "../data/questionMap";
 import type { SurveyResponse, ScoreItem } from "../types";
-
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxIXYFkonDlYf8sb1VqTDoJXlsZ58Pd53qYSP-rxeLc-9_hiHA4kKIUVAUEM-IdcrLIkQ/exec";
+import { supabase } from "@/lib/supabase";
 
 const parseNum = (value: unknown) => {
   const number = Number(value);
   return Number.isNaN(number) ? 0 : number;
 };
+
+const mapSurveyRow = (row: Record<string, unknown>): SurveyResponse => ({
+  ...row,
+  timestamp: typeof row.submitted_at === "string" ? row.submitted_at : undefined,
+  ageGroup: typeof row.age_group === "string" ? row.age_group : undefined,
+  affiliation: typeof row.affiliation === "string" ? row.affiliation : undefined,
+  feedback: typeof row.feedback === "string" ? row.feedback : undefined,
+});
 
 export function useDashboardData() {
   const [data, setData] = useState<SurveyResponse[]>([]);
@@ -24,24 +30,22 @@ export function useDashboardData() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, { method: "GET", redirect: "follow" });
-      if (!response.ok) throw new Error("fetch failed");
-      const json = await response.json();
-      const valid = Array.isArray(json)
-        ? json.filter(
-            (item) =>
-              item &&
-              typeof item === "object" &&
-              Object.values(item).some((v) => v != null && String(v).trim() !== ""),
-          )
-        : [];
-      setData(valid);
+      if (!supabase) throw new Error("Supabase is not configured");
+
+      const { data: rows, error } = await supabase
+        .from("survey_responses")
+        .select("*")
+        .order("submitted_at", { ascending: false });
+
+      if (error) throw error;
+      setData((rows ?? []).map((row) => mapSurveyRow(row as Record<string, unknown>)));
       const now = new Date();
       setLastUpdated(
-        `${now.getDate()} ส.ค. ${now.getFullYear() + 543} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
+        `${now.getDate()} ${now.toLocaleString("th-TH", { month: "short" })} ${now.getFullYear() + 543} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
       );
-    } catch {
-      setErrorMsg("ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณากด Refresh อีกครั้ง");
+    } catch (error) {
+      console.error("Failed to load satisfaction responses from Supabase", error);
+      setErrorMsg("ไม่สามารถดึงข้อมูลจาก Supabase ได้ กรุณาตรวจสอบสิทธิ์ Admin และกด Refresh อีกครั้ง");
       setData([]);
     } finally {
       setLoading(false);
@@ -71,8 +75,7 @@ export function useDashboardData() {
         new Set(
           data.flatMap((item) => {
             const date = item.timestamp ? new Date(item.timestamp) : null;
-            return date &&
-              !Number.isNaN(date.getTime()) &&
+            return date && !Number.isNaN(date.getTime()) &&
               (selectedYear === "ALL" || String(date.getFullYear()) === selectedYear)
               ? [date.getMonth()]
               : [];
@@ -83,10 +86,10 @@ export function useDashboardData() {
   );
 
   const ageGroupList = useMemo(
-    () =>
-      Array.from(new Set(data.map((item) => item.ageGroup?.trim()).filter(Boolean))) as string[],
+    () => Array.from(new Set(data.map((item) => item.ageGroup?.trim()).filter(Boolean))) as string[],
     [data],
   );
+
   const affiliationsList = useMemo(
     () => Array.from(new Set(data.map((item) => item.affiliation?.trim() || "ไม่ระบุ"))),
     [data],
@@ -101,10 +104,7 @@ export function useDashboardData() {
           if (selectedMonth !== "ALL" && String(date.getMonth()) !== selectedMonth) return false;
         }
         if (selectedAge !== "ALL" && (item.ageGroup?.trim() || "") !== selectedAge) return false;
-        return (
-          selectedAffiliation === "ALL" ||
-          (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation
-        );
+        return selectedAffiliation === "ALL" || (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation;
       }),
     [data, selectedYear, selectedMonth, selectedAge, selectedAffiliation],
   );
@@ -121,12 +121,7 @@ export function useDashboardData() {
             count++;
           }
         });
-        return {
-          key,
-          title: info.title,
-          category: info.category,
-          avg: count ? Number((sum / count).toFixed(2)) : 0,
-        };
+        return { key, title: info.title, category: info.category, avg: count ? Number((sum / count).toFixed(2)) : 0 };
       }),
     [filteredData],
   );
@@ -140,11 +135,7 @@ export function useDashboardData() {
       .map((group) => ({
         ...group,
         avg: group.items.length
-          ? Number(
-              (group.items.reduce((sum, item) => sum + item.avg, 0) / group.items.length).toFixed(
-                2,
-              ),
-            )
+          ? Number((group.items.reduce((sum, item) => sum + item.avg, 0) / group.items.length).toFixed(2))
           : 0,
         items: [...group.items].sort((a, b) => b.avg - a.avg),
       }))
@@ -157,9 +148,7 @@ export function useDashboardData() {
     return {
       highest: sorted[0]!,
       lowest: sorted.at(-1)!,
-      grandAvgPercent: Math.round(
-        (itemScores.reduce((sum, item) => sum + item.avg, 0) / itemScores.length / 5) * 100,
-      ),
+      grandAvgPercent: Math.round((itemScores.reduce((sum, item) => sum + item.avg, 0) / itemScores.length / 5) * 100),
       totalQuestions: itemScores.length,
     };
   }, [itemScores, filteredData]);
@@ -176,13 +165,8 @@ export function useDashboardData() {
       count,
       percent: Number(((count / total) * 100).toFixed(1)),
       color: [
-        "var(--rac-brand-blue)",
-        "var(--rac-brand-red)",
-        "var(--rac-brand-green)",
-        "var(--rac-brand-gold)",
-        "#0284c7",
-        "#7c3aed",
-        "#e11d48",
+        "var(--rac-brand-blue)", "var(--rac-brand-red)", "var(--rac-brand-green)",
+        "var(--rac-brand-gold)", "#0284c7", "#7c3aed", "#e11d48",
       ][index % 7]!,
     }));
   }, [filteredData]);
@@ -191,46 +175,28 @@ export function useDashboardData() {
     const raw = filteredData
       .filter((item) => item.feedback?.trim())
       .map((item) => ({ text: item.feedback!.trim(), affiliation: item.affiliation || "ไม่ระบุ" }));
-    let positiveCount = 0,
-      followUpCount = 0,
-      urgentCount = 0;
+    let positiveCount = 0, followUpCount = 0, urgentCount = 0;
     const topicCounts: Record<string, number> = {
-      การให้บริการ: 0,
-      "กิจกรรม/การเรียนรู้": 0,
-      "สิ่งแวดล้อม/สถานที่": 0,
-      "อุปกรณ์/สื่อ": 0,
+      การให้บริการ: 0, "กิจกรรม/การเรียนรู้": 0, "สิ่งแวดล้อม/สถานที่": 0, "อุปกรณ์/สื่อ": 0,
     };
     const latestList = raw.map((item) => {
       const text = item.text.toLowerCase();
       let status: "positive" | "followup" | "urgent" | "general" = "positive";
       let tag = "กิจกรรม/การเรียนรู้";
       if (["ด่วน", "ปรับปรุง", "แย่", "เสีย", "ช้า"].some((x) => text.includes(x))) {
-        status = "urgent";
-        urgentCount++;
+        status = "urgent"; urgentCount++;
       } else if (["ควร", "อยากให้", "ติดตาม", "เพิ่ม"].some((x) => text.includes(x))) {
-        status = "followup";
-        followUpCount++;
+        status = "followup"; followUpCount++;
       } else if (["ดี", "ประทับใจ", "ชอบ", "เยี่ยม", "ขอบคุณ"].some((x) => text.includes(x))) {
         positiveCount++;
       }
-      if (["บริการ", "พนักงาน", "ต้อนรับ", "เจ้าหน้าที่"].some((x) => text.includes(x)))
-        tag = "การให้บริการ";
-      else if (["จอดรถ", "สถานที่", "ห้อง", "แอร์", "สะอาด"].some((x) => text.includes(x)))
-        tag = "สิ่งแวดล้อม/สถานที่";
-      else if (["อุปกรณ์", "สื่อ", "ไมค์", "สไลด์"].some((x) => text.includes(x)))
-        tag = "อุปกรณ์/สื่อ";
+      if (["บริการ", "พนักงาน", "ต้อนรับ", "เจ้าหน้าที่"].some((x) => text.includes(x))) tag = "การให้บริการ";
+      else if (["จอดรถ", "สถานที่", "ห้อง", "แอร์", "สะอาด"].some((x) => text.includes(x))) tag = "สิ่งแวดล้อม/สถานที่";
+      else if (["อุปกรณ์", "สื่อ", "ไมค์", "สไลด์"].some((x) => text.includes(x))) tag = "อุปกรณ์/สื่อ";
       topicCounts[tag]++;
       return { ...item, status, tag };
     });
-    return {
-      total: raw.length,
-      positiveCount,
-      followUpCount,
-      urgentCount,
-      topicCounts,
-      maxTopicCount: Math.max(...Object.values(topicCounts), 1),
-      latestList,
-    };
+    return { total: raw.length, positiveCount, followUpCount, urgentCount, topicCounts, maxTopicCount: Math.max(...Object.values(topicCounts), 1), latestList };
   }, [filteredData]);
 
   const resetFilters = () => {
@@ -241,27 +207,10 @@ export function useDashboardData() {
   };
 
   return {
-    data,
-    loading,
-    errorMsg,
-    lastUpdated,
-    fetchData,
-    availableYears,
-    availableMonths,
-    ageGroupList,
-    affiliationsList,
-    filteredData,
-    itemScores,
-    categoryGroupedScores,
-    cardMetrics,
-    selectedYear,
-    selectedMonth,
-    selectedAge,
-    selectedAffiliation,
-    setSelectedYear,
-    setSelectedMonth,
-    setSelectedAge,
-    setSelectedAffiliation,
-    resetFilters,
+    data, loading, errorMsg, lastUpdated, fetchData, availableYears, availableMonths,
+    ageGroupList, affiliationsList, filteredData, itemScores, categoryGroupedScores,
+    cardMetrics, affiliationBreakdown, feedbackAnalysis, selectedYear, selectedMonth,
+    selectedAge, selectedAffiliation, setSelectedYear, setSelectedMonth, setSelectedAge,
+    setSelectedAffiliation, resetFilters,
   };
 }
