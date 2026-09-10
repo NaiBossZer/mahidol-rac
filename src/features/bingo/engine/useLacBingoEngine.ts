@@ -90,12 +90,12 @@ export function useLacBingoEngine() {
   const setHostMode = useCallback((mode: "player" | "screen") => dispatch({ type: "set_host_mode", mode }), []);
 
   const saveScore = useCallback(() => {
-    if (state.isSavedToLeaderboard || state.score <= 0) return;
+    if (!state.isFullBingo || state.isSavedToLeaderboard || state.score <= 0) return;
     dispatch({ type: "save_score", entry: {
       id: Date.now().toString(), teamName: state.teamName.trim() || "ทีมนิรนาม", score: state.score,
       lines: completedLines.length, accuracy, timeSpent: formattedTime, date: "วันนี้",
     }});
-  }, [accuracy, completedLines.length, formattedTime, state.isSavedToLeaderboard, state.score, state.teamName]);
+  }, [accuracy, completedLines.length, formattedTime, state.isFullBingo, state.isSavedToLeaderboard, state.score, state.teamName]);
 
   return {
     state, completedLines, winningIndices, accuracy, formattedTime,
