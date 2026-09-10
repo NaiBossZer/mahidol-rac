@@ -46,9 +46,7 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
     id: "product",
     label: "จากครั่งสู่การใช้ประโยชน์",
     description: "เรื่องราวจากครั่งสู่การต่อยอดและการใช้ประโยชน์จริง",
-    pages: [
-      { slug: "application", title: "จากครั่งสู่การใช้ประโยชน์", section: "product", status: "existing", source: "existing-feature" },
-    ],
+    pages: [{ slug: "application", title: "จากครั่งสู่การใช้ประโยชน์", section: "product", status: "existing", source: "existing-feature" }],
   },
   {
     id: "community",
@@ -76,8 +74,6 @@ export const LAC_UTILITY_ROUTES = {
   dashboard: "/dashboard",
   survey: "/survey",
   login: "/login",
-  activityAdmin: "/admin/activity",
 };
 
-export const getLacPage = (slug: string) =>
-  LAC_INFORMATION_ARCHITECTURE.flatMap((section) => section.pages).find((page) => page.slug === slug);
+export const getLacPage = (slug: string) => LAC_INFORMATION_ARCHITECTURE.flatMap((section) => section.pages).find((page) => page.slug === slug);
