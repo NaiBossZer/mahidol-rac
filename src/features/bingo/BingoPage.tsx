@@ -7,45 +7,18 @@ export function BingoPage() {
   return (
     <div
       data-rac-theme="play"
-      className="min-h-screen bg-rac-surface text-slate-800 font-['Mitr'] selection:bg-rac-lac selection:text-white flex flex-col justify-between"
+      className="flex h-[100dvh] flex-col overflow-hidden bg-rac-surface font-['Mitr'] text-slate-800 selection:bg-rac-lac selection:text-white"
     >
-      {/* ==================== NAVBAR (Action F: Shared Component) ==================== */}
       <AppNavbar />
-
-      {/* ==================== MAIN CONTENT ==================== */}
-      <main className="grow py-6 sm:py-8 px-3 sm:px-6 max-w-7xl mx-auto space-y-6 w-full">
-        {/* Breadcrumb */}
-        <div className="flex items-center justify-between gap-3 text-xs text-slate-500">
-          <Link
-            to="/"
-            className="hover:text-rac-lac transition-colors flex items-center gap-1.5 font-semibold text-slate-600"
-          >
-            <span>←</span> กลับสู่หน้าแรก
-          </Link>
-          <span className="text-rac-lac font-semibold bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
-            🎲 ห้องกิจกรรมบิงโกครั่งสบปราบ
-          </span>
+      <main className="flex min-h-0 flex-1 flex-col px-2 py-2 sm:px-3">
+        <div className="mb-1 flex shrink-0 items-center justify-between gap-2 text-[9px] text-slate-500 sm:text-[10px]">
+          <Link to="/" className="font-semibold text-slate-600 transition-colors hover:text-rac-lac">← กลับสู่หน้าแรก</Link>
+          <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 font-semibold text-rac-lac">🎲 Lac Bingo Rally</span>
         </div>
-
-        {/* Lac Bingo Game Component */}
-        <div className="w-full">
+        <div className="min-h-0 flex-1 overflow-hidden">
           <LacBingoGame />
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-rac-blue-deep text-slate-300 py-10 border-t border-slate-800 mt-16 space-y-3 text-center">
-        <div className="max-w-5xl mx-auto px-4 space-y-2">
-          <p className="text-xs sm:text-sm font-normal text-slate-300 leading-relaxed">
-            งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ คณะสิ่งแวดล้อมและทรัพยากรศาสตร์
-            มหาวิทยาลัยมหิดล จังหวัดลำปาง
-          </p>
-          <p className="text-slate-500 text-xs font-mono">
-            © 2026 Faculty of Environment and Resource Studies, Mahidol University. All rights
-            reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
