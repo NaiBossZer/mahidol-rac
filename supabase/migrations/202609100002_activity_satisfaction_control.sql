@@ -23,7 +23,7 @@ create policy "public can read published activities"
   to anon, authenticated
   using (status = 'published');
 
--- Admin users retain activity control through the same role model used by AuthProvider.
+-- Admin users retain activity control through the role model used by AuthProvider.
 drop policy if exists "admins can manage activities" on public.activities;
 create policy "admins can manage activities"
   on public.activities
@@ -34,7 +34,7 @@ create policy "admins can manage activities"
       select 1
       from public.staff_profiles sp
       where sp.user_id = auth.uid()
-        and sp.is_active = true
+        and sp.active = true
         and sp.role in ('admin', 'dean', 'deputy_dean', 'finance_head', 'section_head')
     )
   )
@@ -43,7 +43,7 @@ create policy "admins can manage activities"
       select 1
       from public.staff_profiles sp
       where sp.user_id = auth.uid()
-        and sp.is_active = true
+        and sp.active = true
         and sp.role in ('admin', 'dean', 'deputy_dean', 'finance_head', 'section_head')
     )
   );
