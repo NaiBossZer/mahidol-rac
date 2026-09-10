@@ -31,6 +31,7 @@ create index if not exists activities_status_activity_date_idx
 create or replace function public.set_activities_updated_at()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   new.updated_at = now();
