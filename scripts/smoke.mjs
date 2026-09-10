@@ -60,6 +60,7 @@ check("question modal uses correct/wrong sounds", mGuidePopup.includes('playChim
 check("question modal copy matches +10/-5 rules", mGuidePopup.includes("ตอบถูก +10 คะแนน · ตอบผิด −5 คะแนน"));
 check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
 check("victory overlay supports timeout result", victoryOverlay.includes("isTimeUp") && victoryOverlay.includes("TIME LIMIT REACHED"));
+check("Lac Master badge is calculated", victoryOverlay.includes("getBadge") && victoryOverlay.includes("Lac Master") && victoryOverlay.includes("Lac Expert"));
 check("Rally exposes 8 exhibition points", (rallyPanel.match(/id: "/g) || []).length === 8);
 check("Rally accepts QR deep-link point", rallyPanel.includes('params.get("rallyPoint")') && rallyPanel.includes('params.get("rally")'));
 check("Rally opens the mapped bingo question", bingoGame.includes("onScanPoint={handleRallyScan}") && bingoGame.includes("actions.drawQuestionForTile(point.keywordId)"));
