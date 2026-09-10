@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
 import { AuthProvider } from "./features/auth/AuthProvider";
-import { ProtectedRoute, AdminRoute } from "./features/auth/RouteGuards";
+import { ProtectedRoute } from "./features/auth/RouteGuards";
 
 const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
 const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
@@ -11,9 +11,6 @@ const SobprabLacLabPage = lazy(() => import("./routes/sobprab-lac-lab").then((m)
 const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.LoginPage })));
 const DashboardPage = lazy(() => import("./routes/dashboard").then((m) => ({ default: m.DashboardPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
-const ActivityAdminPage = lazy(() => import("./routes/admin-activity").then((m) => ({ default: m.ActivityAdminPage })));
-const ActivitySatisfactionAdminPage = lazy(() => import("./features/activity/ActivitySatisfactionAdminPage").then((m) => ({ default: m.ActivitySatisfactionAdminPage })));
-const SurveyExportAdminPage = lazy(() => import("./features/dashboard/SurveyExportAdminPage").then((m) => ({ default: m.SurveyExportAdminPage })));
 const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
 const LacApplicationPage = lazy(() => import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })));
 
@@ -33,9 +30,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/survey" element={<SurveyPage />} />
-            <Route path="/admin/activity" element={<AdminRoute><ActivityAdminPage /></AdminRoute>} />
-            <Route path="/admin/activity-satisfaction" element={<AdminRoute><ActivitySatisfactionAdminPage /></AdminRoute>} />
-            <Route path="/admin/survey-export" element={<AdminRoute><SurveyExportAdminPage /></AdminRoute>} />
+            <Route path="/admin/*" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
