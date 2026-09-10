@@ -16,6 +16,13 @@ interface BingoVictoryOverlayProps {
   onReplay: () => void;
 }
 
+function getBadge(isFullBingo: boolean, lines: number, accuracy: number): { icon: string; name: string; description: string } {
+  if (isFullBingo) return { icon: "👑", name: "Lac Master", description: "ปลดล็อกครบทั้งกระดาน" };
+  if (lines >= 4 && accuracy >= 80) return { icon: "🏆", name: "Lac Expert", description: "พิชิตเป้าหมาย 4 สาย" };
+  if (lines >= 2) return { icon: "⭐", name: "Lac Explorer", description: "ค้นพบเส้นทางความรู้แล้ว" };
+  return { icon: "🌱", name: "Lac Learner", description: "เริ่มต้นเส้นทางการเรียนรู้" };
+}
+
 export const BingoVictoryOverlay: React.FC<BingoVictoryOverlayProps> = ({ isOpen, isFullBingo, isTimeUp, score, lines, accuracy, formattedTime, timeBonus, teamName, isSaved, onSave, onReplay }) => {
   const replayRef = useRef<HTMLButtonElement>(null);
 
@@ -28,6 +35,7 @@ export const BingoVictoryOverlay: React.FC<BingoVictoryOverlayProps> = ({ isOpen
   }, [isOpen, onReplay]);
 
   if (!isOpen) return null;
+  const badge = getBadge(isFullBingo, lines, accuracy);
   const title = isFullBingo ? "🎉 พิชิตบิงโกครั่งสำเร็จ!" : "⏱️ หมดเวลาภารกิจ!";
   const eyebrow = isFullBingo ? "LAC BINGO COMPLETE" : "TIME LIMIT REACHED";
   const message = isFullBingo ? "ปลดล็อกครบทั้ง 16 ช่องและผ่านภารกิจบิงโก" : "ครบ 5 นาทีแล้ว สรุปผลการเรียนรู้และคะแนนรอบนี้";
@@ -51,20 +59,13 @@ export const BingoVictoryOverlay: React.FC<BingoVictoryOverlayProps> = ({ isOpen
             <Metric icon={<Clock3 className="h-4 w-4" />} label="เวลา" value={formattedTime} />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-3"><p className="text-[10px] text-amber-200/70">Time Bonus</p><p className="mt-0.5 text-lg font-black text-amber-300">+{timeBonus}</p></div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-[10px] text-slate-400">สถานะ</p><p className="mt-0.5 flex items-center gap-1 text-sm font-bold text-emerald-300">{isTimeUp ? <TimerOff className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />} {isTimeUp ? "หมดเวลา" : "BINGO!"}</p></div>
-          </div>
+          <div className="flex items-center gap-3 rounded-2xl border border-amber-300/30 bg-amber-300/10 p-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-300/15 text-3xl" aria-hidden="true">{badge.icon}</div><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Badge Unlocked</p><p className="text-lg font-black text-white">{badge.name}</p><p className="text-[10px] text-slate-400">{badge.description}</p></div></div>
 
-          <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-100">
-            <p className="font-bold">Knowledge Mission Result</p>
-            <p className="mt-1 text-xs leading-relaxed text-emerald-100/75">คะแนนคิดจากตอบถูก × 10, หักตอบผิด × 5, โบนัสสายบิงโก × 50 และ Time Bonus ตามเวลาที่เหลือ</p>
-          </div>
+          <div className="grid grid-cols-2 gap-2"><div className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-3"><p className="text-[10px] text-amber-200/70">Time Bonus</p><p className="mt-0.5 text-lg font-black text-amber-300">+{timeBonus}</p></div><div className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-[10px] text-slate-400">สถานะ</p><p className="mt-0.5 flex items-center gap-1 text-sm font-bold text-emerald-300">{isTimeUp ? <TimerOff className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />} {isTimeUp ? "หมดเวลา" : "BINGO!"}</p></div></div>
 
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <button ref={replayRef} onClick={onReplay} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-amber-400"><RotateCcw className="h-4 w-4" /> เล่นกระดานใหม่</button>
-            <button onClick={onSave} disabled={isSaved} className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-md transition hover:bg-amber-300 disabled:cursor-default disabled:bg-emerald-500 disabled:text-white focus:outline-none focus:ring-2 focus:ring-amber-300">{isSaved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}{isSaved ? "บันทึกคะแนนแล้ว" : "บันทึกคะแนน"}</button>
-          </div>
+          <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-100"><p className="font-bold">Knowledge Mission Result</p><p className="mt-1 text-xs leading-relaxed text-emerald-100/75">คะแนนคิดจากตอบถูก × 10, หักตอบผิด × 5, โบนัสสายบิงโก × 50 และ Time Bonus ตามเวลาที่เหลือ</p></div>
+
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button ref={replayRef} onClick={onReplay} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-amber-400"><RotateCcw className="h-4 w-4" /> เล่นกระดานใหม่</button><button onClick={onSave} disabled={isSaved} className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-md transition hover:bg-amber-300 disabled:cursor-default disabled:bg-emerald-500 disabled:text-white focus:outline-none focus:ring-2 focus:ring-amber-300">{isSaved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}{isSaved ? "บันทึกคะแนนแล้ว" : "บันทึกคะแนน"}</button></div>
           <p className="text-center text-[11px] text-slate-500">กด Esc เพื่อเริ่มกระดานใหม่</p>
         </div>
       </div>
