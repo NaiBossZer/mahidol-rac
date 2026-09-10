@@ -18,8 +18,11 @@ export interface LacBingoState {
   questionsAnswered: number;
   correctAnswers: number;
   secondsElapsed: number;
+  timeBonus: number;
   showBingoBanner: boolean;
   isFullBingo: boolean;
+  isGameOver: boolean;
+  isTimeUp: boolean;
   inspectTile: BingoTile | null;
   teamName: string;
   isSavedToLeaderboard: boolean;
@@ -46,14 +49,23 @@ export const BINGO_RULES = {
   tileCount: 16,
   lineCount: 10,
   lineLength: 4,
-  lineBonus: 500,
-  fullBingoBonus: 2000,
-  correctBaseScore: 100,
-  streakScore: 20,
+  victoryLineCount: 4,
+  timeLimitSeconds: 300,
+  correctBaseScore: 10,
+  incorrectPenalty: 5,
+  lineBonus: 50,
+  streakScore: 0,
+  maxTimeBonus: 300,
+  timeBonusPerSecond: 1,
 } as const;
 
 export function isBoardComplete(boardTiles: readonly BingoTile[]): boolean {
   return boardTiles.length === BINGO_RULES.tileCount && boardTiles.every((tile) => tile.isMarked);
+}
+
+export function calculateTimeBonus(secondsElapsed: number): number {
+  const remaining = Math.max(0, BINGO_RULES.timeLimitSeconds - Math.floor(secondsElapsed));
+  return Math.min(BINGO_RULES.maxTimeBonus, remaining * BINGO_RULES.timeBonusPerSecond);
 }
 
 export function validateBingoContent(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): string[] {
@@ -118,7 +130,7 @@ export function calculateAccuracy(correctAnswers: number, questionsAnswered: num
 }
 
 export function formatBingoTimer(seconds: number): string {
-  const safeSeconds = Math.max(0, Math.floor(seconds));
+  const safeSeconds = Math.max(0, Math.min(BINGO_RULES.timeLimitSeconds, Math.floor(seconds)));
   const minutes = Math.floor(safeSeconds / 60);
   const remainingSeconds = safeSeconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
@@ -128,22 +140,23 @@ export function getInitialBingoState(boardTiles: BingoTile[], leaderboard: Leade
   return {
     boardTiles, soundEnabled: true, hostMode: "player", activeQuestion: null, selectedOption: null,
     isAnswerChecked: false, isCorrect: null, hostEmotion: "idle", phase: "ready", score: 0, streak: 0,
-    questionsAnswered: 0, correctAnswers: 0, secondsElapsed: 0, showBingoBanner: false, isFullBingo: false,
-    inspectTile: null, teamName: "ทีมนักวิจัยน้อย สบปราบ", isSavedToLeaderboard: false, leaderboard,
+    questionsAnswered: 0, correctAnswers: 0, secondsElapsed: 0, timeBonus: 0, showBingoBanner: false,
+    isFullBingo: false, isGameOver: false, isTimeUp: false, inspectTile: null,
+    teamName: "ทีมนักวิจัยน้อย สบปราบ", isSavedToLeaderboard: false, leaderboard,
   };
 }
 
 export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): LacBingoState {
   switch (action.type) {
     case "draw_question": {
-      if (state.isFullBingo || state.activeQuestion) return state;
+      if (state.isGameOver || state.activeQuestion) return state;
       const targetTile = state.boardTiles.find((tile) => tile.id === action.question.targetKeywordId);
       if (!targetTile || targetTile.isMarked) return state;
       return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
     }
-    case "select_option": return state.isAnswerChecked || state.isFullBingo || !state.activeQuestion ? state : { ...state, selectedOption: action.optionIndex };
+    case "select_option": return state.isAnswerChecked || state.isGameOver || !state.activeQuestion ? state : { ...state, selectedOption: action.optionIndex };
     case "submit_answer": {
-      if (!state.activeQuestion || state.isAnswerChecked || state.isFullBingo) return state;
+      if (!state.activeQuestion || state.isAnswerChecked || state.isGameOver) return state;
       const targetTile = state.boardTiles.find((tile) => tile.id === state.activeQuestion.targetKeywordId);
       if (!targetTile || targetTile.isMarked) return { ...state, activeQuestion: null, selectedOption: null, phase: "ready" };
       const selectedOption = action.optionIndex ?? state.selectedOption;
@@ -155,7 +168,6 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       let nextBoard = state.boardTiles;
       let nextScore = state.score;
       let showBingoBanner = false;
-      let isFullBingo = state.isFullBingo;
       if (isCorrect) {
         const targetId = state.activeQuestion.targetKeywordId;
         nextBoard = state.boardTiles.map((tile) => tile.id === targetId ? { ...tile, isMarked: true, isHighlighted: true } : tile);
@@ -164,20 +176,50 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
         const afterLines = calculateWinningLines(nextBoard);
         const newLines = Math.max(0, afterLines.length - beforeLines.length);
         if (newLines > 0) { nextScore += newLines * BINGO_RULES.lineBonus; showBingoBanner = true; }
-        isFullBingo = isBoardComplete(nextBoard);
-        if (isFullBingo && !state.isFullBingo) nextScore += BINGO_RULES.fullBingoBonus;
+      } else {
+        nextScore = Math.max(0, nextScore - BINGO_RULES.incorrectPenalty);
       }
-      return { ...state, boardTiles: nextBoard, score: nextScore, streak: nextStreak, questionsAnswered: nextQuestionsAnswered, correctAnswers: nextCorrectAnswers, selectedOption, isAnswerChecked: true, isCorrect, hostEmotion: isCorrect ? "happy" : "concerned", showBingoBanner: showBingoBanner || state.showBingoBanner, isFullBingo, phase: isFullBingo ? "victory" : showBingoBanner ? "bingo" : "answer-result" };
+      const afterLines = calculateWinningLines(nextBoard);
+      const completedBoard = isBoardComplete(nextBoard);
+      const reachedLineGoal = afterLines.length >= BINGO_RULES.victoryLineCount;
+      const isGameOver = completedBoard || reachedLineGoal;
+      const timeBonus = isGameOver ? calculateTimeBonus(state.secondsElapsed) : state.timeBonus;
+      if (isGameOver) nextScore += timeBonus;
+      return {
+        ...state,
+        boardTiles: nextBoard,
+        score: nextScore,
+        streak: nextStreak,
+        questionsAnswered: nextQuestionsAnswered,
+        correctAnswers: nextCorrectAnswers,
+        selectedOption,
+        isAnswerChecked: true,
+        isCorrect,
+        hostEmotion: isCorrect ? "happy" : "concerned",
+        showBingoBanner: showBingoBanner || state.showBingoBanner,
+        isFullBingo: completedBoard,
+        isGameOver,
+        isTimeUp: false,
+        timeBonus,
+        phase: isGameOver ? "victory" : showBingoBanner ? "bingo" : "answer-result",
+      };
     }
-    case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isFullBingo ? "victory" : "ready" };
+    case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isGameOver ? "victory" : "ready" };
     case "set_sound_enabled": return { ...state, soundEnabled: action.enabled };
     case "set_host_mode": return { ...state, hostMode: action.mode };
     case "inspect_tile": return { ...state, inspectTile: action.tile };
     case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
-    case "tick": return state.isFullBingo ? state : { ...state, secondsElapsed: state.secondsElapsed + Math.max(0, action.seconds ?? 1) };
+    case "tick": {
+      if (state.isGameOver) return state;
+      const nextSeconds = Math.min(BINGO_RULES.timeLimitSeconds, state.secondsElapsed + Math.max(0, action.seconds ?? 1));
+      if (nextSeconds >= BINGO_RULES.timeLimitSeconds) {
+        return { ...state, secondsElapsed: BINGO_RULES.timeLimitSeconds, timeBonus: 0, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, isGameOver: true, isTimeUp: true, phase: "victory", hostEmotion: "concerned" };
+      }
+      return { ...state, secondsElapsed: nextSeconds };
+    }
     case "set_team_name": return { ...state, teamName: action.teamName.replace(/\s+/g, " ").trim().slice(0, 60) };
-    case "save_score": return state.isSavedToLeaderboard ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
-    case "hide_bingo_banner": return { ...state, showBingoBanner: false, phase: state.isFullBingo ? "victory" : state.isAnswerChecked ? "answer-result" : "ready" };
+    case "save_score": return state.isSavedToLeaderboard || !state.isGameOver ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
+    case "hide_bingo_banner": return { ...state, showBingoBanner: false, phase: state.isGameOver ? "victory" : state.isAnswerChecked ? "answer-result" : "ready" };
     case "reset": return getInitialBingoState(action.boardTiles, state.leaderboard);
     default: return state;
   }
