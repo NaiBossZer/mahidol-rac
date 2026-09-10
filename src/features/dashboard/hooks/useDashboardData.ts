@@ -3,7 +3,7 @@ import { QUESTION_MAP } from "../data/questionMap";
 import type { SurveyResponse, ScoreItem } from "../types";
 import { supabase } from "@/lib/supabase";
 
-type ActivityOption = { id: string; title: string; date: string; category: string | null; cover_image: string | null };
+type ActivityOption = { id: string; title: string; activity_date: string; category: string | null; featured_image: string | null; status: "draft" | "published" | "archived" };
 
 const parseNum = (value: unknown) => {
   const number = Number(value);
@@ -38,7 +38,7 @@ export function useDashboardData() {
 
       const [responseResult, activityResult] = await Promise.all([
         supabase.from("survey_responses").select("*").order("submitted_at", { ascending: false }),
-        supabase.from("activities").select("id,title,date,category,cover_image").order("date", { ascending: false }),
+        supabase.from("activities").select("id,title,activity_date,category,featured_image,status").order("activity_date", { ascending: false }),
       ]);
 
       if (responseResult.error) throw responseResult.error;
@@ -46,9 +46,7 @@ export function useDashboardData() {
       setData((responseResult.data ?? []).map((row) => mapSurveyRow(row as Record<string, unknown>)));
       setActivities((activityResult.data ?? []) as ActivityOption[]);
       const now = new Date();
-      setLastUpdated(
-        `${now.getDate()} ${now.toLocaleString("th-TH", { month: "short" })} ${now.getFullYear() + 543} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
-      );
+      setLastUpdated(`${now.getDate()} ${now.toLocaleString("th-TH", { month: "short" })} ${now.getFullYear() + 543} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`);
     } catch (error) {
       console.error("Failed to load satisfaction dashboard from Supabase", error);
       setErrorMsg("ไม่สามารถดึงข้อมูลจาก Supabase ได้ กรุณาตรวจสอบสิทธิ์ Admin และกด Refresh อีกครั้ง");
@@ -64,63 +62,46 @@ export function useDashboardData() {
   const activityMap = useMemo(() => new Map(activities.map((activity) => [activity.id, activity])), [activities]);
   const selectedActivityInfo = selectedActivity === "ALL" ? null : activityMap.get(selectedActivity) || null;
 
-  const availableYears = useMemo(
-    () => Array.from(new Set(data.flatMap((item) => {
-      const date = item.timestamp ? new Date(item.timestamp) : null;
-      return date && !Number.isNaN(date.getTime()) ? [String(date.getFullYear())] : [];
-    }))).sort((a, b) => Number(b) - Number(a)), [data],
-  );
+  const availableYears = useMemo(() => Array.from(new Set(data.flatMap((item) => {
+    const date = item.timestamp ? new Date(item.timestamp) : null;
+    return date && !Number.isNaN(date.getTime()) ? [String(date.getFullYear())] : [];
+  }))).sort((a, b) => Number(b) - Number(a)), [data]);
 
-  const availableMonths = useMemo(
-    () => Array.from(new Set(data.flatMap((item) => {
-      const date = item.timestamp ? new Date(item.timestamp) : null;
-      return date && !Number.isNaN(date.getTime()) && (selectedYear === "ALL" || String(date.getFullYear()) === selectedYear) ? [date.getMonth()] : [];
-    }))).sort((a, b) => a - b), [data, selectedYear],
-  );
+  const availableMonths = useMemo(() => Array.from(new Set(data.flatMap((item) => {
+    const date = item.timestamp ? new Date(item.timestamp) : null;
+    return date && !Number.isNaN(date.getTime()) && (selectedYear === "ALL" || String(date.getFullYear()) === selectedYear) ? [date.getMonth()] : [];
+  }))).sort((a, b) => a - b), [data, selectedYear]);
 
   const ageGroupList = useMemo(() => Array.from(new Set(data.map((item) => item.ageGroup?.trim()).filter(Boolean))) as string[], [data]);
   const affiliationsList = useMemo(() => Array.from(new Set(data.map((item) => item.affiliation?.trim() || "ไม่ระบุ"))), [data]);
 
-  const filteredData = useMemo(
-    () => data.filter((item) => {
-      if (selectedActivity !== "ALL" && String(item.activity_id || "") !== selectedActivity) return false;
-      const date = item.timestamp ? new Date(item.timestamp) : null;
-      if (date && !Number.isNaN(date.getTime())) {
-        if (selectedYear !== "ALL" && String(date.getFullYear()) !== selectedYear) return false;
-        if (selectedMonth !== "ALL" && String(date.getMonth()) !== selectedMonth) return false;
-      }
-      if (selectedAge !== "ALL" && (item.ageGroup?.trim() || "") !== selectedAge) return false;
-      return selectedAffiliation === "ALL" || (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation;
-    }),
-    [data, selectedActivity, selectedYear, selectedMonth, selectedAge, selectedAffiliation],
-  );
+  const filteredData = useMemo(() => data.filter((item) => {
+    if (selectedActivity !== "ALL" && String(item.activity_id || "") !== selectedActivity) return false;
+    const date = item.timestamp ? new Date(item.timestamp) : null;
+    if (date && !Number.isNaN(date.getTime())) {
+      if (selectedYear !== "ALL" && String(date.getFullYear()) !== selectedYear) return false;
+      if (selectedMonth !== "ALL" && String(date.getMonth()) !== selectedMonth) return false;
+    }
+    if (selectedAge !== "ALL" && (item.ageGroup?.trim() || "") !== selectedAge) return false;
+    return selectedAffiliation === "ALL" || (item.affiliation?.trim() || "ไม่ระบุ") === selectedAffiliation;
+  }), [data, selectedActivity, selectedYear, selectedMonth, selectedAge, selectedAffiliation]);
 
-  const itemScores = useMemo<ScoreItem[]>(
-    () => Object.entries(QUESTION_MAP).map(([key, info]) => {
-      let sum = 0; let count = 0;
-      filteredData.forEach((item) => { const value = parseNum(item[key]); if (value > 0) { sum += value; count++; } });
-      return { key, title: info.title, category: info.category, avg: count ? Number((sum / count).toFixed(2)) : 0 };
-    }), [filteredData],
-  );
+  const itemScores = useMemo<ScoreItem[]>(() => Object.entries(QUESTION_MAP).map(([key, info]) => {
+    let sum = 0; let count = 0;
+    filteredData.forEach((item) => { const value = parseNum(item[key]); if (value > 0) { sum += value; count++; } });
+    return { key, title: info.title, category: info.category, avg: count ? Number((sum / count).toFixed(2)) : 0 };
+  }), [filteredData]);
 
   const categoryGroupedScores = useMemo(() => {
     const groups: Record<string, { category: string; items: ScoreItem[] }> = {};
     itemScores.forEach((item) => { (groups[item.category] ??= { category: item.category, items: [] }).items.push(item); });
-    return Object.values(groups).map((group) => ({
-      ...group,
-      avg: group.items.length ? Number((group.items.reduce((sum, item) => sum + item.avg, 0) / group.items.length).toFixed(2)) : 0,
-      items: [...group.items].sort((a, b) => b.avg - a.avg),
-    })).sort((a, b) => b.avg - a.avg);
+    return Object.values(groups).map((group) => ({ ...group, avg: group.items.length ? Number((group.items.reduce((sum, item) => sum + item.avg, 0) / group.items.length).toFixed(2)) : 0, items: [...group.items].sort((a, b) => b.avg - a.avg) })).sort((a, b) => b.avg - a.avg);
   }, [itemScores]);
 
   const cardMetrics = useMemo(() => {
     if (!itemScores.length || !filteredData.length) return null;
     const sorted = [...itemScores].sort((a, b) => b.avg - a.avg);
-    return {
-      highest: sorted[0]!, lowest: sorted.at(-1)!,
-      grandAvgPercent: Math.round((itemScores.reduce((sum, item) => sum + item.avg, 0) / itemScores.length / 5) * 100),
-      totalQuestions: itemScores.length,
-    };
+    return { highest: sorted[0]!, lowest: sorted.at(-1)!, grandAvgPercent: Math.round((itemScores.reduce((sum, item) => sum + item.avg, 0) / itemScores.length / 5) * 100), totalQuestions: itemScores.length };
   }, [itemScores, filteredData]);
 
   const affiliationBreakdown = useMemo(() => {
@@ -149,11 +130,5 @@ export function useDashboardData() {
 
   const resetFilters = () => { setSelectedActivity("ALL"); setSelectedYear("ALL"); setSelectedMonth("ALL"); setSelectedAge("ALL"); setSelectedAffiliation("ALL"); };
 
-  return {
-    data, activities, activityMap, selectedActivityInfo, loading, errorMsg, lastUpdated, fetchData,
-    availableYears, availableMonths, ageGroupList, affiliationsList, filteredData, itemScores,
-    categoryGroupedScores, cardMetrics, affiliationBreakdown, feedbackAnalysis, selectedActivity,
-    selectedYear, selectedMonth, selectedAge, selectedAffiliation, setSelectedActivity, setSelectedYear,
-    setSelectedMonth, setSelectedAge, setSelectedAffiliation, resetFilters,
-  };
+  return { data, activities, activityMap, selectedActivityInfo, loading, errorMsg, lastUpdated, fetchData, availableYears, availableMonths, ageGroupList, affiliationsList, filteredData, itemScores, categoryGroupedScores, cardMetrics, affiliationBreakdown, feedbackAnalysis, selectedActivity, selectedYear, selectedMonth, selectedAge, selectedAffiliation, setSelectedActivity, setSelectedYear, setSelectedMonth, setSelectedAge, setSelectedAffiliation, resetFilters };
 }
