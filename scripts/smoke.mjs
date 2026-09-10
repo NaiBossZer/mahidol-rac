@@ -1,30 +1,16 @@
 import { existsSync, readFileSync } from "node:fs";
 
 const files = [
-  "index.html",
-  "src/main.tsx",
-  "vite.config.ts",
-  "package.json",
-  "src/features/bingo/LacBingoGame.tsx",
-  "src/features/bingo/BingoPage.tsx",
-  "src/features/bingo/engine/LacBingoEngine.ts",
-  "src/features/bingo/engine/useLacBingoEngine.ts",
-  "src/features/bingo/questionDeck.ts",
-  "src/features/bingo/bingoKeywords.ts",
-  "src/features/bingo/components/MGuidePopup.tsx",
-  "src/features/bingo/components/BingoVictoryOverlay.tsx",
-  "src/features/bingo/components/BingoRallyPanel.tsx",
-  "src/features/bingo/components/BingoWinningLines.tsx",
-  "src/features/bingo/components/BingoConfetti.tsx",
-  "src/features/bingo/components/BingoTileCard.tsx",
+  "index.html", "src/main.tsx", "vite.config.ts", "package.json",
+  "src/features/bingo/LacBingoGame.tsx", "src/features/bingo/BingoPage.tsx",
+  "src/features/bingo/engine/LacBingoEngine.ts", "src/features/bingo/engine/useLacBingoEngine.ts",
+  "src/features/bingo/questionDeck.ts", "src/features/bingo/bingoKeywords.ts",
+  "src/features/bingo/components/MGuidePopup.tsx", "src/features/bingo/components/BingoVictoryOverlay.tsx",
+  "src/features/bingo/components/BingoRallyPanel.tsx", "src/features/bingo/components/BingoWinningLines.tsx",
+  "src/features/bingo/components/BingoConfetti.tsx", "src/features/bingo/components/BingoTileCard.tsx",
 ];
 let failed = 0;
-
-function check(label, condition) {
-  console.log(`${condition ? "PASS" : "FAIL"} ${label}`);
-  if (!condition) failed++;
-}
-
+function check(label, condition) { console.log(`${condition ? "PASS" : "FAIL"} ${label}`); if (!condition) failed++; }
 for (const file of files) check(file, existsSync(file));
 
 const packageText = readFileSync("package.json", "utf8");
@@ -70,6 +56,8 @@ check("question deck keeps one question per tile", questionTargets.length === ke
 check("question modal has Escape handling", mGuidePopup.includes('e.key === "Escape"'));
 check("question modal locks background scroll", mGuidePopup.includes('document.body.style.overflow = "hidden"'));
 check("question modal announces answer feedback", mGuidePopup.includes('aria-live="polite"'));
+check("question modal uses correct/wrong sounds", mGuidePopup.includes('playChime(isCorrect ? "correct" : "wrong")'));
+check("question modal copy matches +10/-5 rules", mGuidePopup.includes("ตอบถูก +10 คะแนน · ตอบผิด −5 คะแนน"));
 check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
 check("victory overlay supports timeout result", victoryOverlay.includes("isTimeUp") && victoryOverlay.includes("TIME LIMIT REACHED"));
 check("Rally exposes 8 exhibition points", (rallyPanel.match(/id: "/g) || []).length === 8);
