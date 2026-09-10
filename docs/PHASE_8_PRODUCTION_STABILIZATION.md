@@ -2,26 +2,29 @@
 
 ## Scope
 
-Phase 8 stabilizes Mahidol RAC after the Phase 7 central-admin handoff. The goal is to keep RAC focused on public learning, activity presentation, survey submission, and executive read-only analysis while administration remains in Mahidol Lampang Portal.
+Phase 8 stabilizes Mahidol RAC after the Phase 7 central-admin handoff. RAC remains focused on public learning, activity presentation, survey submission, and executive read-only analysis while administration remains in Mahidol Lampang Portal.
 
-## 8.1 Code and architecture audit
+## Completed implementation
+
+### 8.1 Code and architecture audit
 
 - Central activity identity remains `public.activities.id`.
 - RAC consumes canonical activity fields: `activity_date`, `featured_image`, `status`.
 - RAC no longer writes activity content from its browser UI.
-- RAC admin routes are removed from the application route table and `/admin/*` is redirected to `/login`.
-- A source-level Phase 8 audit is enforced in CI.
+- RAC admin implementations for activity management, satisfaction administration, and survey export were removed.
+- `/admin/*` is no longer an RAC feature route and is redirected to `/login`.
+- A source-level Phase 8 architecture/security audit is enforced in CI.
 
-## 8.2 Supabase boundary
+### 8.2 Supabase boundary
 
-- Browser client uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` only.
-- Survey submissions use `public.survey_responses` directly under Supabase RLS.
-- Satisfaction analytics remain read-only application functionality; administration is owned by Portal.
+- Browser client uses public Supabase configuration only.
+- Survey submissions use `public.survey_responses` under Supabase RLS.
+- Satisfaction administration remains owned by Portal.
 - No Supabase service-role/database credential is permitted in RAC browser source.
 
-## 8.3 Canonical activity schema
+### 8.3 Canonical activity schema
 
-RAC presentation code now uses a typed model backed by:
+The shared central Supabase project was verified and migrated from the legacy activity columns to:
 
 - `activities.id`
 - `activities.title`
@@ -31,52 +34,59 @@ RAC presentation code now uses a typed model backed by:
 - `activities.images`
 - `activities.status`
 
-The old `date` / `cover_image` activity contract is no longer used by active RAC application code.
+The live database now reports `activity_date` and `featured_image`; the legacy `date` and `cover_image` columns are absent.
 
-## 8.4 Survey persistence
+### 8.4 Survey persistence
 
-The legacy Google Apps Script transport has been removed from the active survey flow. The survey now builds a validated submission payload and calls the central Supabase repository directly.
+The active survey flow no longer uses Google Apps Script. It validates the activity context and required respondent/rating fields, then submits directly to the central Supabase repository.
 
-The survey requires:
+The database enforces that public submissions have PDPA consent and belong to a published, survey-enabled activity within the configured survey window.
 
-- activity context from `?activity=<UUID>`
-- PDPA consent
-- required respondent fields
-- all Likert ratings
+### 8.5 Admin boundary
 
-Database errors return a user-visible failure state instead of treating a `no-cors` request as successful.
-
-## 8.5 Admin boundary
-
-The RAC application no longer exposes activity-management, satisfaction-admin, or CSV-export admin pages. The intended administrator flow is:
+The intended administrator flow is:
 
 `Portal /login → Portal /admin/lac-satisfaction → RAC /survey?activity=<UUID>`
 
-## 8.6 Quality gate
+There is no second RAC admin password or browser service-role credential.
 
-`.github/workflows/phase-7-quality.yml` is now the Phase 8 Quality Gate and runs:
+### 8.6 Quality gate
 
-1. lockfile synchronization
-2. clean dependency installation
-3. Phase 8 architecture/security audit
-4. ESLint
-5. production build
-6. smoke tests
+`.github/workflows/phase-7-quality.yml` is now the Phase 8 Quality Gate and runs lockfile synchronization, clean dependency installation, architecture/security audit, ESLint, production build, and smoke tests.
 
-## 8.7 Deployment note
+## Live Supabase verification
 
-Vercel has previously reported a build-rate-limit status for this repository. That is an infrastructure/plan limitation and is not treated as a code-quality pass or fail.
+The shared Supabase project was checked after the Phase 8 migration:
 
-Production is considered verified only when the Phase 8 GitHub quality gate is green and the deployed RAC public routes are manually smoke-tested.
+- Project status: `ACTIVE_HEALTHY`.
+- Applied migration: `canonical_activity_schema_phase_8`.
+- `activities` has `activity_date` and `featured_image`.
+- `activities` no longer has `date` or `cover_image`.
+- Public activity reads are restricted to `status = 'published'`.
+- Public survey inserts are restricted by PDPA consent and activity survey-window rules.
+- No published activities currently exist in the live database, so public activity/survey testing requires an administrator to publish an activity first.
+
+## Security findings
+
+Supabase security advisors no longer report the activity trigger's mutable search-path warning after the Phase 8 hardening migration.
+
+The shared central project still reports pre-existing warnings for several `SECURITY DEFINER` RPC functions and for leaked-password protection being disabled. These functions belong to the shared Facility/Safety platform and were not changed as part of RAC Phase 8 because changing their execution model could break other domain workflows. They should be handled in the central security-hardening phase.
+
+## Deployment status
+
+Vercel has reported a build-rate-limit status for this repository. This is an infrastructure/plan limitation and is not evidence of a source-code build failure.
+
+The Phase 8 implementation is complete. Final production sign-off remains conditional on a green GitHub Quality Gate and a successful Vercel deployment/public-route smoke test.
 
 ## Exit criteria
 
 - [x] RAC admin boundary handed to Portal
 - [x] Canonical activity schema adopted by active application code
-- [x] Legacy Apps Script survey transport removed
+- [x] Legacy Apps Script survey transport removed from active flow
 - [x] Legacy RAC admin route implementations removed
 - [x] Browser service-role credential guard added to CI audit
 - [x] Phase 8 quality workflow added
+- [x] Central Supabase activity schema/RLS verified live
+- [x] Activity trigger search path hardened
 - [ ] Latest Phase 8 CI run green
-- [ ] Central Supabase production schema/RLS independently verified against the live project
 - [ ] Vercel production deployment verified without build-rate-limit blockage
