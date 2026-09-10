@@ -15,22 +15,15 @@ comment on column public.activities.survey_open_at is 'Optional opening timestam
 comment on column public.activities.survey_close_at is 'Optional closing timestamp for the activity satisfaction survey.';
 comment on column public.activities.survey_welcome_text is 'Optional activity-specific welcome text shown before the satisfaction survey.';
 
--- Public survey submission remains governed by survey_responses RLS.
--- This policy only exposes the minimum activity fields needed to render a survey link.
+-- Keep public activity browsing independent from survey availability.
 drop policy if exists "public can read published activities" on public.activities;
 create policy "public can read published activities"
   on public.activities
   for select
   to anon, authenticated
-  using (
-    status = 'published'
-    and (
-      survey_enabled = true
-      or survey_enabled is null
-    )
-  );
+  using (status = 'published');
 
--- Admin users retain full activity control through the existing role model.
+-- Admin users retain activity control through the same role model used by AuthProvider.
 drop policy if exists "admins can manage activities" on public.activities;
 create policy "admins can manage activities"
   on public.activities
