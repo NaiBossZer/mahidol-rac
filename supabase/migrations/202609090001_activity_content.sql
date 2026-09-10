@@ -1,10 +1,10 @@
 -- ============================================================
--- Activity Content schema
--- NOTE: The canonical Supabase project is the Facility-Safety
--- project (rdnbodadxvvykfrxmeqn). This migration is kept here
--- only as a schema reference for the Mahidol RAC application.
--- Apply the canonical shared migration from Facility-Safety to
--- the central project instead of creating a separate project.
+-- Mahidol RAC activity schema reference
+-- ============================================================
+-- The canonical Supabase project is the shared Facility-Safety
+-- project. Activity administration is owned by Mahidol Lampang
+-- Portal. This file documents the canonical shape for reference;
+-- production schema changes must be applied in the central DB.
 -- ============================================================
 
 create extension if not exists pgcrypto;
@@ -12,21 +12,21 @@ create extension if not exists pgcrypto;
 create table if not exists public.activities (
   id uuid primary key default gen_random_uuid(),
   title text not null,
-  date date not null,
+  activity_date date not null,
   category text,
-  cover_image text,
+  featured_image text,
   images jsonb not null default '[]'::jsonb,
   objective text not null default '',
   key_activities jsonb not null default '[]'::jsonb,
   outcomes text not null default '',
   participants text not null default '',
-  status text not null default 'draft' check (status in ('draft', 'published')),
+  status text not null default 'draft' check (status in ('draft', 'published', 'archived')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-create index if not exists activities_status_date_idx
-  on public.activities (status, date desc);
+create index if not exists activities_status_activity_date_idx
+  on public.activities (status, activity_date desc);
 
 create or replace function public.set_activities_updated_at()
 returns trigger
@@ -52,13 +52,8 @@ for select
 to anon, authenticated
 using (status = 'published');
 
-drop policy if exists "authenticated users manage activities" on public.activities;
-create policy "authenticated users manage activities"
-on public.activities
-for all
-to authenticated
-using (true)
-with check (true);
+-- Administrative writes are intentionally not granted here to RAC.
+-- Portal/server-side admin owns activity mutations in the central system.
 
 insert into storage.buckets (id, name, public)
 values ('activity-images', 'activity-images', true)
@@ -69,26 +64,4 @@ create policy "public can view activity images"
 on storage.objects
 for select
 to anon, authenticated
-using (bucket_id = 'activity-images');
-
-drop policy if exists "authenticated can upload activity images" on storage.objects;
-create policy "authenticated can upload activity images"
-on storage.objects
-for insert
-to authenticated
-with check (bucket_id = 'activity-images');
-
-drop policy if exists "authenticated can update activity images" on storage.objects;
-create policy "authenticated can update activity images"
-on storage.objects
-for update
-to authenticated
-using (bucket_id = 'activity-images')
-with check (bucket_id = 'activity-images');
-
-drop policy if exists "authenticated can delete activity images" on storage.objects;
-create policy "authenticated can delete activity images"
-on storage.objects
-for delete
-to authenticated
 using (bucket_id = 'activity-images');
