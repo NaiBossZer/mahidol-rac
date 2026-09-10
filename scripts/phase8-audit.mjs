@@ -1,7 +1,8 @@
 import { readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("../src/", import.meta.url);
+const root = fileURLToPath(new URL("../src/", import.meta.url));
 const forbidden = [
   { label: "Google Apps Script endpoint", pattern: /script\.google\.com\/macros\/s\//i },
   { label: "legacy activity column date", pattern: /(?:activities|\.from\(["']activities["']\))[\s\S]{0,180}\bdate\b/i },
@@ -17,8 +18,8 @@ async function walk(dir) {
   const files = [];
   for (const entry of entries) {
     if (entry.name.startsWith(".") || entry.name === "node_modules") continue;
-    const path = join(dir.pathname, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(new URL(`${path}/`)));
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...await walk(path));
     else if (/\.(ts|tsx|js|jsx|mjs)$/.test(entry.name)) files.push(path);
   }
   return files;
@@ -29,7 +30,7 @@ const findings = [];
 for (const file of files) {
   const text = await readFile(file, "utf8");
   for (const rule of forbidden) {
-    if (rule.pattern.test(text)) findings.push(`${file.replace(process.cwd() + "/", "")} -> ${rule.label}`);
+    if (rule.pattern.test(text)) findings.push(`${relative(process.cwd(), file)} -> ${rule.label}`);
   }
 }
 
