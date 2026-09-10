@@ -10,6 +10,8 @@ const files = [
   "src/features/bingo/engine/useLacBingoEngine.ts",
   "src/features/bingo/questionDeck.ts",
   "src/features/bingo/bingoKeywords.ts",
+  "src/features/bingo/components/MGuidePopup.tsx",
+  "src/features/bingo/components/BingoVictoryOverlay.tsx",
 ];
 let failed = 0;
 
@@ -34,6 +36,8 @@ const bingoEngine = readFileSync("src/features/bingo/engine/LacBingoEngine.ts", 
 const bingoHook = readFileSync("src/features/bingo/engine/useLacBingoEngine.ts", "utf8");
 const questionDeck = readFileSync("src/features/bingo/questionDeck.ts", "utf8");
 const keywordPool = readFileSync("src/features/bingo/bingoKeywords.ts", "utf8");
+const mGuidePopup = readFileSync("src/features/bingo/components/MGuidePopup.tsx", "utf8");
+const victoryOverlay = readFileSync("src/features/bingo/components/BingoVictoryOverlay.tsx", "utf8");
 
 const questionTargets = [...questionDeck.matchAll(/targetKeywordId:\s*["']([^"']+)["']/g)].map((m) => m[1]);
 const keywordIds = [...keywordPool.matchAll(/id:\s*["']([^"']+)["']/g)].map((m) => m[1]);
@@ -49,6 +53,11 @@ check("engine blocks marked-target questions", bingoEngine.includes("if (!target
 check("engine stops timer at victory", bingoEngine.includes("case \"tick\": return state.isFullBingo ? state"));
 check("hook prevents leaderboard save before victory", bingoHook.includes("if (!state.isFullBingo || state.isSavedToLeaderboard"));
 check("question deck keeps one question per tile", questionTargets.length === keywordIds.length && uniqueTargets.size === uniqueKeywords.size);
+check("question modal has Escape handling", mGuidePopup.includes('e.key === "Escape"'));
+check("question modal locks background scroll", mGuidePopup.includes('document.body.style.overflow = "hidden"'));
+check("question modal announces answer feedback", mGuidePopup.includes('aria-live="polite"'));
+check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
+check("victory overlay supports keyboard replay", victoryOverlay.includes('e.key === "Escape"'));
 
 console.log(`Smoke test: ${failed ? "FAIL" : "PASS"}`);
 process.exitCode = failed ? 1 : 0;
