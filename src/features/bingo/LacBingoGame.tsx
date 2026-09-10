@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { Award, CheckCircle2, Clock, Dices, Layers, RefreshCw, Sparkles, Star, Trophy, Tv, Volume2, VolumeX } from "lucide-react";
+import { Award, CheckCircle2, Clock, Dices, Layers, RefreshCw, Sparkles, Trophy, Tv, Volume2, VolumeX } from "lucide-react";
 import type { BingoTile } from "@/types/bingo";
 import { playChime } from "@/features/bingo/soundEngine";
 import { BingoConfetti } from "@/features/bingo/components/BingoConfetti";
@@ -55,7 +55,6 @@ export const LacBingoGame: React.FC = () => {
   return (
     <div className="h-full min-h-0 w-full overflow-hidden font-['Mitr',sans-serif] text-slate-800">
       <BingoConfetti active={state.showBingoBanner || state.isFullBingo} />
-
       <header className="mb-2 rounded-2xl border border-rac-lac/15 bg-white px-3 py-2 shadow-sm sm:px-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2.5">
@@ -79,39 +78,27 @@ export const LacBingoGame: React.FC = () => {
         </div>
       </header>
 
-      {state.showBingoBanner && !state.isFullBingo && (
-        <div role="status" aria-live="polite" className="mb-2 flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs">
-          <span className="font-bold text-amber-900">🎉 BINGO! {completedLines.at(-1)?.label ?? ""}</span><span className="text-amber-700">+500 โบนัสสาย</span><button onClick={actions.hideBingoBanner} className="rounded-lg bg-rac-lac px-2.5 py-1 text-[10px] font-bold text-white">เล่นต่อ</button>
-        </div>
-      )}
+      {state.showBingoBanner && !state.isFullBingo && <div role="status" aria-live="polite" className="mb-2 flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs"><span className="font-bold text-amber-900">🎉 BINGO! {completedLines.at(-1)?.label ?? ""}</span><span className="text-amber-700">+500 โบนัสสาย</span><button onClick={actions.hideBingoBanner} className="rounded-lg bg-rac-lac px-2.5 py-1 text-[10px] font-bold text-white">เล่นต่อ</button></div>}
 
       <main className="grid h-[calc(100%-86px)] min-h-0 grid-cols-1 gap-2 lg:grid-cols-12">
         <section className="flex min-h-0 flex-col gap-2 lg:col-span-8">
           <div className="min-h-0 flex-1 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm sm:p-3">
             <div className="mb-2 flex items-center justify-between"><h2 className="flex items-center gap-1.5 text-xs font-bold text-slate-800 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-rac-lac" />ตารางบิงโก 4×4</h2><span className="text-[10px] text-slate-500">มาร์กแล้ว {state.boardTiles.filter((tile) => tile.isMarked).length}/16</span></div>
-            <div className="grid h-[calc(100%-28px)] grid-cols-4 grid-rows-4 gap-1.5 sm:gap-2">
-              {state.boardTiles.map((tile, idx) => <BingoTileCard key={tile.id} tile={tile} index={idx} isInWinningLine={winningIndices.has(idx)} onClick={handleTileClick} />)}
-            </div>
+            <div className="grid h-[calc(100%-28px)] grid-cols-4 grid-rows-4 gap-1.5 sm:gap-2">{state.boardTiles.map((tile, idx) => <BingoTileCard key={tile.id} tile={tile} index={idx} isInWinningLine={winningIndices.has(idx)} onClick={handleTileClick} />)}</div>
           </div>
-          <div className="h-[132px] min-h-[132px] lg:h-[142px] lg:min-h-[142px]">
-            <BingoRallyPanel boardTiles={state.boardTiles} activeQuestionId={state.activeQuestion?.targetKeywordId ?? null} isFullBingo={state.isFullBingo} onScanPoint={handleRallyScan} />
-          </div>
+          <div className="h-[132px] min-h-[132px] lg:h-[142px] lg:min-h-[142px]"><BingoRallyPanel boardTiles={state.boardTiles} activeQuestionId={state.activeQuestion?.targetKeywordId ?? null} isFullBingo={state.isFullBingo} onScanPoint={handleRallyScan} /></div>
         </section>
 
         <aside className="grid min-h-0 grid-cols-1 gap-2 lg:col-span-4 lg:grid-rows-[1fr_1fr]">
           <div className="relative min-h-0 overflow-hidden rounded-2xl bg-gradient-to-br from-rac-blue-light via-rac-blue to-rac-lac p-3 text-white shadow-lg">
             <div className="flex items-center justify-between"><span className="text-[9px] font-bold uppercase tracking-wider text-amber-300">M-GUIDE ON STAGE</span><span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[9px]">สบปราบ</span></div>
-            <div className="flex h-[calc(100%-42px)] items-center gap-3">
-              <img src={`/assets/characters/prof-mahidol/${state.hostEmotion}.svg`} alt="พี่ M-Guide" className="h-28 w-24 shrink-0 object-contain sm:h-32 sm:w-28" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-              <div className="min-w-0"><h3 className="text-sm font-bold">พี่ M-Guide</h3><p className="mt-0.5 text-[9px] text-amber-200">พิธีกรภารกิจตามรอยนิทรรศการ</p><p className="mt-2 rounded-xl border border-white/15 bg-white/10 p-2 text-[10px] leading-relaxed text-slate-200">{completedLines.length > 0 ? `เก่งมากครับ! ได้ ${completedLines.length} สายบิงโกแล้ว` : state.streak > 1 ? `ตอบถูกต่อเนื่อง ${state.streak} ข้อ!` : "สแกน QR ตามจุดนิทรรศการ แล้วตอบคำถามครับ"}</p><button onClick={handleDrawQuestion} disabled={isPopupOpen || state.isFullBingo} className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-rac-gold py-2 text-[10px] font-bold text-rac-blue-light disabled:bg-slate-400"><Dices className="h-3.5 w-3.5" />จับการ์ดคำถาม</button></div>
-            </div>
+            <div className="flex h-[calc(100%-42px)] items-center gap-3"><img src={`/assets/characters/prof-mahidol/${state.hostEmotion}.svg`} alt="พี่ M-Guide" className="h-28 w-24 shrink-0 object-contain sm:h-32 sm:w-28" onError={(e) => { e.currentTarget.style.display = "none"; }} /><div className="min-w-0"><h3 className="text-sm font-bold">พี่ M-Guide</h3><p className="mt-0.5 text-[9px] text-amber-200">พิธีกรภารกิจตามรอยนิทรรศการ</p><p className="mt-2 rounded-xl border border-white/15 bg-white/10 p-2 text-[10px] leading-relaxed text-slate-200">{completedLines.length > 0 ? `เก่งมากครับ! ได้ ${completedLines.length} สายบิงโกแล้ว` : state.streak > 1 ? `ตอบถูกต่อเนื่อง ${state.streak} ข้อ!` : "สแกน QR ตามจุดนิทรรศการ แล้วตอบคำถามครับ"}</p><button onClick={handleDrawQuestion} disabled={isPopupOpen || state.isFullBingo} className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-rac-gold py-2 text-[10px] font-bold text-rac-blue-light disabled:bg-slate-400"><Dices className="h-3.5 w-3.5" />จับการ์ดคำถาม</button></div></div>
           </div>
 
           <div className="min-h-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between"><h3 className="flex items-center gap-1.5 text-xs font-bold text-slate-900"><Award className="h-4 w-4 text-rac-lac" />ตารางคะแนน · Top 5</h3><span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-500">LIVE</span></div>
-            <div className="mt-2 grid grid-cols-3 gap-1.5">
-              {state.leaderboard.slice(0, 3).map((entry, idx) => <div key={entry.id} className={`rounded-xl border p-2 text-center ${idx === 0 ? "border-amber-300 bg-amber-50" : "border-slate-200 bg-slate-50"}`}><div className="text-sm">{idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉"}</div><p className="truncate text-[9px] font-bold text-slate-700">{entry.teamName}</p><p className="text-sm font-black text-rac-lac">{entry.score.toLocaleString()}</p><p className="text-[8px] text-slate-400">{entry.lines} สาย · {entry.accuracy}%</p></div>)}
-            </div>
+            <div className="mt-2 flex gap-1.5"><input type="text" value={state.teamName} onChange={(e) => actions.setTeamName(e.target.value)} disabled={state.isSavedToLeaderboard} maxLength={60} aria-label="ชื่อทีม" className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[10px] text-slate-800 outline-none focus:border-rac-lac" placeholder="ชื่อทีมของคุณ" /><button onClick={actions.saveScore} disabled={!state.isFullBingo || state.isSavedToLeaderboard} className="rounded-xl bg-rac-lac px-2.5 py-1.5 text-[10px] font-bold text-white disabled:bg-slate-200 disabled:text-slate-400">{state.isSavedToLeaderboard ? "บันทึกแล้ว" : "บันทึก"}</button></div>
+            <div className="mt-2 grid grid-cols-3 gap-1.5">{state.leaderboard.slice(0, 3).map((entry, idx) => <div key={entry.id} className={`rounded-xl border p-2 text-center ${idx === 0 ? "border-amber-300 bg-amber-50" : "border-slate-200 bg-slate-50"}`}><div className="text-sm">{idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉"}</div><p className="truncate text-[9px] font-bold text-slate-700">{entry.teamName}</p><p className="text-sm font-black text-rac-lac">{entry.score.toLocaleString()}</p><p className="text-[8px] text-slate-400">{entry.lines} สาย · {entry.accuracy}%</p></div>)}</div>
             <div className="mt-2 space-y-1">{state.leaderboard.slice(3, 5).map((entry, idx) => <div key={entry.id} className="flex items-center justify-between rounded-lg bg-slate-50 px-2 py-1.5 text-[9px]"><span className="max-w-[60%] truncate text-slate-600">{idx + 4}. {entry.teamName}</span><span className="font-bold text-rac-lac">{entry.score.toLocaleString()} pt</span></div>)}</div>
             <div className="mt-2 grid grid-cols-3 gap-1.5 rounded-xl bg-slate-900 p-2 text-center text-white"><div><p className="text-[8px] text-slate-400">ทีมของคุณ</p><p className="truncate text-[9px] font-bold">{state.teamName || "ทีมนิรนาม"}</p></div><div><p className="text-[8px] text-slate-400">แม่นยำ</p><p className="text-xs font-bold text-amber-300">{accuracy}%</p></div><div><p className="text-[8px] text-slate-400">สถานะ</p><p className="text-[9px] font-bold text-emerald-300">{state.isFullBingo ? "BINGO!" : "กำลังเล่น"}</p></div></div>
           </div>
