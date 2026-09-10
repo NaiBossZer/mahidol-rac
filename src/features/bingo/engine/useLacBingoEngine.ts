@@ -4,6 +4,7 @@ import { QUESTION_DECK } from "@/features/bingo/questionDeck";
 import type { BingoTile, LeaderboardEntry } from "@/types/bingo";
 import {
   calculateAccuracy,
+  calculateTimeBonus,
   calculateWinningLines,
   createBingoBoard,
   formatBingoTimer,
@@ -15,9 +16,9 @@ import {
 } from "./LacBingoEngine";
 
 const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
-  { id: "1", teamName: "ทีมนิเวศครั่งมหิดล", score: 1850, lines: 4, accuracy: 100, timeSpent: "3:45", date: "วันนี้" },
-  { id: "2", teamName: "กลุ่มวิสาหกิจครั่งสบปราบ", score: 1400, lines: 3, accuracy: 92, timeSpent: "4:12", date: "วันนี้" },
-  { id: "3", teamName: "ชมรมสีย้อมธรรมชาติลำปาง", score: 1100, lines: 2, accuracy: 85, timeSpent: "5:00", date: "เมื่อวาน" },
+  { id: "1", teamName: "ทีมนิเวศครั่งมหิดล", score: 760, lines: 4, accuracy: 100, timeSpent: "2:15", date: "วันนี้" },
+  { id: "2", teamName: "กลุ่มวิสาหกิจครั่งสบปราบ", score: 650, lines: 3, accuracy: 92, timeSpent: "2:48", date: "วันนี้" },
+  { id: "3", teamName: "ชมรมสีย้อมธรรมชาติลำปาง", score: 540, lines: 2, accuracy: 85, timeSpent: "3:20", date: "เมื่อวาน" },
 ];
 
 function createInitialBoard(): BingoTile[] {
@@ -29,10 +30,10 @@ export function useLacBingoEngine() {
   const pendingOptionRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (state.phase === "victory") return;
+    if (state.isGameOver) return;
     const timer = window.setInterval(() => dispatch({ type: "tick" }), 1000);
     return () => window.clearInterval(timer);
-  }, [state.phase]);
+  }, [state.isGameOver]);
 
   useEffect(() => {
     const highlighted = state.boardTiles.filter((tile) => tile.isHighlighted);
@@ -45,24 +46,25 @@ export function useLacBingoEngine() {
   const winningIndices = getWinningIndices(completedLines);
   const accuracy = calculateAccuracy(state.correctAnswers, state.questionsAnswered);
   const formattedTime = formatBingoTimer(state.secondsElapsed);
+  const liveTimeBonus = state.isGameOver ? state.timeBonus : calculateTimeBonus(state.secondsElapsed);
 
   const drawQuestion = useCallback(() => {
-    if (state.activeQuestion || state.isFullBingo) return null;
+    if (state.activeQuestion || state.isGameOver) return null;
     const question = getNextQuestion(state.boardTiles, QUESTION_DECK);
     if (!question) return null;
     dispatch({ type: "draw_question", question });
     return question;
-  }, [state.activeQuestion, state.boardTiles, state.isFullBingo]);
+  }, [state.activeQuestion, state.boardTiles, state.isGameOver]);
 
   const drawQuestionForTile = useCallback((tileId: string) => {
-    if (state.activeQuestion || state.isFullBingo) return null;
+    if (state.activeQuestion || state.isGameOver) return null;
     const tile = state.boardTiles.find((item) => item.id === tileId);
     if (!tile || tile.isMarked) return null;
     const question = QUESTION_DECK.find((item) => item.targetKeywordId === tileId);
     if (!question) return null;
     dispatch({ type: "draw_question", question });
     return question;
-  }, [state.activeQuestion, state.boardTiles, state.isFullBingo]);
+  }, [state.activeQuestion, state.boardTiles, state.isGameOver]);
 
   const selectOption = useCallback((optionIndex: number) => {
     pendingOptionRef.current = optionIndex;
@@ -90,15 +92,15 @@ export function useLacBingoEngine() {
   const setHostMode = useCallback((mode: "player" | "screen") => dispatch({ type: "set_host_mode", mode }), []);
 
   const saveScore = useCallback(() => {
-    if (!state.isFullBingo || state.isSavedToLeaderboard || state.score <= 0) return;
+    if (!state.isGameOver || state.isSavedToLeaderboard || state.score <= 0) return;
     dispatch({ type: "save_score", entry: {
       id: Date.now().toString(), teamName: state.teamName.trim() || "ทีมนิรนาม", score: state.score,
       lines: completedLines.length, accuracy, timeSpent: formattedTime, date: "วันนี้",
     }});
-  }, [accuracy, completedLines.length, formattedTime, state.isFullBingo, state.isSavedToLeaderboard, state.score, state.teamName]);
+  }, [accuracy, completedLines.length, formattedTime, state.isGameOver, state.isSavedToLeaderboard, state.score, state.teamName]);
 
   return {
-    state, completedLines, winningIndices, accuracy, formattedTime,
+    state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus,
     actions: { drawQuestion, drawQuestionForTile, selectOption, submitAnswer, closeQuestion, hideBingoBanner, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
     utilities: { shuffleBingoTiles },
   };
