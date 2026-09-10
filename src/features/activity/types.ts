@@ -1,11 +1,15 @@
-export type ActivityStatus = "draft" | "published";
+export type ActivityStatus = "draft" | "published" | "archived";
 
+/**
+ * RAC presentation model backed by the central Portal activities table.
+ * The database contract is activity_date / featured_image.
+ */
 export interface Activity {
   id: string;
   title: string;
-  date: string;
+  activityDate: string;
   category?: string;
-  coverImage: string;
+  featuredImage: string;
   images: string[];
   objective: string;
   keyActivities: string[];
