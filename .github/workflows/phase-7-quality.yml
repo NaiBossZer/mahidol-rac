@@ -1,4 +1,4 @@
-name: Phase 7 Quality Gate
+name: Phase 8 Quality Gate
 
 on:
   push:
@@ -21,6 +21,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Phase 8 architecture/security audit
+        run: npm run audit:phase8
 
       - name: Lint
         run: npm run lint
