@@ -27,20 +27,56 @@ Content / Data
 `features/bingo/engine/LacBingoEngine.ts` owns the deterministic gameplay domain:
 
 - 4x4 board generation and Fisher-Yates shuffle
-- winning-line detection
+- winning-line detection for 4 rows + 4 columns + 2 diagonals
 - winning-cell selectors
 - accuracy calculation
-- timer formatting
-- question selection
+- timer formatting and victory timer stop
+- question selection from unmarked tiles only
 - answer scoring and streak rules
 - line bonuses and full-board bonus
-- game phases
+- game phases and victory lock
 - leaderboard state transitions
 - reset transitions
+- content integrity validation helpers
+
+### Production rules
+
+1. A marked tile cannot open another question.
+2. A question can only target a tile that still exists and is unmarked.
+3. Answers outside the option range are ignored.
+4. Once all 16 tiles are marked, the game enters `victory` and no further questions or timer ticks are accepted.
+5. Leaderboard saving is only allowed after full bingo.
+6. Team names are normalized and capped at 60 characters.
+7. The board is a fixed 4x4 game with 10 possible winning lines.
+8. The question deck is designed as one learning question per bingo keyword.
 
 `features/bingo/engine/useLacBingoEngine.ts` is the React controller. UI code consumes named controller actions rather than dispatching domain actions directly.
 
 React remains responsible for presentation, sound, confetti, dialogs, and DOM lifecycle.
+
+## Bingo verification
+
+`scripts/smoke.mjs` includes static integrity checks for the Bingo module:
+
+- required Bingo files exist
+- board rules remain 4x4 / 16 tiles
+- 10 winning lines remain defined
+- question deck contains 16 target mappings
+- question targets are unique
+- keyword pool contains 16 unique IDs
+- marked-tile question protection remains present
+- victory stops the timer
+- leaderboard save remains locked until victory
+
+Run locally with:
+
+```bash
+npm run smoke
+npm run lint
+npm run build
+```
+
+The smoke checks are intentionally independent of Vercel so Bingo can be verified without repeatedly triggering deployments.
 
 ## Sobprab Lac Lab
 
@@ -80,4 +116,4 @@ React remains responsible for controls, Framer Motion presentation, SVG visualiz
 
 ## Next phase
 
-Phase 2 can consume these engines to add the approved gameplay progression without moving the rendering layer into a separate game framework.
+Lac Bingo is now treated as a self-contained production learning game. Further changes should improve its learning content, feedback, classroom UX, accessibility, and polish without coupling it to Sobprab Lac Lab, Lac Learning Room, Supabase, or other game engines.
