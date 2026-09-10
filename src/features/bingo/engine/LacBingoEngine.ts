@@ -41,12 +41,40 @@ export type LacBingoAction =
   | { type: "hide_bingo_banner" }
   | { type: "reset"; boardTiles: BingoTile[] };
 
-const GRID_SIZE = 4;
-const LINE_LENGTH = 4;
-const LINE_BONUS = 500;
-const FULL_BINGO_BONUS = 2000;
-const CORRECT_BASE_SCORE = 100;
-const STREAK_SCORE = 20;
+export const BINGO_RULES = {
+  gridSize: 4,
+  tileCount: 16,
+  lineCount: 10,
+  lineLength: 4,
+  lineBonus: 500,
+  fullBingoBonus: 2000,
+  correctBaseScore: 100,
+  streakScore: 20,
+} as const;
+
+export function isBoardComplete(boardTiles: readonly BingoTile[]): boolean {
+  return boardTiles.length === BINGO_RULES.tileCount && boardTiles.every((tile) => tile.isMarked);
+}
+
+export function validateBingoContent(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): string[] {
+  const errors: string[] = [];
+  const tileIds = new Set(boardTiles.map((tile) => tile.id));
+  const questionIds = new Set<string>();
+  const targetIds = new Set<string>();
+  for (const question of questionDeck) {
+    if (questionIds.has(question.id)) errors.push(`duplicate question id: ${question.id}`);
+    questionIds.add(question.id);
+    if (!tileIds.has(question.targetKeywordId)) errors.push(`unknown target keyword: ${question.targetKeywordId}`);
+    if (targetIds.has(question.targetKeywordId)) errors.push(`duplicate question target: ${question.targetKeywordId}`);
+    targetIds.add(question.targetKeywordId);
+    if (question.options.length !== 4) errors.push(`question must have 4 options: ${question.id}`);
+    if (question.correctIndex < 0 || question.correctIndex >= question.options.length) errors.push(`invalid correctIndex: ${question.id}`);
+    if (!question.question.trim() || !question.explanation.trim() || !question.hint.trim()) errors.push(`incomplete learning content: ${question.id}`);
+  }
+  if (boardTiles.length !== BINGO_RULES.tileCount) errors.push(`board must contain ${BINGO_RULES.tileCount} tiles`);
+  if (questionDeck.length !== boardTiles.length) errors.push("question deck must contain exactly one question per bingo tile");
+  return errors;
+}
 
 export function shuffleBingoTiles<T>(items: readonly T[]): T[] {
   const result = [...items];
@@ -63,12 +91,12 @@ export function createBingoBoard(items: readonly BingoTile[]): BingoTile[] {
 
 export function calculateWinningLines(boardTiles: readonly BingoTile[]): WinningLine[] {
   const lines: WinningLine[] = [];
-  for (let row = 0; row < GRID_SIZE; row += 1) {
-    const indices = Array.from({ length: LINE_LENGTH }, (_, column) => row * GRID_SIZE + column);
+  for (let row = 0; row < BINGO_RULES.gridSize; row += 1) {
+    const indices = Array.from({ length: BINGO_RULES.lineLength }, (_, column) => row * BINGO_RULES.gridSize + column);
     if (indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "row", index: row + 1, indices, label: `แนวนอนแถวที่ ${row + 1}` });
   }
-  for (let column = 0; column < GRID_SIZE; column += 1) {
-    const indices = Array.from({ length: LINE_LENGTH }, (_, row) => row * GRID_SIZE + column);
+  for (let column = 0; column < BINGO_RULES.gridSize; column += 1) {
+    const indices = Array.from({ length: BINGO_RULES.lineLength }, (_, row) => row * BINGO_RULES.gridSize + column);
     if (indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "col", index: column + 1, indices, label: `แนวตั้งแถวที่ ${column + 1}` });
   }
   const diagonals: Array<{ index: number; indices: number[]; label: string }> = [
@@ -107,12 +135,19 @@ export function getInitialBingoState(boardTiles: BingoTile[], leaderboard: Leade
 
 export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): LacBingoState {
   switch (action.type) {
-    case "draw_question": return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
-    case "select_option": return state.isAnswerChecked ? state : { ...state, selectedOption: action.optionIndex };
+    case "draw_question": {
+      if (state.isFullBingo || state.activeQuestion) return state;
+      const targetTile = state.boardTiles.find((tile) => tile.id === action.question.targetKeywordId);
+      if (!targetTile || targetTile.isMarked) return state;
+      return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
+    }
+    case "select_option": return state.isAnswerChecked || state.isFullBingo || !state.activeQuestion ? state : { ...state, selectedOption: action.optionIndex };
     case "submit_answer": {
-      if (!state.activeQuestion || state.isAnswerChecked) return state;
+      if (!state.activeQuestion || state.isAnswerChecked || state.isFullBingo) return state;
+      const targetTile = state.boardTiles.find((tile) => tile.id === state.activeQuestion.targetKeywordId);
+      if (!targetTile || targetTile.isMarked) return { ...state, activeQuestion: null, selectedOption: null, phase: "ready" };
       const selectedOption = action.optionIndex ?? state.selectedOption;
-      if (selectedOption === null || selectedOption === undefined) return state;
+      if (selectedOption === null || selectedOption === undefined || selectedOption < 0 || selectedOption >= state.activeQuestion.options.length) return state;
       const isCorrect = selectedOption === state.activeQuestion.correctIndex;
       const nextStreak = isCorrect ? state.streak + 1 : 0;
       const nextQuestionsAnswered = state.questionsAnswered + 1;
@@ -124,13 +159,13 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       if (isCorrect) {
         const targetId = state.activeQuestion.targetKeywordId;
         nextBoard = state.boardTiles.map((tile) => tile.id === targetId ? { ...tile, isMarked: true, isHighlighted: true } : tile);
-        nextScore += CORRECT_BASE_SCORE + nextStreak * STREAK_SCORE;
+        nextScore += BINGO_RULES.correctBaseScore + nextStreak * BINGO_RULES.streakScore;
         const beforeLines = calculateWinningLines(state.boardTiles);
         const afterLines = calculateWinningLines(nextBoard);
         const newLines = Math.max(0, afterLines.length - beforeLines.length);
-        if (newLines > 0) { nextScore += newLines * LINE_BONUS; showBingoBanner = true; }
-        isFullBingo = nextBoard.length > 0 && nextBoard.every((tile) => tile.isMarked);
-        if (isFullBingo && !state.isFullBingo) nextScore += FULL_BINGO_BONUS;
+        if (newLines > 0) { nextScore += newLines * BINGO_RULES.lineBonus; showBingoBanner = true; }
+        isFullBingo = isBoardComplete(nextBoard);
+        if (isFullBingo && !state.isFullBingo) nextScore += BINGO_RULES.fullBingoBonus;
       }
       return { ...state, boardTiles: nextBoard, score: nextScore, streak: nextStreak, questionsAnswered: nextQuestionsAnswered, correctAnswers: nextCorrectAnswers, selectedOption, isAnswerChecked: true, isCorrect, hostEmotion: isCorrect ? "happy" : "concerned", showBingoBanner: showBingoBanner || state.showBingoBanner, isFullBingo, phase: isFullBingo ? "victory" : showBingoBanner ? "bingo" : "answer-result" };
     }
@@ -139,8 +174,8 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
     case "set_host_mode": return { ...state, hostMode: action.mode };
     case "inspect_tile": return { ...state, inspectTile: action.tile };
     case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
-    case "tick": return { ...state, secondsElapsed: state.secondsElapsed + Math.max(0, action.seconds ?? 1) };
-    case "set_team_name": return { ...state, teamName: action.teamName };
+    case "tick": return state.isFullBingo ? state : { ...state, secondsElapsed: state.secondsElapsed + Math.max(0, action.seconds ?? 1) };
+    case "set_team_name": return { ...state, teamName: action.teamName.replace(/\s+/g, " ").trim().slice(0, 60) };
     case "save_score": return state.isSavedToLeaderboard ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
     case "hide_bingo_banner": return { ...state, showBingoBanner: false, phase: state.isFullBingo ? "victory" : state.isAnswerChecked ? "answer-result" : "ready" };
     case "reset": return getInitialBingoState(action.boardTiles, state.leaderboard);
@@ -149,6 +184,7 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
 }
 
 export function getNextQuestion(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): QuestionCard | null {
+  if (boardTiles.length === 0 || boardTiles.every((tile) => tile.isMarked)) return null;
   const unmarked = new Set(boardTiles.filter((tile) => !tile.isMarked).map((tile) => tile.id));
   const available = questionDeck.filter((question) => unmarked.has(question.targetKeywordId));
   return available[Math.floor(Math.random() * available.length)] ?? null;
