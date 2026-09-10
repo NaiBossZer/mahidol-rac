@@ -65,7 +65,7 @@ export function DashboardPage() {
           <div className="flex items-center gap-2"><label className="text-[11px] font-semibold text-slate-500" htmlFor="dashboard-activity-filter">กิจกรรม</label><select id="dashboard-activity-filter" aria-label="กรองตามกิจกรรม" disabled={loadingActivities} value={selectedActivity} onChange={(e) => changeActivity(e.target.value)} className="min-w-56 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-rac-lac"><option value="ALL">ทุกกิจกรรม / ทุกครั้ง</option>{activities.map((activity) => <option key={activity.id} value={activity.id}>{activity.title} • {new Date(activity.activity_date).toLocaleDateString("th-TH")}</option>)}</select>{selectedActivity !== "ALL" && <button type="button" onClick={() => changeActivity("ALL")} className="rounded-xl border border-slate-200 px-2.5 py-2 text-[11px] font-semibold text-slate-500 hover:bg-slate-50">ล้าง</button>}</div>
         </div>
       </div>
-      <ExecutiveActivityContext activity={selectedActivityInfo ? { id: selectedActivityInfo.id, title: selectedActivityInfo.title, date: selectedActivityInfo.activity_date, status: selectedActivityInfo.status === "archived" ? "draft" : selectedActivityInfo.status, category: null, cover_image: selectedActivityInfo.featured_image } : null} responseCount={responseCount} loading={loadingCount || loadingActivities} />
+      <ExecutiveActivityContext activity={selectedActivityInfo} responseCount={responseCount} loading={loadingCount || loadingActivities} />
       <BaseDashboardPage key={selectedActivity} />
     </div>
   );
