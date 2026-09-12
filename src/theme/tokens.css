@@ -36,10 +36,10 @@
   --rac-shadow-card: 0 8px 30px rgb(15 23 42 / 0.06);
   --rac-shadow-elevated: 0 18px 50px rgb(15 23 42 / 0.12);
 
-  /* Typography */
-  --rac-font-sans: "Mitr", system-ui, sans-serif;
+  /* Typography: Thai-first, Latin-compatible */
+  --rac-font-sans: "IBM Plex Sans Thai", "Mitr", system-ui, sans-serif;
   --rac-font-data: "IBM Plex Sans Thai", "Inter", system-ui, sans-serif;
-  --rac-font-display: "Chakra Petch", "IBM Plex Sans Thai", system-ui, sans-serif;
+  --rac-font-display: "Mitr", "IBM Plex Sans Thai", "Chakra Petch", system-ui, sans-serif;
   --rac-font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
