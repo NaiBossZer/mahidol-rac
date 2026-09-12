@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./styles.css";
 import "./i18n";
+import "./styles.css";
 import { AuthProvider } from "./features/auth/AuthProvider";
 import { ProtectedRoute } from "./features/auth/RouteGuards";
 
