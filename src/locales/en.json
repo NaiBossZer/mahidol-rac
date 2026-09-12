@@ -1,0 +1,23 @@
+{
+  "nav.home": "Home",
+  "nav.knowledge": "Knowledge",
+  "nav.application": "From Lac to Applications",
+  "nav.games": "Learning Games",
+  "nav.survey": "Satisfaction Survey",
+  "nav.dashboard": "Survey Results",
+  "nav.closeMenu": "Close menu",
+  "nav.openMenu": "Open menu",
+  "nav.previousSlide": "Previous slide",
+  "nav.nextSlide": "Next slide",
+  "nav.playAutoSlides": "Play slides automatically",
+  "nav.pauseAutoSlides": "Pause automatic slides",
+  "language.th": "TH",
+  "language.en": "EN",
+  "hero.latestActivities": "Latest activities",
+  "hero.exploreWhatIsLac": "Explore: What is lac?",
+  "hero.goToSlide": "Go to slide {{index}}: {{title}}",
+  "hero.currentSlide": "Current slide: {{title}}",
+  "learningJourney.ariaLabel": "Learn: {{title}}",
+  "learningJourney.openLesson": "Open lesson →",
+  "learningJourney.next": "NEXT →"
+}
