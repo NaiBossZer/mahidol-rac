@@ -58,7 +58,7 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-rac-surface font-['Mitr']">
+    <div className="min-h-screen bg-rac-surface font-rac-sans">
       <div className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-2 shadow-sm backdrop-blur sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-700"><span className="rounded-lg bg-rose-50 px-2 py-1 text-rac-lac">📌 EVENT FILTER</span><span className="hidden text-slate-400 sm:inline">วิเคราะห์ผลตามกิจกรรม / ครั้ง</span></div>
