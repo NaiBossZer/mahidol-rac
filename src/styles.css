@@ -7,7 +7,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Executive data-wall layer. Foundation tokens live in theme/tokens.css. */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -92,15 +91,34 @@
   * {
     border-color: var(--color-border);
   }
+
+  html {
+    font-family: var(--rac-font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
   body {
+    margin: 0;
     background-color: var(--color-background);
     background-image:
       radial-gradient(circle at 12% -10%, oklch(0.4 0.13 258 / 45%), transparent 55%),
       radial-gradient(circle at 96% 0%, oklch(0.45 0.1 88 / 18%), transparent 45%);
     background-attachment: fixed;
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: var(--rac-font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  textarea,
+  select,
+  option {
+    font-family: inherit;
+  }
+
+  ::placeholder {
+    font-family: inherit;
   }
 }
 
