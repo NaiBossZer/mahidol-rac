@@ -13,11 +13,18 @@
   "nav.pauseAutoSlides": "หยุดสไลด์อัตโนมัติ",
   "language.th": "TH",
   "language.en": "EN",
+  "knowledge.whatIsLac": "ครั่งคืออะไร?",
+  "knowledge.lifeCycle": "วงจรชีวิต",
+  "knowledge.habitat": "ระบบนิเวศ & ต้นพิงอาศัย",
+  "knowledge.hostPlants": "ต้นพิงอาศัย",
+  "knowledge.lacFarming": "การเพาะเลี้ยงครั่ง",
+  "game.sobprabLab": "Sobprab Lac Lab",
+  "game.lacBingo": "Lac Bingo",
   "hero.latestActivities": "ดูกิจกรรมล่าสุด",
   "hero.exploreWhatIsLac": "สำรวจครั่งคืออะไร",
   "hero.goToSlide": "ไปสไลด์ {{index}}: {{title}}",
   "hero.currentSlide": "สไลด์ปัจจุบัน: {{title}}",
   "learningJourney.ariaLabel": "เรียนรู้: {{title}}",
   "learningJourney.openLesson": "เปิดบทเรียน →",
-  "learningJourney.next": "NEXT →"
+  "learningJourney.next": "ถัดไป →"
 }
