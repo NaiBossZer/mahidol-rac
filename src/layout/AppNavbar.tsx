@@ -46,7 +46,7 @@ export const AppNavbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-rac-blue/95 text-white shadow-lg backdrop-blur-md">
-      <nav className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-5" aria-label={t("nav.home")}>
+      <nav className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-5" aria-label={t("nav.primary")}>
         <div className="flex min-h-[60px] items-center justify-between gap-3">
           <Link to="/" onClick={closeMenus} className="flex min-w-0 shrink-0 items-center gap-2 rounded-xl py-1 focus:outline-none focus:ring-2 focus:ring-rac-gold">
             <div className="flex shrink-0 items-center gap-1">
@@ -56,8 +56,8 @@ export const AppNavbar: React.FC = () => {
             </div>
             <span className="hidden h-8 w-px bg-white/20 sm:block" />
             <span className="hidden max-w-[250px] min-w-0 lg:block xl:max-w-[280px]">
-              <span className="block truncate text-[11px] font-semibold leading-snug text-white xl:text-xs">งานพันธกิจเพื่อสังคม สำนักงานวิจัยและวิทยบริการ</span>
-              <span className="mt-0.5 block truncate text-[9px] font-medium leading-tight text-rac-gold xl:text-[10px]">คณะสิ่งแวดล้อมและทรัพยากรศาสตร์ มหาวิทยาลัยมหิดล</span>
+              <span className="block truncate text-[11px] font-semibold leading-snug text-white xl:text-xs">{t("nav.missionOffice")}</span>
+              <span className="mt-0.5 block truncate text-[9px] font-medium leading-tight text-rac-gold xl:text-[10px]">{t("nav.faculty")}</span>
             </span>
           </Link>
 
