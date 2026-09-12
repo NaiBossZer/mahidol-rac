@@ -12,7 +12,7 @@ import AppFooter from "@/layout/AppFooter";
 export function HomePage() {
   const home = useHome();
   return (
-    <div data-rac-theme="living" className="min-h-screen overflow-x-hidden bg-rac-surface font-['Mitr'] text-slate-800 selection:bg-rac-lac selection:text-white">
+    <div data-rac-theme="living" className="min-h-screen overflow-x-hidden bg-rac-surface font-rac-sans text-slate-800 selection:bg-rac-lac selection:text-white">
       <AppNavbar />
       <main className="grow">
         <HeroSection currentSlide={home.currentSlide} onPrevious={home.prevSlide} onNext={home.nextSlide} onSelectSlide={home.setCurrentSlide} onScrollToSection={home.scrollToSection} isPaused={home.isHeroPaused} onTogglePause={() => home.setIsHeroPaused((paused) => !paused)} />
