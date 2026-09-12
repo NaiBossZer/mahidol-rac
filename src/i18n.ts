@@ -7,6 +7,9 @@ export const SUPPORTED_LANGUAGES = ["th", "en"] as const;
 export type AppLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export type TranslationKey = keyof typeof th;
 
+// Compile-time contract: EN must contain every key defined by TH.
+const enTranslations: typeof th = en;
+
 const STORAGE_KEY = "mahidol-rac-language";
 
 function getInitialLanguage(): AppLanguage {
@@ -19,7 +22,7 @@ function getInitialLanguage(): AppLanguage {
 void i18n.use(initReactI18next).init({
   resources: {
     th: { translation: th },
-    en: { translation: en },
+    en: { translation: enTranslations },
   },
   lng: getInitialLanguage(),
   fallbackLng: "th",
@@ -36,7 +39,7 @@ function syncDocument(language: string) {
 
   const normalized: AppLanguage = language === "en" ? "en" : "th";
   document.documentElement.lang = normalized;
-  document.title = normalized === "en" ? en["document.title"] : th["document.title"];
+  document.title = normalized === "en" ? enTranslations["document.title"] : th["document.title"];
 }
 
 syncDocument(i18n.language);
