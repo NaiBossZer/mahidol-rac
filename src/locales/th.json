@@ -24,7 +24,19 @@
   "hero.exploreWhatIsLac": "สำรวจครั่งคืออะไร",
   "hero.goToSlide": "ไปสไลด์ {{index}}: {{title}}",
   "hero.currentSlide": "สไลด์ปัจจุบัน: {{title}}",
+  "learningJourney.label": "เส้นทางการเรียนรู้",
+  "learningJourney.description": "เรียนรู้เรื่องครั่งเป็นลำดับ จากพื้นฐานและชีววิทยา ไปสู่ระบบนิเวศ พืชพิงอาศัย และการเพาะเลี้ยง",
   "learningJourney.ariaLabel": "เรียนรู้: {{title}}",
   "learningJourney.openLesson": "เปิดบทเรียน →",
-  "learningJourney.next": "ถัดไป →"
+  "learningJourney.next": "ถัดไป →",
+  "learningJourney.whatIsLac.title": "ครั่งคืออะไร?",
+  "learningJourney.whatIsLac.text": "เริ่มจากสิ่งมีชีวิตตัวเล็ก ทำความเข้าใจครั่งและเรซินธรรมชาติที่แมลงครั่งผลิตขึ้น",
+  "learningJourney.lifeCycle.title": "วงจรชีวิตครั่ง",
+  "learningJourney.lifeCycle.text": "ติดตามชีววิทยาและการเปลี่ยนแปลงของแมลงครั่ง ตั้งแต่ระยะเริ่มต้นจนถึงการสร้างเรซิน",
+  "learningJourney.habitat.title": "ระบบนิเวศ & ต้นพิงอาศัย",
+  "learningJourney.habitat.text": "เรียนรู้ความสัมพันธ์ระหว่างแมลงครั่ง ต้นพิงอาศัย สภาพแวดล้อม และการเจริญเติบโต",
+  "learningJourney.hostPlants.title": "ต้นพิงอาศัย",
+  "learningJourney.hostPlants.text": "ทำความรู้จักพืชอาศัยที่เกี่ยวข้องกับการเลี้ยงครั่ง และพื้นฐานการเลือกต้นไม้สำหรับการเพาะเลี้ยง",
+  "learningJourney.lacFarming.title": "การเพาะเลี้ยงครั่ง",
+  "learningJourney.lacFarming.text": "ต่อยอดจากชีววิทยาสู่การปฏิบัติ ทำความเข้าใจการเตรียมพันธุ์ การดูแล และการเก็บเกี่ยว"
 }
