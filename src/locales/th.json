@@ -1,0 +1,23 @@
+{
+  "nav.home": "หน้าแรก",
+  "nav.knowledge": "ความรู้",
+  "nav.application": "จากครั่งสู่การใช้ประโยชน์",
+  "nav.games": "เกมการเรียนรู้",
+  "nav.survey": "แบบประเมินความพึงพอใจ",
+  "nav.dashboard": "ผลสรุปแบบประเมินความพึงพอใจ",
+  "nav.closeMenu": "ปิดเมนู",
+  "nav.openMenu": "เปิดเมนู",
+  "nav.previousSlide": "สไลด์ก่อนหน้า",
+  "nav.nextSlide": "สไลด์ถัดไป",
+  "nav.playAutoSlides": "เล่นสไลด์อัตโนมัติ",
+  "nav.pauseAutoSlides": "หยุดสไลด์อัตโนมัติ",
+  "language.th": "TH",
+  "language.en": "EN",
+  "hero.latestActivities": "ดูกิจกรรมล่าสุด",
+  "hero.exploreWhatIsLac": "สำรวจครั่งคืออะไร",
+  "hero.goToSlide": "ไปสไลด์ {{index}}: {{title}}",
+  "hero.currentSlide": "สไลด์ปัจจุบัน: {{title}}",
+  "learningJourney.ariaLabel": "เรียนรู้: {{title}}",
+  "learningJourney.openLesson": "เปิดบทเรียน →",
+  "learningJourney.next": "NEXT →"
+}
