@@ -24,7 +24,19 @@
   "hero.exploreWhatIsLac": "Explore: What is lac?",
   "hero.goToSlide": "Go to slide {{index}}: {{title}}",
   "hero.currentSlide": "Current slide: {{title}}",
+  "learningJourney.label": "Learning journey",
+  "learningJourney.description": "Learn about lac step by step, from its basics and biology to habitat, host plants and cultivation.",
   "learningJourney.ariaLabel": "Learn: {{title}}",
   "learningJourney.openLesson": "Open lesson →",
-  "learningJourney.next": "NEXT →"
+  "learningJourney.next": "NEXT →",
+  "learningJourney.whatIsLac.title": "What is lac?",
+  "learningJourney.whatIsLac.text": "Start with a tiny living organism and understand lac and the natural resin produced by lac insects.",
+  "learningJourney.lifeCycle.title": "Lac life cycle",
+  "learningJourney.lifeCycle.text": "Follow the biology and development of lac insects, from the early stage through resin production.",
+  "learningJourney.habitat.title": "Habitat & host plants",
+  "learningJourney.habitat.text": "Learn the relationship between lac insects, host plants, the environment and growth.",
+  "learningJourney.hostPlants.title": "Host plants",
+  "learningJourney.hostPlants.text": "Discover plants associated with lac farming and the basics of selecting host trees.",
+  "learningJourney.lacFarming.title": "Lac farming",
+  "learningJourney.lacFarming.text": "Move from biology to practice: understand inoculation, care and harvesting."
 }
