@@ -24,29 +24,32 @@ void i18n.use(initReactI18next).init({
   lng: getInitialLanguage(),
   fallbackLng: "th",
   supportedLngs: [...SUPPORTED_LANGUAGES],
-  interpolation: {
-    escapeValue: false,
-  },
+  defaultNS: "translation",
+  interpolation: { escapeValue: false },
   returnNull: false,
   returnEmptyString: false,
-  react: {
-    useSuspense: false,
-  },
+  react: { useSuspense: false },
 });
+
+function syncDocument(language: string) {
+  if (typeof document === "undefined") return;
+
+  const normalized: AppLanguage = language === "en" ? "en" : "th";
+  document.documentElement.lang = normalized;
+  document.title = normalized === "en" ? en["document.title"] : th["document.title"];
+}
+
+syncDocument(i18n.language);
+i18n.on("languageChanged", syncDocument);
 
 export async function setAppLanguage(language: AppLanguage): Promise<void> {
   if (!SUPPORTED_LANGUAGES.includes(language)) return;
 
   if (typeof window !== "undefined") {
     window.localStorage.setItem(STORAGE_KEY, language);
-    document.documentElement.lang = language;
   }
 
   await i18n.changeLanguage(language);
-}
-
-if (typeof document !== "undefined") {
-  document.documentElement.lang = i18n.language === "en" ? "en" : "th";
 }
 
 export default i18n;
