@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { Award, CheckCircle2, Clock, Dices, Expand, Layers, Minimize2, RefreshCw, Sparkles, Trophy, Tv, Volume2, VolumeX } from "lucide-react";
-import type { BingoTile } from "@/types/bingo";
+import type { BingoDifficulty, BingoTile } from "@/types/bingo";
 import { playChime } from "@/features/bingo/soundEngine";
 import { BingoConfetti } from "@/features/bingo/components/BingoConfetti";
 import { BingoRallyPanel, type BingoRallyPoint } from "@/features/bingo/components/BingoRallyPanel";
@@ -10,10 +10,12 @@ import { MGuidePopup } from "@/features/bingo/components/MGuidePopup";
 import { BingoTileCard } from "@/features/bingo/components/BingoTileCard";
 import { TileInspectModal } from "@/features/bingo/components/TileInspectModal";
 import { useLacBingoEngine } from "@/features/bingo/engine/useLacBingoEngine";
-import { BINGO_RULES } from "@/features/bingo/engine/LacBingoEngine";
+import { BINGO_DIFFICULTY_RULES, BINGO_RULES } from "@/features/bingo/engine/LacBingoEngine";
+
+const DIFFICULTY_OPTIONS: BingoDifficulty[] = ["easy", "medium", "hard"];
 
 export const LacBingoGame: React.FC = () => {
-  const { state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus, actions } = useLacBingoEngine();
+  const { state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus, difficultyRules, actions } = useLacBingoEngine();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isBoardFullscreen, setIsBoardFullscreen] = useState(false);
   const isPopupOpen = state.activeQuestion !== null;
@@ -134,7 +136,7 @@ export const LacBingoGame: React.FC = () => {
       <main className="grid h-[calc(100%-86px)] min-h-0 grid-cols-1 gap-2 lg:grid-cols-12">
         <section className="flex min-h-0 flex-col gap-2 lg:col-span-8">
           <div id="lac-bingo-board" className="min-h-0 flex-1 rounded-2xl border border-white/10 bg-slate-900/85 p-2.5 shadow-xl shadow-black/20 backdrop-blur sm:p-3">
-            <div className="mb-2 flex items-center justify-between"><h2 className="flex items-center gap-1.5 text-xs font-bold text-slate-200 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />ตารางบิงโก 4×4</h2><div className="flex items-center gap-1.5"><span className="text-[10px] text-slate-500">ปลดล็อก {markedCount}/16 · เป้าหมาย {BINGO_RULES.victoryLineCount} สาย</span><button onClick={handleDrawQuestion} disabled={isPopupOpen || state.isGameOver} className="flex items-center gap-1.5 rounded-lg border border-amber-300/40 bg-amber-300/15 px-2.5 py-1.5 text-[10px] font-bold text-amber-100 transition hover:bg-amber-300/25 disabled:border-slate-700 disabled:bg-slate-800 disabled:text-slate-500 sm:px-3"><Dices className="h-3.5 w-3.5" />สุ่มคำถาม</button><button onClick={handleBoardFullscreenToggle} className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-300 transition hover:bg-white/10" aria-label={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"} title={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"}>{isBoardFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}</button></div></div>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2"><h2 className="flex items-center gap-1.5 text-xs font-bold text-slate-200 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />ตารางบิงโก 4×4</h2><div className="flex flex-wrap items-center justify-end gap-1.5"><span className="text-[10px] text-slate-500">ปลดล็อก {markedCount}/16 · เป้าหมาย {BINGO_RULES.victoryLineCount} สาย</span><div className="flex items-center gap-1 rounded-lg border border-cyan-300/25 bg-cyan-300/5 p-1" aria-label="เลือกระดับความยาก"><span className="px-1.5 text-[9px] font-bold text-cyan-200">ระดับ</span>{DIFFICULTY_OPTIONS.map((difficulty) => { const active = state.difficulty === difficulty; const rules = BINGO_DIFFICULTY_RULES[difficulty]; return <button key={difficulty} type="button" onClick={() => actions.setDifficulty(difficulty)} disabled={isPopupOpen || state.isGameOver} title={`${rules.description} · ถูก +${rules.correctScore} · ผิด −${rules.incorrectPenalty}`} className={`rounded-md px-2 py-1 text-[9px] font-bold transition ${active ? "bg-cyan-200 text-slate-950 shadow" : "text-slate-300 hover:bg-cyan-300/10 hover:text-white"} disabled:cursor-not-allowed disabled:opacity-40`}>{rules.label}</button>; })}</div><button onClick={handleDrawQuestion} disabled={isPopupOpen || state.isGameOver} className="flex items-center gap-1.5 rounded-lg border border-amber-300/40 bg-amber-300/15 px-2.5 py-1.5 text-[10px] font-bold text-amber-100 transition hover:bg-amber-300/25 disabled:border-slate-700 disabled:bg-slate-800 disabled:text-slate-500 sm:px-3"><Dices className="h-3.5 w-3.5" />สุ่มคำถาม</button><button onClick={handleBoardFullscreenToggle} className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-300 transition hover:bg-white/10" aria-label={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"} title={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"}>{isBoardFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}</button></div></div>
             <div className="relative h-[calc(100%-28px)]">
               <div className="grid h-full grid-cols-4 grid-rows-4 gap-1.5 sm:gap-2">
                 {state.boardTiles.map((tile, idx) => <BingoTileCard key={tile.id} tile={tile} index={idx} isInWinningLine={winningIndices.has(idx)} onClick={handleTileClick} />)}
@@ -162,7 +164,7 @@ export const LacBingoGame: React.FC = () => {
       </main>
 
       <TileInspectModal tile={state.inspectTile} onClose={() => actions.inspectTile(null)} />
-      <MGuidePopup isOpen={isPopupOpen} onClose={actions.closeQuestion} question={state.activeQuestion} onAnswer={actions.submitAnswer} selectedOption={state.selectedOption} isAnswerChecked={state.isAnswerChecked} isCorrect={state.isCorrect} onNextQuestion={handleNextQuestion} emotion={state.hostEmotion} soundEnabled={state.soundEnabled} />
+      <MGuidePopup isOpen={isPopupOpen} onClose={actions.closeQuestion} question={state.activeQuestion} onAnswer={actions.submitAnswer} selectedOption={state.selectedOption} isAnswerChecked={state.isAnswerChecked} isCorrect={state.isCorrect} onNextQuestion={handleNextQuestion} emotion={state.hostEmotion} soundEnabled={state.soundEnabled} difficulty={state.difficulty} />
       <BingoVictoryOverlay isOpen={state.isGameOver} isFullBingo={state.isFullBingo} isTimeUp={state.isTimeUp} score={state.score} lines={completedLines.length} accuracy={accuracy} formattedTime={formattedTime} timeBonus={state.timeBonus} teamName={state.teamName} isSaved={state.isSavedToLeaderboard} onSave={actions.saveScore} onReplay={actions.reshuffle} />
     </div>
   );
