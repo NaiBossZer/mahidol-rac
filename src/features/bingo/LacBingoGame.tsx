@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from "react";
-import { Award, CheckCircle2, Clock, Dices, Layers, RefreshCw, Sparkles, Trophy, Tv, Volume2, VolumeX } from "lucide-react";
+import React, { useEffect, useCallback, useState } from "react";
+import { Award, CheckCircle2, Clock, Dices, Expand, Layers, Minimize2, RefreshCw, Sparkles, Trophy, Tv, Volume2, VolumeX } from "lucide-react";
 import type { BingoTile } from "@/types/bingo";
 import { playChime } from "@/features/bingo/soundEngine";
 import { BingoConfetti } from "@/features/bingo/components/BingoConfetti";
@@ -14,6 +14,7 @@ import { BINGO_RULES } from "@/features/bingo/engine/LacBingoEngine";
 
 export const LacBingoGame: React.FC = () => {
   const { state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus, actions } = useLacBingoEngine();
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const isPopupOpen = state.activeQuestion !== null;
 
   useEffect(() => {
@@ -21,6 +22,17 @@ export const LacBingoGame: React.FC = () => {
     const timer = window.setTimeout(actions.hideBingoBanner, 3500);
     return () => window.clearTimeout(timer);
   }, [state.showBingoBanner, actions.hideBingoBanner]);
+
+  useEffect(() => {
+    const syncFullscreenState = () => {
+      setIsFullscreen(document.fullscreenElement !== null);
+    };
+
+    document.addEventListener("fullscreenchange", syncFullscreenState);
+    syncFullscreenState();
+
+    return () => document.removeEventListener("fullscreenchange", syncFullscreenState);
+  }, []);
 
   const handleDrawQuestion = useCallback(() => {
     if (isPopupOpen || state.isGameOver) return;
@@ -55,10 +67,25 @@ export const LacBingoGame: React.FC = () => {
     actions.drawQuestionForTile(point.keywordId);
   }, [actions, state.activeQuestion, state.isGameOver, state.soundEnabled]);
 
+  const handleFullscreenToggle = useCallback(async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+
+      const gameRoot = document.getElementById("lac-bingo-game");
+      if (!gameRoot?.requestFullscreen) return;
+      await gameRoot.requestFullscreen();
+    } catch (error) {
+      console.warn("Unable to toggle fullscreen mode.", error);
+    }
+  }, []);
+
   const markedCount = state.boardTiles.filter((tile) => tile.isMarked).length;
 
   return (
-    <div className="h-full min-h-0 w-full overflow-hidden bg-slate-950 font-['Mitr',sans-serif] text-slate-100">
+    <div id="lac-bingo-game" className="h-full min-h-0 w-full overflow-hidden bg-slate-950 font-['Mitr',sans-serif] text-slate-100">
       <BingoConfetti active={state.showBingoBanner || state.isFullBingo} />
       <header className="mb-2 rounded-2xl border border-white/10 bg-slate-900/90 px-3 py-2 shadow-xl shadow-black/20 backdrop-blur sm:px-4">
         <div className="flex items-center justify-between gap-2">
@@ -71,6 +98,7 @@ export const LacBingoGame: React.FC = () => {
             <div className={`hidden rounded-xl border px-2 py-1.5 text-center sm:block ${state.secondsElapsed >= 270 ? "border-rose-400/30 bg-rose-400/10" : "border-white/10 bg-white/5"}`}><p className="text-[9px] text-slate-500">TIME</p><p className={`text-sm font-bold ${state.secondsElapsed >= 270 ? "text-rose-300" : "text-slate-200"}`}>{formattedTime}/5:00</p></div>
             <button onClick={() => actions.setSoundEnabled(!state.soundEnabled)} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10" aria-label="เสียง">{state.soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}</button>
             <button onClick={() => actions.setHostMode(state.hostMode === "player" ? "screen" : "player")} className="hidden items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 text-[10px] font-bold text-slate-300 sm:flex">{state.hostMode === "player" ? <Tv className="h-3.5 w-3.5" /> : <Layers className="h-3.5 w-3.5" />}{state.hostMode === "player" ? "จอใหญ่" : "กระดาน"}</button>
+            <button onClick={handleFullscreenToggle} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10" aria-label={isFullscreen ? "ออกจากเต็มจอ" : "ขยายเต็มจอ"} title={isFullscreen ? "ออกจากเต็มจอ" : "ขยายเต็มจอ"}>{isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Expand className="h-4 w-4" />}</button>
             <button onClick={handleReshuffle} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10" aria-label="สุ่มกระดานใหม่"><RefreshCw className="h-4 w-4" /></button>
             <button onClick={handleDrawQuestion} disabled={isPopupOpen || state.isGameOver} className="flex items-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-[10px] font-bold text-slate-950 shadow-lg shadow-amber-500/10 transition hover:bg-amber-300 disabled:bg-slate-700 disabled:text-slate-500 sm:px-3.5 sm:text-xs"><Dices className="h-3.5 w-3.5" />สุ่มคำถาม</button>
           </div>
