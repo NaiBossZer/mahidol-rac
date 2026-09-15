@@ -168,6 +168,37 @@
   }
 }
 
+/* Board-only fullscreen: the 4×4 grid takes over the viewport without the rest of the game UI. */
+#lac-bingo-board:fullscreen {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 2rem);
+  overflow: hidden;
+  border-radius: 0;
+  background: rgb(2 6 23);
+}
+
+#lac-bingo-board:fullscreen > div:first-child {
+  margin-bottom: clamp(0.5rem, 1vw, 1rem);
+}
+
+#lac-bingo-board:fullscreen > div:last-child {
+  height: calc(100% - clamp(2rem, 4vw, 4rem));
+}
+
+@media (max-width: 768px) {
+  #lac-bingo-board:fullscreen {
+    padding: 0.75rem;
+  }
+
+  #lac-bingo-board:fullscreen > div:last-child {
+    height: calc(100% - 2.25rem);
+  }
+}
+
 @media print {
   body {
     background: white !important;
