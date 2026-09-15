@@ -33,12 +33,14 @@ export interface SurveySubmissionContract {
 }
 
 export function getSurveyActivityId(search = window.location.search): string | null {
-  const value = new URLSearchParams(search).get("activity");
+  const params = new URLSearchParams(search);
+  const value = params.get("activity") ?? params.get("activity_id");
   return value?.trim() || null;
 }
 
 export function withSurveyActivityContext(url: string, context: SurveyActivityContext): string {
   const target = new URL(url);
+  target.searchParams.set("activity", context.activityId);
   target.searchParams.set("activity_id", context.activityId);
   target.searchParams.set("survey_contract", SURVEY_CONTRACT_VERSION);
   return target.toString();
