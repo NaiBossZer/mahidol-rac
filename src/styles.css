@@ -157,6 +157,17 @@
   );
 }
 
+/* Give the 4×4 Bingo board more horizontal space on large screens. */
+@media (min-width: 1024px) {
+  #lac-bingo-game main > section {
+    grid-column: span 9 / span 9;
+  }
+
+  #lac-bingo-game main > aside {
+    grid-column: span 3 / span 3;
+  }
+}
+
 @media print {
   body {
     background: white !important;
