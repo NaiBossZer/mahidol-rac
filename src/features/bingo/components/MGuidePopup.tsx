@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { HelpCircle, CheckCircle2, AlertCircle, Info, Sparkles, ChevronRight } from "lucide-react";
 import { QuestionCard, HostEmotion } from "../../types/bingo";
 import { playChime } from "@/features/bingo/soundEngine";
@@ -44,8 +45,8 @@ export const MGuidePopup: React.FC<MGuidePopupProps> = ({ isOpen, onClose, quest
   const characterTitle = knowledgeTile?.category === "biology" ? "พี่ M-Guide • นักชีววิทยาครั่ง" : knowledgeTile?.category === "chemistry" ? "พี่ M-Guide • นักเคมีสีธรรมชาติ" : knowledgeTile?.category === "product" ? "พี่ M-Guide • นักพัฒนาผลิตภัณฑ์" : "พี่ M-Guide • นักเรียนรู้ชุมชน";
   const characterSpeech = !isAnswerChecked ? `ลองคิดจากคำใบ้ก่อนนะครับ: ${question.hint}` : isCorrect ? `KNOWLEDGE UNLOCKED! ${question.explanation}` : `ทบทวนอีกนิดนะครับ: ${question.explanation}`;
 
-  return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/80 p-3 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-labelledby="mguide-modal-title" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+  const modal = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/80 p-3 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-labelledby="mguide-modal-title" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div ref={modalRef} className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-amber-300/30 bg-slate-900 text-white shadow-2xl">
         <div className="relative flex shrink-0 items-center justify-between overflow-hidden bg-gradient-to-r from-slate-900 via-rac-blue to-rac-lac p-4 text-white sm:p-5">
           <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-300/10 blur-xl" />
@@ -77,4 +78,10 @@ export const MGuidePopup: React.FC<MGuidePopupProps> = ({ isOpen, onClose, quest
       </div>
     </div>
   );
+
+  // Native fullscreen only paints the fullscreen element and its descendants.
+  // Render the question layer inside the active fullscreen element so the popup
+  // remains visible when the Bingo board is expanded to fullscreen.
+  const fullscreenTarget = document.fullscreenElement;
+  return createPortal(modal, fullscreenTarget ?? document.body);
 };
