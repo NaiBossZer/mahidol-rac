@@ -103,6 +103,7 @@ export const LacBingoGame: React.FC = () => {
   }, []);
 
   const markedCount = state.boardTiles.filter((tile) => tile.isMarked).length;
+  const hasTimeLimit = difficultyRules.hasTimeLimit;
 
   return (
     <div id="lac-bingo-game" className="h-full min-h-0 w-full overflow-hidden bg-slate-950 font-['Mitr',sans-serif] text-slate-100">
@@ -115,7 +116,7 @@ export const LacBingoGame: React.FC = () => {
           </div>
           <div className="flex shrink-0 items-center gap-1.5">
             <div className="hidden rounded-xl border border-amber-400/15 bg-amber-400/5 px-2 py-1.5 text-center sm:block"><p className="text-[9px] text-amber-300/60">SCORE</p><p className="text-sm font-black text-amber-300">{state.score.toLocaleString()}</p></div>
-            <div className={`hidden rounded-xl border px-2 py-1.5 text-center sm:block ${state.secondsElapsed >= 270 ? "border-rose-400/30 bg-rose-400/10" : "border-white/10 bg-white/5"}`}><p className="text-[9px] text-slate-500">TIME</p><p className={`text-sm font-bold ${state.secondsElapsed >= 270 ? "text-rose-300" : "text-slate-200"}`}>{formattedTime}/5:00</p></div>
+            <div className={`hidden rounded-xl border px-2 py-1.5 text-center sm:block ${hasTimeLimit && state.secondsElapsed >= 270 ? "border-rose-400/30 bg-rose-400/10" : "border-white/10 bg-white/5"}`}><p className="text-[9px] text-slate-500">TIME</p><p className={`text-sm font-bold ${hasTimeLimit && state.secondsElapsed >= 270 ? "text-rose-300" : "text-slate-200"}`}>{hasTimeLimit ? `${formattedTime}/5:00` : "ไม่จำกัด"}</p></div>
             <button onClick={() => actions.setSoundEnabled(!state.soundEnabled)} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10" aria-label="เสียง">{state.soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}</button>
             <button onClick={() => actions.setHostMode(state.hostMode === "player" ? "screen" : "player")} className="hidden items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 text-[10px] font-bold text-slate-300 sm:flex">{state.hostMode === "player" ? <Tv className="h-3.5 w-3.5" /> : <Layers className="h-3.5 w-3.5" />}{state.hostMode === "player" ? "จอใหญ่" : "กระดาน"}</button>
             <button onClick={handleFullscreenToggle} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10" aria-label={isFullscreen ? "ออกจากเต็มจอ" : "ขยายเต็มจอ"} title={isFullscreen ? "ออกจากเต็มจอ" : "ขยายเต็มจอ"}>{isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Expand className="h-4 w-4" />}</button>
@@ -127,7 +128,7 @@ export const LacBingoGame: React.FC = () => {
           <Stat icon={<Trophy className="h-3.5 w-3.5" />} label="Lac Score" value={`${state.score.toLocaleString()}`} />
           <Stat icon={<CheckCircle2 className="h-3.5 w-3.5" />} label="ตอบถูก" value={`${state.correctAnswers}/${state.questionsAnswered}`} />
           <Stat icon={<Sparkles className="h-3.5 w-3.5" />} label="BINGO" value={`${completedLines.length}/${BINGO_RULES.victoryLineCount}`} />
-          <Stat icon={<Clock className="h-3.5 w-3.5" />} label="Time Bonus" value={`+${liveTimeBonus}`} />
+          <Stat icon={<Clock className="h-3.5 w-3.5" />} label={hasTimeLimit ? "Time Bonus" : "เวลา"} value={hasTimeLimit ? `+${liveTimeBonus}` : "ไม่จำกัด"} />
         </div>
       </header>
 
