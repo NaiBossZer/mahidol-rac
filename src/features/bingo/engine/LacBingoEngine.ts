@@ -1,4 +1,4 @@
-import type { BingoTile, HostEmotion, LeaderboardEntry, QuestionCard, WinningLine } from "@/types/bingo";
+import type { BingoDifficulty, BingoTile, HostEmotion, LeaderboardEntry, QuestionCard, WinningLine } from "@/types/bingo";
 
 export type BingoHostMode = "player" | "screen";
 export type LacBingoPhase = "ready" | "question" | "answering" | "answer-result" | "bingo" | "victory";
@@ -7,6 +7,7 @@ export interface LacBingoState {
   boardTiles: BingoTile[];
   soundEnabled: boolean;
   hostMode: BingoHostMode;
+  difficulty: BingoDifficulty;
   activeQuestion: QuestionCard | null;
   selectedOption: number | null;
   isAnswerChecked: boolean;
@@ -36,6 +37,7 @@ export type LacBingoAction =
   | { type: "close_question" }
   | { type: "set_sound_enabled"; enabled: boolean }
   | { type: "set_host_mode"; mode: BingoHostMode }
+  | { type: "set_difficulty"; difficulty: BingoDifficulty }
   | { type: "inspect_tile"; tile: BingoTile | null }
   | { type: "clear_tile_highlight"; tileId: string }
   | { type: "tick"; seconds?: number }
@@ -58,6 +60,12 @@ export const BINGO_RULES = {
   maxTimeBonus: 300,
   timeBonusPerSecond: 1,
 } as const;
+
+export const BINGO_DIFFICULTY_RULES: Record<BingoDifficulty, { label: string; description: string; correctScore: number; incorrectPenalty: number; showHint: boolean }> = {
+  easy: { label: "ง่าย", description: "มีคำใบ้ · คะแนนพื้นฐาน", correctScore: 10, incorrectPenalty: 5, showHint: true },
+  medium: { label: "ปานกลาง", description: "สมดุล · คะแนนมากขึ้น", correctScore: 15, incorrectPenalty: 5, showHint: true },
+  hard: { label: "ยาก", description: "ไม่มีคำใบ้ · คะแนนสูง", correctScore: 20, incorrectPenalty: 10, showHint: false },
+};
 
 export function isBoardComplete(boardTiles: readonly BingoTile[]): boolean {
   return boardTiles.length === BINGO_RULES.tileCount && boardTiles.every((tile) => tile.isMarked);
@@ -138,7 +146,7 @@ export function formatBingoTimer(seconds: number): string {
 
 export function getInitialBingoState(boardTiles: BingoTile[], leaderboard: LeaderboardEntry[] = []): LacBingoState {
   return {
-    boardTiles, soundEnabled: true, hostMode: "player", activeQuestion: null, selectedOption: null,
+    boardTiles, soundEnabled: true, hostMode: "player", difficulty: "medium", activeQuestion: null, selectedOption: null,
     isAnswerChecked: false, isCorrect: null, hostEmotion: "idle", phase: "ready", score: 0, streak: 0,
     questionsAnswered: 0, correctAnswers: 0, secondsElapsed: 0, timeBonus: 0, showBingoBanner: false,
     isFullBingo: false, isGameOver: false, isTimeUp: false, inspectTile: null,
@@ -165,19 +173,20 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       const nextStreak = isCorrect ? state.streak + 1 : 0;
       const nextQuestionsAnswered = state.questionsAnswered + 1;
       const nextCorrectAnswers = state.correctAnswers + (isCorrect ? 1 : 0);
+      const difficultyRules = BINGO_DIFFICULTY_RULES[state.difficulty];
       let nextBoard = state.boardTiles;
       let nextScore = state.score;
       let showBingoBanner = false;
       if (isCorrect) {
         const targetId = state.activeQuestion.targetKeywordId;
         nextBoard = state.boardTiles.map((tile) => tile.id === targetId ? { ...tile, isMarked: true, isHighlighted: true } : tile);
-        nextScore += BINGO_RULES.correctBaseScore + nextStreak * BINGO_RULES.streakScore;
+        nextScore += difficultyRules.correctScore + nextStreak * BINGO_RULES.streakScore;
         const beforeLines = calculateWinningLines(state.boardTiles);
         const afterLines = calculateWinningLines(nextBoard);
         const newLines = Math.max(0, afterLines.length - beforeLines.length);
         if (newLines > 0) { nextScore += newLines * BINGO_RULES.lineBonus; showBingoBanner = true; }
       } else {
-        nextScore = Math.max(0, nextScore - BINGO_RULES.incorrectPenalty);
+        nextScore = Math.max(0, nextScore - difficultyRules.incorrectPenalty);
       }
       const afterLines = calculateWinningLines(nextBoard);
       const completedBoard = isBoardComplete(nextBoard);
@@ -207,6 +216,7 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
     case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isGameOver ? "victory" : "ready" };
     case "set_sound_enabled": return { ...state, soundEnabled: action.enabled };
     case "set_host_mode": return { ...state, hostMode: action.mode };
+    case "set_difficulty": return state.isGameOver || state.activeQuestion ? state : { ...state, difficulty: action.difficulty };
     case "inspect_tile": return { ...state, inspectTile: action.tile };
     case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
     case "tick": {
