@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { BINGO_KEYWORDS_POOL } from "@/features/bingo/bingoKeywords";
 import { QUESTION_DECK } from "@/features/bingo/questionDeck";
-import type { BingoTile, LeaderboardEntry } from "@/types/bingo";
+import type { BingoDifficulty, BingoTile, LeaderboardEntry } from "@/types/bingo";
 import {
+  BINGO_DIFFICULTY_RULES,
   calculateAccuracy,
   calculateTimeBonus,
   calculateWinningLines,
@@ -47,6 +48,7 @@ export function useLacBingoEngine() {
   const accuracy = calculateAccuracy(state.correctAnswers, state.questionsAnswered);
   const formattedTime = formatBingoTimer(state.secondsElapsed);
   const liveTimeBonus = state.isGameOver ? state.timeBonus : calculateTimeBonus(state.secondsElapsed);
+  const difficultyRules = BINGO_DIFFICULTY_RULES[state.difficulty];
 
   const drawQuestion = useCallback(() => {
     if (state.activeQuestion || state.isGameOver) return null;
@@ -90,6 +92,7 @@ export function useLacBingoEngine() {
   const inspectTile = useCallback((tile: BingoTile | null) => dispatch({ type: "inspect_tile", tile }), []);
   const setSoundEnabled = useCallback((enabled: boolean) => dispatch({ type: "set_sound_enabled", enabled }), []);
   const setHostMode = useCallback((mode: "player" | "screen") => dispatch({ type: "set_host_mode", mode }), []);
+  const setDifficulty = useCallback((difficulty: BingoDifficulty) => dispatch({ type: "set_difficulty", difficulty }), []);
 
   const saveScore = useCallback(() => {
     if (!state.isGameOver || state.isSavedToLeaderboard || state.score <= 0) return;
@@ -101,7 +104,8 @@ export function useLacBingoEngine() {
 
   return {
     state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus,
-    actions: { drawQuestion, drawQuestionForTile, selectOption, submitAnswer, closeQuestion, hideBingoBanner, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode },
+    difficultyRules,
+    actions: { drawQuestion, drawQuestionForTile, selectOption, submitAnswer, closeQuestion, hideBingoBanner, reshuffle, setTeamName, saveScore, inspectTile, setSoundEnabled, setHostMode, setDifficulty },
     utilities: { shuffleBingoTiles },
   };
 }
