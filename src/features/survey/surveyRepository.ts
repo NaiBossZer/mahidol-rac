@@ -1,35 +1,48 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { SURVEY_CONTRACT_VERSION } from "./surveyDataContract";
 
 const requiredNumber = (params: URLSearchParams, key: string) => {
-  const value = Number(params.get(key));
+  const raw = params.get(key);
+  if (raw === null || raw === "") {
+    throw new Error(`กรุณาตอบแบบประเมินให้ครบทุกข้อ`);
+  }
+  const value = Number(raw);
   if (!Number.isInteger(value) || value < 1 || value > 5) {
-    throw new Error(`Invalid survey rating: ${key}`);
+    throw new Error(`คะแนนประเมินไม่ถูกต้อง (ต้องอยู่ระหว่าง 1 ถึง 5)`);
   }
   return value;
 };
 
-const requiredText = (params: URLSearchParams, key: string) => {
+const requiredText = (params: URLSearchParams, key: string, label: string) => {
   const value = params.get(key)?.trim() ?? "";
-  if (!value) throw new Error(`Missing survey field: ${key}`);
+  if (!value) throw new Error(`กรุณากรอกข้อมูล${label}ให้ครบถ้วน`);
   return value;
 };
 
 export async function saveSurveySubmission(params: URLSearchParams) {
-  if (!supabase) throw new Error("Supabase is not configured");
+  if (!isSupabaseConfigured || !supabase) {
+    console.error("Survey submission aborted: Supabase client is not configured");
+    throw new Error("ระบบบันทึกแบบประเมินยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ");
+  }
 
-  const activityId = requiredText(params, "activity_id");
+  const activityId = params.get("activity_id")?.trim() ?? "";
+  if (!activityId) {
+    throw new Error("ไม่พบรหัสกิจกรรม กรุณาเปิดแบบประเมินจากกิจกรรมที่กำหนด");
+  }
+
   const consent = params.get("pdpa_consent") === "true";
-  if (!consent) throw new Error("PDPA consent is required");
+  if (!consent) {
+    throw new Error("กรุณายอมรับเงื่อนไขข้อตกลงความเป็นส่วนตัว (PDPA)");
+  }
 
   const payload = {
     activity_id: activityId,
     contract_version: params.get("survey_contract") || SURVEY_CONTRACT_VERSION,
     submitted_at: params.get("submitted_at") || new Date().toISOString(),
-    age_group: requiredText(params, "ageGroup"),
-    affiliation: requiredText(params, "affiliation"),
-    ever_joined: requiredText(params, "everJoined"),
-    channels: requiredText(params, "channels"),
+    age_group: requiredText(params, "ageGroup", "ช่วงอายุ"),
+    affiliation: requiredText(params, "affiliation", "หน่วยงานที่สังกัด"),
+    ever_joined: requiredText(params, "everJoined", "ประวัติการเข้าร่วมกิจกรรม"),
+    channels: requiredText(params, "channels", "ช่องทางการรับทราบข้อมูล"),
     p2_location: requiredNumber(params, "p2_location"),
     p2_schedule: requiredNumber(params, "p2_schedule"),
     p2_readiness: requiredNumber(params, "p2_readiness"),
@@ -48,16 +61,12 @@ export async function saveSurveySubmission(params: URLSearchParams) {
     pdpa_consent: true,
   };
 
-  const { data, error } = await supabase
-    .from("survey_responses")
-    .insert(payload)
-    .select("id")
-    .single();
+  const { data, error } = await supabase.from("survey_responses").insert(payload).select().single();
 
   if (error) {
-    console.error("Supabase survey submission failed", error);
-    throw new Error("ไม่สามารถบันทึกผลการประเมินลงฐานข้อมูลได้");
+    console.error("Survey submission failed:", error);
+    throw new Error("ไม่สามารถบันทึกแบบประเมินได้ กรุณาลองใหม่อีกครั้ง");
   }
 
-  return data.id as string;
+  return data;
 }
