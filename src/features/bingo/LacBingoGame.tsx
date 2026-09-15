@@ -15,6 +15,7 @@ import { BINGO_RULES } from "@/features/bingo/engine/LacBingoEngine";
 export const LacBingoGame: React.FC = () => {
   const { state, completedLines, winningIndices, accuracy, formattedTime, liveTimeBonus, actions } = useLacBingoEngine();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isBoardFullscreen, setIsBoardFullscreen] = useState(false);
   const isPopupOpen = state.activeQuestion !== null;
 
   useEffect(() => {
@@ -25,7 +26,9 @@ export const LacBingoGame: React.FC = () => {
 
   useEffect(() => {
     const syncFullscreenState = () => {
-      setIsFullscreen(document.fullscreenElement !== null);
+      const fullscreenElement = document.fullscreenElement;
+      setIsFullscreen(fullscreenElement?.id === "lac-bingo-game");
+      setIsBoardFullscreen(fullscreenElement?.id === "lac-bingo-board");
     };
 
     document.addEventListener("fullscreenchange", syncFullscreenState);
@@ -82,6 +85,21 @@ export const LacBingoGame: React.FC = () => {
     }
   }, []);
 
+  const handleBoardFullscreenToggle = useCallback(async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+
+      const boardRoot = document.getElementById("lac-bingo-board");
+      if (!boardRoot?.requestFullscreen) return;
+      await boardRoot.requestFullscreen();
+    } catch (error) {
+      console.warn("Unable to toggle Bingo board fullscreen mode.", error);
+    }
+  }, []);
+
   const markedCount = state.boardTiles.filter((tile) => tile.isMarked).length;
 
   return (
@@ -115,8 +133,8 @@ export const LacBingoGame: React.FC = () => {
 
       <main className="grid h-[calc(100%-86px)] min-h-0 grid-cols-1 gap-2 lg:grid-cols-12">
         <section className="flex min-h-0 flex-col gap-2 lg:col-span-8">
-          <div className="min-h-0 flex-1 rounded-2xl border border-white/10 bg-slate-900/85 p-2.5 shadow-xl shadow-black/20 backdrop-blur sm:p-3">
-            <div className="mb-2 flex items-center justify-between"><h2 className="flex items-center gap-1.5 text-xs font-bold text-slate-200 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />ตารางบิงโก 4×4</h2><span className="text-[10px] text-slate-500">ปลดล็อก {markedCount}/16 · เป้าหมาย {BINGO_RULES.victoryLineCount} สาย</span></div>
+          <div id="lac-bingo-board" className="min-h-0 flex-1 rounded-2xl border border-white/10 bg-slate-900/85 p-2.5 shadow-xl shadow-black/20 backdrop-blur sm:p-3">
+            <div className="mb-2 flex items-center justify-between"><h2 className="flex items-center gap-1.5 text-xs font-bold text-slate-200 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />ตารางบิงโก 4×4</h2><div className="flex items-center gap-1.5"><span className="text-[10px] text-slate-500">ปลดล็อก {markedCount}/16 · เป้าหมาย {BINGO_RULES.victoryLineCount} สาย</span><button onClick={handleBoardFullscreenToggle} className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-300 transition hover:bg-white/10" aria-label={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"} title={isBoardFullscreen ? "ออกจากเต็มจอตาราง Bingo" : "ขยายตาราง Bingo เต็มจอ"}>{isBoardFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}</button></div></div>
             <div className="relative h-[calc(100%-28px)]">
               <div className="grid h-full grid-cols-4 grid-rows-4 gap-1.5 sm:gap-2">
                 {state.boardTiles.map((tile, idx) => <BingoTileCard key={tile.id} tile={tile} index={idx} isInWinningLine={winningIndices.has(idx)} onClick={handleTileClick} />)}
