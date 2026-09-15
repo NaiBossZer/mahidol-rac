@@ -61,10 +61,10 @@ export const BINGO_RULES = {
   timeBonusPerSecond: 1,
 } as const;
 
-export const BINGO_DIFFICULTY_RULES: Record<BingoDifficulty, { label: string; description: string; correctScore: number; incorrectPenalty: number; showHint: boolean }> = {
-  easy: { label: "ง่าย", description: "มีคำใบ้ · คะแนนพื้นฐาน", correctScore: 10, incorrectPenalty: 5, showHint: true },
-  medium: { label: "ปานกลาง", description: "สมดุล · คะแนนมากขึ้น", correctScore: 15, incorrectPenalty: 5, showHint: true },
-  hard: { label: "ยาก", description: "ไม่มีคำใบ้ · คะแนนสูง", correctScore: 20, incorrectPenalty: 10, showHint: false },
+export const BINGO_DIFFICULTY_RULES: Record<BingoDifficulty, { label: string; description: string; correctScore: number; incorrectPenalty: number; showHint: boolean; hasTimeLimit: boolean }> = {
+  easy: { label: "ง่าย", description: "ไม่จำกัดเวลา · มีคำใบ้", correctScore: 10, incorrectPenalty: 5, showHint: true, hasTimeLimit: false },
+  medium: { label: "ปานกลาง", description: "จำกัดเวลา 5 นาที · สมดุล", correctScore: 15, incorrectPenalty: 5, showHint: true, hasTimeLimit: true },
+  hard: { label: "ยาก", description: "จำกัดเวลา 5 นาที · ไม่มีคำใบ้", correctScore: 20, incorrectPenalty: 10, showHint: false, hasTimeLimit: true },
 };
 
 export function isBoardComplete(boardTiles: readonly BingoTile[]): boolean {
@@ -192,7 +192,7 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       const completedBoard = isBoardComplete(nextBoard);
       const reachedLineGoal = afterLines.length >= BINGO_RULES.victoryLineCount;
       const isGameOver = completedBoard || reachedLineGoal;
-      const timeBonus = isGameOver ? calculateTimeBonus(state.secondsElapsed) : state.timeBonus;
+      const timeBonus = isGameOver && difficultyRules.hasTimeLimit ? calculateTimeBonus(state.secondsElapsed) : state.timeBonus;
       if (isGameOver) nextScore += timeBonus;
       return {
         ...state,
@@ -216,11 +216,11 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
     case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isGameOver ? "victory" : "ready" };
     case "set_sound_enabled": return { ...state, soundEnabled: action.enabled };
     case "set_host_mode": return { ...state, hostMode: action.mode };
-    case "set_difficulty": return state.isGameOver || state.activeQuestion ? state : { ...state, difficulty: action.difficulty };
+    case "set_difficulty": return state.isGameOver || state.activeQuestion ? state : { ...state, difficulty: action.difficulty, secondsElapsed: 0, timeBonus: 0, isTimeUp: false };
     case "inspect_tile": return { ...state, inspectTile: action.tile };
     case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
     case "tick": {
-      if (state.isGameOver) return state;
+      if (state.isGameOver || !BINGO_DIFFICULTY_RULES[state.difficulty].hasTimeLimit) return state;
       const nextSeconds = Math.min(BINGO_RULES.timeLimitSeconds, state.secondsElapsed + Math.max(0, action.seconds ?? 1));
       if (nextSeconds >= BINGO_RULES.timeLimitSeconds) {
         return { ...state, secondsElapsed: BINGO_RULES.timeLimitSeconds, timeBonus: 0, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, isGameOver: true, isTimeUp: true, phase: "victory", hostEmotion: "concerned" };
