@@ -73,7 +73,6 @@ export const AppNavbar: React.FC = () => {
               {openMenu === "games" && <div className="absolute right-0 top-full w-56 pt-2"><div className="rounded-xl border border-white/10 bg-rac-blue-deep/95 p-2 shadow-2xl backdrop-blur-xl">{GAME_LINKS.map((game) => <Link key={game.href} to={game.href} onClick={closeMenus} className={`block rounded-lg px-2.5 py-2.5 text-xs transition ${location.pathname === game.href ? "bg-rac-lac/15 font-semibold text-cyan-300" : "text-slate-200 hover:bg-white/10 hover:text-white"}`}>{t(game.key)}</Link>)}</div></div>}
             </div>
             <Link to="/survey" className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs transition 2xl:px-2.5 ${location.pathname === "/survey" ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`}>{t("nav.survey")}</Link>
-            <Link to="/dashboard" className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs transition 2xl:px-2.5 ${location.pathname === "/dashboard" ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`}>{t("nav.dashboard")}</Link>
             <LanguageSwitcher />
           </div>
 
@@ -91,7 +90,6 @@ export const AppNavbar: React.FC = () => {
           <Link to="/lac/application" onClick={closeMenus} className={`rounded-xl px-4 py-3 text-sm ${isApplicationActive ? "bg-white/10 font-bold text-rac-gold" : "text-white hover:bg-white/10"}`}>{t("nav.application")}</Link>
           <div className="rounded-xl border border-white/5 bg-white/[0.02]"><button type="button" onClick={() => setOpenMenu((value) => value === "games" ? null : "games")} className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold ${isGameActive ? "text-rac-gold" : "text-white"}`} aria-expanded={openMenu === "games"}>{t("nav.games")}<ChevronDown size={16} className={`transition-transform ${openMenu === "games" ? "rotate-180" : ""}`} /></button>{openMenu === "games" && <div className="space-y-1 px-2 pb-2">{GAME_LINKS.map((game) => <Link key={game.href} to={game.href} onClick={closeMenus} className={`block rounded-lg px-3 py-2 text-sm ${location.pathname === game.href ? "bg-rac-lac/15 text-cyan-300" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}>{t(game.key)}</Link>)}</div>}</div>
           <Link to="/survey" onClick={closeMenus} className={`rounded-xl px-4 py-3 text-sm ${location.pathname === "/survey" ? "bg-white/10 font-bold text-rac-gold" : "text-white hover:bg-white/10"}`}>{t("nav.survey")}</Link>
-          <Link to="/dashboard" onClick={closeMenus} className={`rounded-xl px-4 py-3 text-sm ${location.pathname === "/dashboard" ? "bg-white/10 font-bold text-rac-gold" : "text-white hover:bg-white/10"}`}>{t("nav.dashboard")}</Link>
         </div></div>}
       </nav>
     </header>
