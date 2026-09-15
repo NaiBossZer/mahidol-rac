@@ -61,12 +61,14 @@ export async function saveSurveySubmission(params: URLSearchParams) {
     pdpa_consent: true,
   };
 
-  const { data, error } = await supabase.from("survey_responses").insert(payload).select().single();
+  // Anonymous users are intentionally not allowed to SELECT survey responses.
+  // Do not chain .select() here: PostgREST would require SELECT permission after INSERT.
+  const { error } = await supabase.from("survey_responses").insert(payload);
 
   if (error) {
     console.error("Survey submission failed:", error);
     throw new Error("ไม่สามารถบันทึกแบบประเมินได้ กรุณาลองใหม่อีกครั้ง");
   }
 
-  return data;
+  return { success: true };
 }
