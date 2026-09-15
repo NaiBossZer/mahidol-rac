@@ -31,10 +31,10 @@ export function useLacBingoEngine() {
   const pendingOptionRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (state.isGameOver) return;
+    if (state.isGameOver || !BINGO_DIFFICULTY_RULES[state.difficulty].hasTimeLimit) return;
     const timer = window.setInterval(() => dispatch({ type: "tick" }), 1000);
     return () => window.clearInterval(timer);
-  }, [state.isGameOver]);
+  }, [state.difficulty, state.isGameOver]);
 
   useEffect(() => {
     const highlighted = state.boardTiles.filter((tile) => tile.isHighlighted);
@@ -47,7 +47,7 @@ export function useLacBingoEngine() {
   const winningIndices = getWinningIndices(completedLines);
   const accuracy = calculateAccuracy(state.correctAnswers, state.questionsAnswered);
   const formattedTime = formatBingoTimer(state.secondsElapsed);
-  const liveTimeBonus = state.isGameOver ? state.timeBonus : calculateTimeBonus(state.secondsElapsed);
+  const liveTimeBonus = state.isGameOver && BINGO_DIFFICULTY_RULES[state.difficulty].hasTimeLimit ? state.timeBonus : BINGO_DIFFICULTY_RULES[state.difficulty].hasTimeLimit ? calculateTimeBonus(state.secondsElapsed) : 0;
   const difficultyRules = BINGO_DIFFICULTY_RULES[state.difficulty];
 
   const drawQuestion = useCallback(() => {
