@@ -1,5 +1,7 @@
 export type BingoCategory = "biology" | "chemistry" | "product" | "locality";
 
+export type BingoDifficulty = "easy" | "medium" | "hard";
+
 export interface BingoTile {
   id: string;
   keyword: string;
