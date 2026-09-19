@@ -11,12 +11,49 @@ const districts = [
   { no: "07", name: "ห้างฉัตร", note: "พื้นที่ข้อมูลครั่ง", lat: 18.3431, lng: 99.2755 },
 ] as const;
 
-declare global { interface Window { L?: any } }
+type LeafletMap = {
+  remove: () => void;
+  fitBounds: (bounds: Array<[number, number]>, options: { padding: [number, number] }) => void;
+};
+
+type LeafletLayer = {
+  addTo: (map: LeafletMap) => LeafletLayer;
+};
+
+type LeafletCircleMarker = LeafletLayer & {
+  bindPopup: (content: string) => LeafletCircleMarker;
+};
+
+type LeafletApi = {
+  map: (element: HTMLElement, options: { scrollWheelZoom: boolean }) => LeafletMap & {
+    setView: (center: [number, number], zoom: number) => LeafletMap;
+  };
+  tileLayer: (
+    url: string,
+    options: { attribution: string; maxZoom: number },
+  ) => LeafletLayer;
+  circleMarker: (
+    center: [number, number],
+    options: {
+      radius: number;
+      color: string;
+      weight: number;
+      fillColor: string;
+      fillOpacity: number;
+    },
+  ) => LeafletCircleMarker;
+};
+
+declare global {
+  interface Window {
+    L?: LeafletApi;
+  }
+}
 
 export function LampangLacMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    let map: any; let cancelled = false;
+    let map: LeafletMap | undefined;\n    let cancelled = false;
     const loadLeaflet = async () => {
       if (!document.querySelector('link[data-lac-leaflet="true"]')) { const link = document.createElement("link"); link.rel = "stylesheet"; link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; link.dataset.lacLeaflet = "true"; document.head.appendChild(link); }
       if (!window.L) await new Promise<void>((resolve, reject) => { const script = document.createElement("script"); script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"; script.async = true; script.onload = () => resolve(); script.onerror = () => reject(new Error("Leaflet failed to load")); document.head.appendChild(script); });
