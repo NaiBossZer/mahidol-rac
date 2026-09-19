@@ -1,5 +1,8 @@
 name: Phase 8 Quality Gate
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [main]
@@ -29,7 +32,19 @@ jobs:
         run: npm run audit:phase8
 
       - name: Format source before lint
-        run: npx prettier --check .
+        run: npx prettier --write .
+
+      - name: Commit formatting updates
+        run: |
+          if git diff --quiet; then
+            echo "Formatting already clean."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: format repository with Prettier"
+          git push
 
       - name: Lint
         run: npm run lint
