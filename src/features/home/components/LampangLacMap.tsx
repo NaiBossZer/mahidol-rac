@@ -53,7 +53,8 @@ declare global {
 export function LampangLacMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    let map: LeafletMap | undefined;\n    let cancelled = false;
+    let map: LeafletMap | undefined;
+    let cancelled = false;
     const loadLeaflet = async () => {
       if (!document.querySelector('link[data-lac-leaflet="true"]')) { const link = document.createElement("link"); link.rel = "stylesheet"; link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; link.dataset.lacLeaflet = "true"; document.head.appendChild(link); }
       if (!window.L) await new Promise<void>((resolve, reject) => { const script = document.createElement("script"); script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"; script.async = true; script.onload = () => resolve(); script.onerror = () => reject(new Error("Leaflet failed to load")); document.head.appendChild(script); });
