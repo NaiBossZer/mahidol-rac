@@ -57,7 +57,7 @@ check("question modal has Escape handling", mGuidePopup.includes('e.key === "Esc
 check("question modal locks background scroll", mGuidePopup.includes('document.body.style.overflow = "hidden"'));
 check("question modal announces answer feedback", mGuidePopup.includes('aria-live="polite"'));
 check("question modal uses correct/wrong sounds", mGuidePopup.includes('playChime(isCorrect ? "correct" : "wrong")'));
-check("question modal copy matches configured score rules", mGuidePopup.includes("ระดับ${difficultyRules.label}") && mGuidePopup.includes("ตอบถูก +{difficultyRules.correctScore}") && mGuidePopup.includes("ตอบผิด −{difficultyRules.incorrectPenalty}"));
+check("question modal copy matches configured score rules", mGuidePopup.includes("ระดับ{difficultyRules.label}") && mGuidePopup.includes("ตอบถูก +{difficultyRules.correctScore}") && mGuidePopup.includes("ตอบผิด −{difficultyRules.incorrectPenalty}"));
 check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
 check("victory overlay supports timeout result", victoryOverlay.includes("isTimeUp") && victoryOverlay.includes("TIME LIMIT REACHED"));
 check("Lac Master badge is calculated", victoryOverlay.includes("getBadge") && victoryOverlay.includes("Lac Master") && victoryOverlay.includes("Lac Expert"));
