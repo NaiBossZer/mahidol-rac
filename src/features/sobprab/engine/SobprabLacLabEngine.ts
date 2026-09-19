@@ -70,9 +70,13 @@ export function calcField(
   const safeBiocontrol = clamp(biocontrol, 0, 100);
   const tempFactor = Math.max(0.3, Math.min(1.15, 1 - Math.abs(safeTemperature - 27.5) / 20));
   const pestControlFactor = safeBiocontrol / 100;
-  const yieldKg = host.baseYield * seasonConfig.yieldMul * tempFactor * (0.6 + 0.4 * pestControlFactor);
+  const yieldKg =
+    host.baseYield * seasonConfig.yieldMul * tempFactor * (0.6 + 0.4 * pestControlFactor);
   const purity = clamp(
-    host.basePurity + seasonConfig.purityAdj + safeBiocontrol * 0.15 - (100 - safeBiocontrol) * 0.05,
+    host.basePurity +
+      seasonConfig.purityAdj +
+      safeBiocontrol * 0.15 -
+      (100 - safeBiocontrol) * 0.05,
     50,
     99,
   );
@@ -129,12 +133,18 @@ export function getFabricColor(pH: number, mordant: MordantType): ColorResult {
   };
 }
 
-export function calcBCGScore(field: FieldResult, biocontrol: number, pH: number): { total: number; tier: string } {
+export function calcBCGScore(
+  field: FieldResult,
+  biocontrol: number,
+  pH: number,
+): { total: number; tier: string } {
   const yieldScore = Math.min(field.yieldKg / 60, 1) * 30;
   const purityScore = (field.purity / 100) * 30;
   const biocontrolScore = (clamp(biocontrol, 0, 100) / 100) * 20;
   const chemistryScore = 10 + (pH >= 5 && pH <= 7.5 ? 10 : 5);
-  const total = Math.round(clamp(yieldScore + purityScore + biocontrolScore + chemistryScore, 0, 100));
+  const total = Math.round(
+    clamp(yieldScore + purityScore + biocontrolScore + chemistryScore, 0, 100),
+  );
 
   let tier = "ยังไม่ปลดล็อกตรา";
   if (total >= 90) tier = "ระดับเพชร";

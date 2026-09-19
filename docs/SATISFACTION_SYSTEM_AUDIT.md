@@ -383,20 +383,20 @@ abstract shellac texture + subtle architectural grid + warm light โดยล�
 
 ## 12. Priority Matrix
 
-| Priority | Finding / Work | Status |
-|---|---|---|
-| P0 | เชื่อม Survey กับ Activity ID | Planned |
-| P0 | ตรวจสอบ/รวม Data Contract ระหว่าง Survey และ Dashboard | Planned |
-| P0 | แก้ submission reliability ของ `no-cors` flow | Planned |
-| P0 | เพิ่ม Event filter | Planned |
-| P0 | Join Activity metadata + survey response | Planned |
-| P1 | Activity photo context บน Dashboard | Planned |
-| P1 | Survey/Admin configuration | Planned |
-| P1 | Dashboard executive redesign | Planned |
-| P1 | KPI methodology | Planned |
-| P2 | Feedback classification refinement | Planned |
-| P2 | Background visual redesign | Planned |
-| P2 | Export/reporting | Future |
+| Priority | Finding / Work                                         | Status  |
+| -------- | ------------------------------------------------------ | ------- |
+| P0       | เชื่อม Survey กับ Activity ID                          | Planned |
+| P0       | ตรวจสอบ/รวม Data Contract ระหว่าง Survey และ Dashboard | Planned |
+| P0       | แก้ submission reliability ของ `no-cors` flow          | Planned |
+| P0       | เพิ่ม Event filter                                     | Planned |
+| P0       | Join Activity metadata + survey response               | Planned |
+| P1       | Activity photo context บน Dashboard                    | Planned |
+| P1       | Survey/Admin configuration                             | Planned |
+| P1       | Dashboard executive redesign                           | Planned |
+| P1       | KPI methodology                                        | Planned |
+| P2       | Feedback classification refinement                     | Planned |
+| P2       | Background visual redesign                             | Planned |
+| P2       | Export/reporting                                       | Future  |
 
 ---
 

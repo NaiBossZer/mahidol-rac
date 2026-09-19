@@ -1,7 +1,15 @@
-import type { BingoDifficulty, BingoTile, HostEmotion, LeaderboardEntry, QuestionCard, WinningLine } from "@/types/bingo";
+import type {
+  BingoDifficulty,
+  BingoTile,
+  HostEmotion,
+  LeaderboardEntry,
+  QuestionCard,
+  WinningLine,
+} from "@/types/bingo";
 
 export type BingoHostMode = "player" | "screen";
-export type LacBingoPhase = "ready" | "question" | "answering" | "answer-result" | "bingo" | "victory";
+export type LacBingoPhase =
+  "ready" | "question" | "answering" | "answer-result" | "bingo" | "victory";
 
 export interface LacBingoState {
   boardTiles: BingoTile[];
@@ -61,10 +69,41 @@ export const BINGO_RULES = {
   timeBonusPerSecond: 1,
 } as const;
 
-export const BINGO_DIFFICULTY_RULES: Record<BingoDifficulty, { label: string; description: string; correctScore: number; incorrectPenalty: number; showHint: boolean; hasTimeLimit: boolean }> = {
-  easy: { label: "ง่าย", description: "ไม่จำกัดเวลา · มีคำใบ้", correctScore: 10, incorrectPenalty: 5, showHint: true, hasTimeLimit: false },
-  medium: { label: "ปานกลาง", description: "จำกัดเวลา 5 นาที · สมดุล", correctScore: 15, incorrectPenalty: 5, showHint: true, hasTimeLimit: true },
-  hard: { label: "ยาก", description: "จำกัดเวลา 5 นาที · ไม่มีคำใบ้", correctScore: 20, incorrectPenalty: 10, showHint: false, hasTimeLimit: true },
+export const BINGO_DIFFICULTY_RULES: Record<
+  BingoDifficulty,
+  {
+    label: string;
+    description: string;
+    correctScore: number;
+    incorrectPenalty: number;
+    showHint: boolean;
+    hasTimeLimit: boolean;
+  }
+> = {
+  easy: {
+    label: "ง่าย",
+    description: "ไม่จำกัดเวลา · มีคำใบ้",
+    correctScore: 10,
+    incorrectPenalty: 5,
+    showHint: true,
+    hasTimeLimit: false,
+  },
+  medium: {
+    label: "ปานกลาง",
+    description: "จำกัดเวลา 5 นาที · สมดุล",
+    correctScore: 15,
+    incorrectPenalty: 5,
+    showHint: true,
+    hasTimeLimit: true,
+  },
+  hard: {
+    label: "ยาก",
+    description: "จำกัดเวลา 5 นาที · ไม่มีคำใบ้",
+    correctScore: 20,
+    incorrectPenalty: 10,
+    showHint: false,
+    hasTimeLimit: true,
+  },
 };
 
 export function isBoardComplete(boardTiles: readonly BingoTile[]): boolean {
@@ -76,7 +115,10 @@ export function calculateTimeBonus(secondsElapsed: number): number {
   return Math.min(BINGO_RULES.maxTimeBonus, remaining * BINGO_RULES.timeBonusPerSecond);
 }
 
-export function validateBingoContent(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): string[] {
+export function validateBingoContent(
+  boardTiles: readonly BingoTile[],
+  questionDeck: readonly QuestionCard[],
+): string[] {
   const errors: string[] = [];
   const tileIds = new Set(boardTiles.map((tile) => tile.id));
   const questionIds = new Set<string>();
@@ -84,15 +126,21 @@ export function validateBingoContent(boardTiles: readonly BingoTile[], questionD
   for (const question of questionDeck) {
     if (questionIds.has(question.id)) errors.push(`duplicate question id: ${question.id}`);
     questionIds.add(question.id);
-    if (!tileIds.has(question.targetKeywordId)) errors.push(`unknown target keyword: ${question.targetKeywordId}`);
-    if (targetIds.has(question.targetKeywordId)) errors.push(`duplicate question target: ${question.targetKeywordId}`);
+    if (!tileIds.has(question.targetKeywordId))
+      errors.push(`unknown target keyword: ${question.targetKeywordId}`);
+    if (targetIds.has(question.targetKeywordId))
+      errors.push(`duplicate question target: ${question.targetKeywordId}`);
     targetIds.add(question.targetKeywordId);
     if (question.options.length !== 4) errors.push(`question must have 4 options: ${question.id}`);
-    if (question.correctIndex < 0 || question.correctIndex >= question.options.length) errors.push(`invalid correctIndex: ${question.id}`);
-    if (!question.question.trim() || !question.explanation.trim() || !question.hint.trim()) errors.push(`incomplete learning content: ${question.id}`);
+    if (question.correctIndex < 0 || question.correctIndex >= question.options.length)
+      errors.push(`invalid correctIndex: ${question.id}`);
+    if (!question.question.trim() || !question.explanation.trim() || !question.hint.trim())
+      errors.push(`incomplete learning content: ${question.id}`);
   }
-  if (boardTiles.length !== BINGO_RULES.tileCount) errors.push(`board must contain ${BINGO_RULES.tileCount} tiles`);
-  if (questionDeck.length !== boardTiles.length) errors.push("question deck must contain exactly one question per bingo tile");
+  if (boardTiles.length !== BINGO_RULES.tileCount)
+    errors.push(`board must contain ${BINGO_RULES.tileCount} tiles`);
+  if (questionDeck.length !== boardTiles.length)
+    errors.push("question deck must contain exactly one question per bingo tile");
   return errors;
 }
 
@@ -106,24 +154,38 @@ export function shuffleBingoTiles<T>(items: readonly T[]): T[] {
 }
 
 export function createBingoBoard(items: readonly BingoTile[]): BingoTile[] {
-  return shuffleBingoTiles(items).map((tile) => ({ ...tile, isMarked: false, isHighlighted: false }));
+  return shuffleBingoTiles(items).map((tile) => ({
+    ...tile,
+    isMarked: false,
+    isHighlighted: false,
+  }));
 }
 
 export function calculateWinningLines(boardTiles: readonly BingoTile[]): WinningLine[] {
   const lines: WinningLine[] = [];
   for (let row = 0; row < BINGO_RULES.gridSize; row += 1) {
-    const indices = Array.from({ length: BINGO_RULES.lineLength }, (_, column) => row * BINGO_RULES.gridSize + column);
-    if (indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "row", index: row + 1, indices, label: `แนวนอนแถวที่ ${row + 1}` });
+    const indices = Array.from(
+      { length: BINGO_RULES.lineLength },
+      (_, column) => row * BINGO_RULES.gridSize + column,
+    );
+    if (indices.every((index) => boardTiles[index]?.isMarked))
+      lines.push({ type: "row", index: row + 1, indices, label: `แนวนอนแถวที่ ${row + 1}` });
   }
   for (let column = 0; column < BINGO_RULES.gridSize; column += 1) {
-    const indices = Array.from({ length: BINGO_RULES.lineLength }, (_, row) => row * BINGO_RULES.gridSize + column);
-    if (indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "col", index: column + 1, indices, label: `แนวตั้งแถวที่ ${column + 1}` });
+    const indices = Array.from(
+      { length: BINGO_RULES.lineLength },
+      (_, row) => row * BINGO_RULES.gridSize + column,
+    );
+    if (indices.every((index) => boardTiles[index]?.isMarked))
+      lines.push({ type: "col", index: column + 1, indices, label: `แนวตั้งแถวที่ ${column + 1}` });
   }
   const diagonals: Array<{ index: number; indices: number[]; label: string }> = [
     { index: 1, indices: [0, 5, 10, 15], label: "แนวทแยง (ซ้ายบน ↘ ขวาล่าง)" },
     { index: 2, indices: [3, 6, 9, 12], label: "แนวทแยง (ขวาบน ↙ ซ้ายล่าง)" },
   ];
-  for (const diagonal of diagonals) if (diagonal.indices.every((index) => boardTiles[index]?.isMarked)) lines.push({ type: "diag", ...diagonal });
+  for (const diagonal of diagonals)
+    if (diagonal.indices.every((index) => boardTiles[index]?.isMarked))
+      lines.push({ type: "diag", ...diagonal });
   return lines;
 }
 
@@ -144,13 +206,35 @@ export function formatBingoTimer(seconds: number): string {
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 }
 
-export function getInitialBingoState(boardTiles: BingoTile[], leaderboard: LeaderboardEntry[] = []): LacBingoState {
+export function getInitialBingoState(
+  boardTiles: BingoTile[],
+  leaderboard: LeaderboardEntry[] = [],
+): LacBingoState {
   return {
-    boardTiles, soundEnabled: true, hostMode: "player", difficulty: "medium", activeQuestion: null, selectedOption: null,
-    isAnswerChecked: false, isCorrect: null, hostEmotion: "idle", phase: "ready", score: 0, streak: 0,
-    questionsAnswered: 0, correctAnswers: 0, secondsElapsed: 0, timeBonus: 0, showBingoBanner: false,
-    isFullBingo: false, isGameOver: false, isTimeUp: false, inspectTile: null,
-    teamName: "ทีมนักวิจัยน้อย สบปราบ", isSavedToLeaderboard: false, leaderboard,
+    boardTiles,
+    soundEnabled: true,
+    hostMode: "player",
+    difficulty: "medium",
+    activeQuestion: null,
+    selectedOption: null,
+    isAnswerChecked: false,
+    isCorrect: null,
+    hostEmotion: "idle",
+    phase: "ready",
+    score: 0,
+    streak: 0,
+    questionsAnswered: 0,
+    correctAnswers: 0,
+    secondsElapsed: 0,
+    timeBonus: 0,
+    showBingoBanner: false,
+    isFullBingo: false,
+    isGameOver: false,
+    isTimeUp: false,
+    inspectTile: null,
+    teamName: "ทีมนักวิจัยน้อย สบปราบ",
+    isSavedToLeaderboard: false,
+    leaderboard,
   };
 }
 
@@ -158,17 +242,40 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
   switch (action.type) {
     case "draw_question": {
       if (state.isGameOver || state.activeQuestion) return state;
-      const targetTile = state.boardTiles.find((tile) => tile.id === action.question.targetKeywordId);
+      const targetTile = state.boardTiles.find(
+        (tile) => tile.id === action.question.targetKeywordId,
+      );
       if (!targetTile || targetTile.isMarked) return state;
-      return { ...state, activeQuestion: action.question, selectedOption: null, isAnswerChecked: false, isCorrect: null, hostEmotion: "thinking", phase: "answering", inspectTile: null };
+      return {
+        ...state,
+        activeQuestion: action.question,
+        selectedOption: null,
+        isAnswerChecked: false,
+        isCorrect: null,
+        hostEmotion: "thinking",
+        phase: "answering",
+        inspectTile: null,
+      };
     }
-    case "select_option": return state.isAnswerChecked || state.isGameOver || !state.activeQuestion ? state : { ...state, selectedOption: action.optionIndex };
+    case "select_option":
+      return state.isAnswerChecked || state.isGameOver || !state.activeQuestion
+        ? state
+        : { ...state, selectedOption: action.optionIndex };
     case "submit_answer": {
       if (!state.activeQuestion || state.isAnswerChecked || state.isGameOver) return state;
-      const targetTile = state.boardTiles.find((tile) => tile.id === state.activeQuestion.targetKeywordId);
-      if (!targetTile || targetTile.isMarked) return { ...state, activeQuestion: null, selectedOption: null, phase: "ready" };
+      const targetTile = state.boardTiles.find(
+        (tile) => tile.id === state.activeQuestion.targetKeywordId,
+      );
+      if (!targetTile || targetTile.isMarked)
+        return { ...state, activeQuestion: null, selectedOption: null, phase: "ready" };
       const selectedOption = action.optionIndex ?? state.selectedOption;
-      if (selectedOption === null || selectedOption === undefined || selectedOption < 0 || selectedOption >= state.activeQuestion.options.length) return state;
+      if (
+        selectedOption === null ||
+        selectedOption === undefined ||
+        selectedOption < 0 ||
+        selectedOption >= state.activeQuestion.options.length
+      )
+        return state;
       const isCorrect = selectedOption === state.activeQuestion.correctIndex;
       const nextStreak = isCorrect ? state.streak + 1 : 0;
       const nextQuestionsAnswered = state.questionsAnswered + 1;
@@ -179,12 +286,17 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       let showBingoBanner = false;
       if (isCorrect) {
         const targetId = state.activeQuestion.targetKeywordId;
-        nextBoard = state.boardTiles.map((tile) => tile.id === targetId ? { ...tile, isMarked: true, isHighlighted: true } : tile);
+        nextBoard = state.boardTiles.map((tile) =>
+          tile.id === targetId ? { ...tile, isMarked: true, isHighlighted: true } : tile,
+        );
         nextScore += difficultyRules.correctScore + nextStreak * BINGO_RULES.streakScore;
         const beforeLines = calculateWinningLines(state.boardTiles);
         const afterLines = calculateWinningLines(nextBoard);
         const newLines = Math.max(0, afterLines.length - beforeLines.length);
-        if (newLines > 0) { nextScore += newLines * BINGO_RULES.lineBonus; showBingoBanner = true; }
+        if (newLines > 0) {
+          nextScore += newLines * BINGO_RULES.lineBonus;
+          showBingoBanner = true;
+        }
       } else {
         nextScore = Math.max(0, nextScore - difficultyRules.incorrectPenalty);
       }
@@ -192,7 +304,10 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
       const completedBoard = isBoardComplete(nextBoard);
       const reachedLineGoal = afterLines.length >= BINGO_RULES.victoryLineCount;
       const isGameOver = completedBoard || reachedLineGoal;
-      const timeBonus = isGameOver && difficultyRules.hasTimeLimit ? calculateTimeBonus(state.secondsElapsed) : state.timeBonus;
+      const timeBonus =
+        isGameOver && difficultyRules.hasTimeLimit
+          ? calculateTimeBonus(state.secondsElapsed)
+          : state.timeBonus;
       if (isGameOver) nextScore += timeBonus;
       return {
         ...state,
@@ -213,29 +328,88 @@ export function lacBingoReducer(state: LacBingoState, action: LacBingoAction): L
         phase: isGameOver ? "victory" : showBingoBanner ? "bingo" : "answer-result",
       };
     }
-    case "close_question": return { ...state, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, phase: state.isGameOver ? "victory" : "ready" };
-    case "set_sound_enabled": return { ...state, soundEnabled: action.enabled };
-    case "set_host_mode": return { ...state, hostMode: action.mode };
-    case "set_difficulty": return state.isGameOver || state.activeQuestion ? state : { ...state, difficulty: action.difficulty, secondsElapsed: 0, timeBonus: 0, isTimeUp: false };
-    case "inspect_tile": return { ...state, inspectTile: action.tile };
-    case "clear_tile_highlight": return { ...state, boardTiles: state.boardTiles.map((tile) => tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile) };
+    case "close_question":
+      return {
+        ...state,
+        activeQuestion: null,
+        selectedOption: null,
+        isAnswerChecked: false,
+        isCorrect: null,
+        phase: state.isGameOver ? "victory" : "ready",
+      };
+    case "set_sound_enabled":
+      return { ...state, soundEnabled: action.enabled };
+    case "set_host_mode":
+      return { ...state, hostMode: action.mode };
+    case "set_difficulty":
+      return state.isGameOver || state.activeQuestion
+        ? state
+        : {
+            ...state,
+            difficulty: action.difficulty,
+            secondsElapsed: 0,
+            timeBonus: 0,
+            isTimeUp: false,
+          };
+    case "inspect_tile":
+      return { ...state, inspectTile: action.tile };
+    case "clear_tile_highlight":
+      return {
+        ...state,
+        boardTiles: state.boardTiles.map((tile) =>
+          tile.id === action.tileId ? { ...tile, isHighlighted: false } : tile,
+        ),
+      };
     case "tick": {
       if (state.isGameOver || !BINGO_DIFFICULTY_RULES[state.difficulty].hasTimeLimit) return state;
-      const nextSeconds = Math.min(BINGO_RULES.timeLimitSeconds, state.secondsElapsed + Math.max(0, action.seconds ?? 1));
+      const nextSeconds = Math.min(
+        BINGO_RULES.timeLimitSeconds,
+        state.secondsElapsed + Math.max(0, action.seconds ?? 1),
+      );
       if (nextSeconds >= BINGO_RULES.timeLimitSeconds) {
-        return { ...state, secondsElapsed: BINGO_RULES.timeLimitSeconds, timeBonus: 0, activeQuestion: null, selectedOption: null, isAnswerChecked: false, isCorrect: null, isGameOver: true, isTimeUp: true, phase: "victory", hostEmotion: "concerned" };
+        return {
+          ...state,
+          secondsElapsed: BINGO_RULES.timeLimitSeconds,
+          timeBonus: 0,
+          activeQuestion: null,
+          selectedOption: null,
+          isAnswerChecked: false,
+          isCorrect: null,
+          isGameOver: true,
+          isTimeUp: true,
+          phase: "victory",
+          hostEmotion: "concerned",
+        };
       }
       return { ...state, secondsElapsed: nextSeconds };
     }
-    case "set_team_name": return { ...state, teamName: action.teamName.replace(/\s+/g, " ").trim().slice(0, 60) };
-    case "save_score": return state.isSavedToLeaderboard || !state.isGameOver ? state : { ...state, leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score), isSavedToLeaderboard: true };
-    case "hide_bingo_banner": return { ...state, showBingoBanner: false, phase: state.isGameOver ? "victory" : state.isAnswerChecked ? "answer-result" : "ready" };
-    case "reset": return getInitialBingoState(action.boardTiles, state.leaderboard);
-    default: return state;
+    case "set_team_name":
+      return { ...state, teamName: action.teamName.replace(/\s+/g, " ").trim().slice(0, 60) };
+    case "save_score":
+      return state.isSavedToLeaderboard || !state.isGameOver
+        ? state
+        : {
+            ...state,
+            leaderboard: [action.entry, ...state.leaderboard].sort((a, b) => b.score - a.score),
+            isSavedToLeaderboard: true,
+          };
+    case "hide_bingo_banner":
+      return {
+        ...state,
+        showBingoBanner: false,
+        phase: state.isGameOver ? "victory" : state.isAnswerChecked ? "answer-result" : "ready",
+      };
+    case "reset":
+      return getInitialBingoState(action.boardTiles, state.leaderboard);
+    default:
+      return state;
   }
 }
 
-export function getNextQuestion(boardTiles: readonly BingoTile[], questionDeck: readonly QuestionCard[]): QuestionCard | null {
+export function getNextQuestion(
+  boardTiles: readonly BingoTile[],
+  questionDeck: readonly QuestionCard[],
+): QuestionCard | null {
   if (boardTiles.length === 0 || boardTiles.every((tile) => tile.isMarked)) return null;
   const unmarked = new Set(boardTiles.filter((tile) => !tile.isMarked).map((tile) => tile.id));
   const available = questionDeck.filter((question) => unmarked.has(question.targetKeywordId));

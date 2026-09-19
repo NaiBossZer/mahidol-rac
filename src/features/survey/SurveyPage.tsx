@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
-import {
-  CheckCircle2,
-  CircleAlert,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { CheckCircle2, CircleAlert, Loader2, RefreshCw } from "lucide-react";
 import { getSurveyActivityId } from "./surveyDataContract";
 import {
   getPublishedSurvey,
@@ -75,7 +70,9 @@ export function SurveyPage() {
       const loaded = await getPublishedSurvey(activityId ?? "");
       if (!loaded) {
         setSurvey(null);
-        setErrorMessage("ไม่พบแบบประเมินที่เปิดใช้งานสำหรับกิจกรรมนี้ หรือแบบประเมินปิดรับคำตอบแล้ว");
+        setErrorMessage(
+          "ไม่พบแบบประเมินที่เปิดใช้งานสำหรับกิจกรรมนี้ หรือแบบประเมินปิดรับคำตอบแล้ว",
+        );
         setStep("survey");
         return;
       }
@@ -249,7 +246,9 @@ export function SurveyPage() {
             </div>
           )}
 
-          <h2 className="mb-2 text-lg font-semibold text-slate-800">ข้อตกลงความเป็นส่วนตัว (PDPA)</h2>
+          <h2 className="mb-2 text-lg font-semibold text-slate-800">
+            ข้อตกลงความเป็นส่วนตัว (PDPA)
+          </h2>
           <div className="mb-6 rounded-xl border border-emerald-100 bg-emerald-50/80 p-4 text-sm leading-relaxed text-slate-700">
             ข้อมูลที่ท่านกรอกในแบบประเมินนี้จะนำไปใช้เพื่อการวิเคราะห์และปรับปรุงการจัดกิจกรรม
             โดยจะได้รับการคุ้มครองตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)
@@ -392,7 +391,10 @@ export function SurveyPage() {
           </section>
 
           {groupedQuestions.map(([sectionKey, questions]) => (
-            <section key={sectionKey} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section
+              key={sectionKey}
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
               <h2 className="mb-5 border-b border-slate-200 pb-2 text-lg font-bold text-emerald-700">
                 {getSectionTitle(sectionKey)}
               </h2>
@@ -504,7 +506,11 @@ export function SurveyPage() {
         </form>
       </div>
 
-      <style>{" .option{display:flex;align-items:center;gap:.5rem;padding:.5rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem}.text-input{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:white;color:#0f172a}"}</style>
+      <style>
+        {
+          " .option{display:flex;align-items:center;gap:.5rem;padding:.5rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem}.text-input{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:white;color:#0f172a}"
+        }
+      </style>
     </div>
   );
 }
@@ -529,7 +535,9 @@ function SuccessScreen() {
           <CheckCircle2 className="h-8 w-8" />
         </div>
         <h2 className="mb-2 text-2xl font-bold text-emerald-800">ส่งแบบประเมินสำเร็จ</h2>
-        <p className="text-slate-600">ขอบคุณสำหรับข้อมูล! ระบบได้รับผลการตอบแบบประเมินเรียบร้อยแล้ว</p>
+        <p className="text-slate-600">
+          ขอบคุณสำหรับข้อมูล! ระบบได้รับผลการตอบแบบประเมินเรียบร้อยแล้ว
+        </p>
       </div>
     </div>
   );

@@ -67,7 +67,8 @@ export async function uploadActivityImage(file: File, activityId: string): Promi
 }
 
 export async function removeActivityImage(url: string): Promise<void> {
-  if (!supabase || !isSupabaseConfigured || !url.includes(`/storage/v1/object/public/${BUCKET}/`)) return;
+  if (!supabase || !isSupabaseConfigured || !url.includes(`/storage/v1/object/public/${BUCKET}/`))
+    return;
   const marker = `/storage/v1/object/public/${BUCKET}/`;
   const path = url.split(marker)[1];
   if (!path) return;

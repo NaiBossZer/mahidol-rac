@@ -15,10 +15,7 @@ export function useSobprabLacLabEngine() {
     [state.hostTree, state.season, state.temperature, state.biocontrol],
   );
 
-  const fabric = useMemo(
-    () => getFabricColor(state.pH, state.mordant),
-    [state.pH, state.mordant],
-  );
+  const fabric = useMemo(() => getFabricColor(state.pH, state.mordant), [state.pH, state.mordant]);
 
   const bcg = useMemo(
     () => calcBCGScore(field, state.biocontrol, state.pH),
@@ -26,13 +23,28 @@ export function useSobprabLacLabEngine() {
   );
 
   const actions = {
-    setHostTree: useCallback((value: typeof state.hostTree) => dispatch({ type: "set_host_tree", value }), []),
-    setSeason: useCallback((value: typeof state.season) => dispatch({ type: "set_season", value }), []),
-    setTemperature: useCallback((value: number) => dispatch({ type: "set_temperature", value }), []),
+    setHostTree: useCallback(
+      (value: typeof state.hostTree) => dispatch({ type: "set_host_tree", value }),
+      [],
+    ),
+    setSeason: useCallback(
+      (value: typeof state.season) => dispatch({ type: "set_season", value }),
+      [],
+    ),
+    setTemperature: useCallback(
+      (value: number) => dispatch({ type: "set_temperature", value }),
+      [],
+    ),
     setBiocontrol: useCallback((value: number) => dispatch({ type: "set_biocontrol", value }), []),
     setPH: useCallback((value: number) => dispatch({ type: "set_ph", value }), []),
-    setMordant: useCallback((value: typeof state.mordant) => dispatch({ type: "set_mordant", value }), []),
-    setProcessRunning: useCallback((value: boolean) => dispatch({ type: "set_process_running", value }), []),
+    setMordant: useCallback(
+      (value: typeof state.mordant) => dispatch({ type: "set_mordant", value }),
+      [],
+    ),
+    setProcessRunning: useCallback(
+      (value: boolean) => dispatch({ type: "set_process_running", value }),
+      [],
+    ),
     reset: useCallback(() => dispatch({ type: "reset" }), []),
   };
 

@@ -22,14 +22,62 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
     label: "ความรู้เรื่องครั่ง",
     description: "พื้นฐาน วิทยาศาสตร์ ระบบนิเวศ และการเพาะเลี้ยงครั่ง",
     pages: [
-      { slug: "knowledge", title: "ภาพรวมความรู้เรื่องครั่ง", section: "knowledge", status: "existing", source: "figma-reference" },
-      { slug: "what-is-lac", title: "ครั่งคืออะไร", section: "knowledge", status: "planned", source: "content-master" },
-      { slug: "origin", title: "ต้นกำเนิดครั่ง", section: "knowledge", status: "planned", source: "content-master" },
-      { slug: "life-cycle", title: "วงจรชีวิตครั่ง", section: "knowledge", status: "existing", source: "existing-feature" },
-      { slug: "habitat", title: "ระบบนิเวศ & ต้นพิงอาศัย", section: "knowledge", status: "planned", source: "content-master" },
-      { slug: "host-plants", title: "ต้นไม้ที่ใช้เลี้ยงครั่ง", section: "knowledge", status: "planned", source: "content-master" },
-      { slug: "pests", title: "ศัตรูครั่ง & การป้องกัน", section: "knowledge", status: "planned", source: "content-master" },
-      { slug: "lac-farming", title: "การเพาะเลี้ยงครั่ง", section: "knowledge", status: "planned", source: "content-master" },
+      {
+        slug: "knowledge",
+        title: "ภาพรวมความรู้เรื่องครั่ง",
+        section: "knowledge",
+        status: "existing",
+        source: "figma-reference",
+      },
+      {
+        slug: "what-is-lac",
+        title: "ครั่งคืออะไร",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "origin",
+        title: "ต้นกำเนิดครั่ง",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "life-cycle",
+        title: "วงจรชีวิตครั่ง",
+        section: "knowledge",
+        status: "existing",
+        source: "existing-feature",
+      },
+      {
+        slug: "habitat",
+        title: "ระบบนิเวศ & ต้นพิงอาศัย",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "host-plants",
+        title: "ต้นไม้ที่ใช้เลี้ยงครั่ง",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "pests",
+        title: "ศัตรูครั่ง & การป้องกัน",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "lac-farming",
+        title: "การเพาะเลี้ยงครั่ง",
+        section: "knowledge",
+        status: "planned",
+        source: "content-master",
+      },
     ],
   },
   {
@@ -37,25 +85,69 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
     label: "ครั่งในลำปาง",
     description: "พื้นที่ ฤดูกาล การดูแล และทางเลือกของเกษตรกร",
     pages: [
-      { slug: "lampang-lac", title: "ครั่งในจังหวัดลำปาง", section: "lampang", status: "existing", source: "existing-feature" },
-      { slug: "seasons-care", title: "ฤดูกาล & การดูแล", section: "lampang", status: "planned", source: "content-master" },
-      { slug: "farmers-choice", title: "ทางเลือกของเกษตรกร", section: "lampang", status: "planned", source: "content-master" },
+      {
+        slug: "lampang-lac",
+        title: "ครั่งในจังหวัดลำปาง",
+        section: "lampang",
+        status: "existing",
+        source: "existing-feature",
+      },
+      {
+        slug: "seasons-care",
+        title: "ฤดูกาล & การดูแล",
+        section: "lampang",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "farmers-choice",
+        title: "ทางเลือกของเกษตรกร",
+        section: "lampang",
+        status: "planned",
+        source: "content-master",
+      },
     ],
   },
   {
     id: "product",
     label: "จากครั่งสู่การใช้ประโยชน์",
     description: "เรื่องราวจากครั่งสู่การต่อยอดและการใช้ประโยชน์จริง",
-    pages: [{ slug: "application", title: "จากครั่งสู่การใช้ประโยชน์", section: "product", status: "existing", source: "existing-feature" }],
+    pages: [
+      {
+        slug: "application",
+        title: "จากครั่งสู่การใช้ประโยชน์",
+        section: "product",
+        status: "existing",
+        source: "existing-feature",
+      },
+    ],
   },
   {
     id: "community",
     label: "ชุมชน & เครือข่าย",
     description: "ชุมชน การเรียนรู้ร่วมกัน และเครือข่ายที่เชื่อมโยงครั่งกับพื้นที่",
     pages: [
-      { slug: "community", title: "ครั่งกับชุมชน", section: "community", status: "planned", source: "content-master" },
-      { slug: "circular-economy", title: "Circular Economy", section: "community", status: "planned", source: "content-master" },
-      { slug: "learning-network", title: "Learning Network", section: "community", status: "planned", source: "content-master" },
+      {
+        slug: "community",
+        title: "ครั่งกับชุมชน",
+        section: "community",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "circular-economy",
+        title: "Circular Economy",
+        section: "community",
+        status: "planned",
+        source: "content-master",
+      },
+      {
+        slug: "learning-network",
+        title: "Learning Network",
+        section: "community",
+        status: "planned",
+        source: "content-master",
+      },
     ],
   },
   {
@@ -63,8 +155,20 @@ export const LAC_INFORMATION_ARCHITECTURE: LacNavSection[] = [
     label: "Learning Games",
     description: "พื้นที่สำหรับเกมและกิจกรรมการเรียนรู้เชิงโต้ตอบ",
     pages: [
-      { slug: "sobprab-lac-lab", title: "Sobprab Lac Lab", section: "games", status: "existing", source: "existing-feature" },
-      { slug: "lac-bingo", title: "Lac Bingo", section: "games", status: "existing", source: "existing-feature" },
+      {
+        slug: "sobprab-lac-lab",
+        title: "Sobprab Lac Lab",
+        section: "games",
+        status: "existing",
+        source: "existing-feature",
+      },
+      {
+        slug: "lac-bingo",
+        title: "Lac Bingo",
+        section: "games",
+        status: "existing",
+        source: "existing-feature",
+      },
     ],
   },
 ];
@@ -76,4 +180,7 @@ export const LAC_UTILITY_ROUTES = {
   login: "/login",
 };
 
-export const getLacPage = (slug: string) => LAC_INFORMATION_ARCHITECTURE.flatMap((section) => section.pages).find((page) => page.slug === slug);
+export const getLacPage = (slug: string) =>
+  LAC_INFORMATION_ARCHITECTURE.flatMap((section) => section.pages).find(
+    (page) => page.slug === slug,
+  );

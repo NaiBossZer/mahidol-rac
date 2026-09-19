@@ -27,7 +27,20 @@ export const BingoConfetti: React.FC<BingoConfettiProps> = ({ active }) => {
 
     burst({ x: 0.15, y: 0.62 });
     burst({ x: 0.85, y: 0.62 });
-    const timer = window.setTimeout(() => void confetti({ particleCount: 120, spread: 120, startVelocity: 35, gravity: 1, ticks: 200, scalar: 1, origin: { x: 0.5, y: 0.45 }, disableForReducedMotion: true }), 180);
+    const timer = window.setTimeout(
+      () =>
+        void confetti({
+          particleCount: 120,
+          spread: 120,
+          startVelocity: 35,
+          gravity: 1,
+          ticks: 200,
+          scalar: 1,
+          origin: { x: 0.5, y: 0.45 },
+          disableForReducedMotion: true,
+        }),
+      180,
+    );
     return () => window.clearTimeout(timer);
   }, [active]);
 
