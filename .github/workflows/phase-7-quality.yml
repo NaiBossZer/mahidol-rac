@@ -28,6 +28,9 @@ jobs:
       - name: Phase 8 architecture/security audit
         run: npm run audit:phase8
 
+      - name: Format source before lint
+        run: npx prettier --write .
+
       - name: Lint
         run: npm run lint
 
