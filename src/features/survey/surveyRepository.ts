@@ -83,6 +83,7 @@ export function getQuestionOptions(question: SurveyQuestion) {
 }
 
 export async function getPublishedSurvey(activityId: string): Promise<PublishedSurvey | null> {
+  if (!activityId) return null;
   if (!isSupabaseConfigured || !supabase) {
     throw new Error("ระบบแบบประเมินยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ");
   }
@@ -101,7 +102,7 @@ export async function getPublishedSurvey(activityId: string): Promise<PublishedS
 
   const { data: surveys, error: surveyError } = await supabase
     .from("occurrence_surveys")
-    .select("id,occurrence_id,anonymous,welcome_text,open_at,close_at,enabled")
+    .select("id,occurrence_id,anonymous,welcome_text,open_at,close_at,enabled,created_at")
     .eq("occurrence_id", occurrence.id)
     .eq("enabled", true)
     .order("created_at", { ascending: false })
@@ -146,11 +147,7 @@ export async function getPublishedSurvey(activityId: string): Promise<PublishedS
     questions: (questions ?? []) as SurveyQuestion[],
   };
 
-  if (!isOpen(result)) {
-    return null;
-  }
-
-  return result;
+  return isOpen(result) ? result : null;
 }
 
 export async function saveSurveySubmission(input: {
@@ -187,10 +184,31 @@ export async function saveSurveySubmission(input: {
   const sectionCounters = new Map<string, number>();
   const answerRows: Array<Record<string, unknown>> = [];
 
+  const missingRequired = input.survey.questions.some((question) => {
+    if (!question.required) return false;
+    const answer = input.answers[question.id];
+    return (
+      answer === undefined ||
+      answer === null ||
+      answer === "" ||
+      (Array.isArray(answer) && answer.length === 0)
+    );
+  });
+
+  if (missingRequired) {
+    throw new Error("กรุณาตอบคำถามที่มีเครื่องหมาย * ให้ครบถ้วน");
+  }
+
   for (const question of input.survey.questions) {
     const answer = input.answers[question.id];
-    if (answer === undefined || answer === null || answer === "") continue;
-    if (Array.isArray(answer) && answer.length === 0) continue;
+    if (
+      answer === undefined ||
+      answer === null ||
+      answer === "" ||
+      (Array.isArray(answer) && answer.length === 0)
+    ) {
+      continue;
+    }
 
     const sectionIndex = sectionCounters.get(question.section_key) ?? 0;
     sectionCounters.set(question.section_key, sectionIndex + 1);
@@ -207,10 +225,6 @@ export async function saveSurveySubmission(input: {
       answer_text: typeof answer === "string" ? answer : null,
       answer_options: Array.isArray(answer) ? answer : [],
     });
-  }
-
-  if (input.survey.questions.some((question) => question.required && input.answers[question.id] === undefined)) {
-    throw new Error("กรุณาตอบคำถามที่มีเครื่องหมาย * ให้ครบถ้วน");
   }
 
   const { error: responseError } = await supabase.from("survey_responses").insert({
