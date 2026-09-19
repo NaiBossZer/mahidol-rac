@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import {
   CheckCircle2,
   CircleAlert,
@@ -116,7 +116,7 @@ export function SurveyPage() {
     );
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -509,7 +509,7 @@ export function SurveyPage() {
   );
 }
 
-function FieldTitle({ children }: { children: React.ReactNode }) {
+function FieldTitle({ children }: { children: ReactNode }) {
   return (
     <h3 className="mb-2 mt-5 block text-sm font-semibold text-slate-700">
       {children} <span className="text-red-500">*</span>
