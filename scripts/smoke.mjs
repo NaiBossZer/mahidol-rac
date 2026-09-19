@@ -42,7 +42,7 @@ check("question deck has 16 target mappings", questionTargets.length === 16);
 check("question targets are unique", uniqueTargets.size === questionTargets.length);
 check("keyword pool has 16 unique ids", keywordIds.length === 16 && uniqueKeywords.size === 16);
 check("correct answer is +10", bingoEngine.includes("correctBaseScore: 10"));
-check("incorrect answer applies the configured penalty", bingoEngine.includes("incorrectPenalty: 5") && bingoEngine.includes("state.score - difficultyRules.incorrectPenalty"));
+check("incorrect answer applies the configured penalty", bingoEngine.includes("incorrectPenalty: 5") && bingoEngine.includes("nextScore = Math.max(0, nextScore - difficultyRules.incorrectPenalty)"));
 check("Bingo line bonus is +50", bingoEngine.includes("lineBonus: 50"));
 check("five-minute time limit", bingoEngine.includes("timeLimitSeconds: 300"));
 check("time bonus is calculated from remaining time", bingoEngine.includes("calculateTimeBonus") && bingoEngine.includes("remaining * BINGO_RULES.timeBonusPerSecond"));
@@ -57,7 +57,7 @@ check("question modal has Escape handling", mGuidePopup.includes('e.key === "Esc
 check("question modal locks background scroll", mGuidePopup.includes('document.body.style.overflow = "hidden"'));
 check("question modal announces answer feedback", mGuidePopup.includes('aria-live="polite"'));
 check("question modal uses correct/wrong sounds", mGuidePopup.includes('playChime(isCorrect ? "correct" : "wrong")'));
-check("question modal copy matches configured score rules", mGuidePopup.includes("ตอบถูก +{difficultyRules.correctScore} · ตอบผิด −{difficultyRules.incorrectPenalty}"));
+check("question modal copy matches configured score rules", mGuidePopup.includes("ระดับ${difficultyRules.label}") && mGuidePopup.includes("ตอบถูก +{difficultyRules.correctScore}") && mGuidePopup.includes("ตอบผิด −{difficultyRules.incorrectPenalty}"));
 check("victory overlay is accessible", victoryOverlay.includes('role="dialog"') && victoryOverlay.includes('aria-modal="true"'));
 check("victory overlay supports timeout result", victoryOverlay.includes("isTimeUp") && victoryOverlay.includes("TIME LIMIT REACHED"));
 check("Lac Master badge is calculated", victoryOverlay.includes("getBadge") && victoryOverlay.includes("Lac Master") && victoryOverlay.includes("Lac Expert"));
