@@ -72,7 +72,7 @@ export function SurveyPage() {
     setStep("loading");
     setErrorMessage(null);
     try {
-      const loaded = await getPublishedSurvey(activityId);
+      const loaded = await getPublishedSurvey(activityId ?? "");
       if (!loaded) {
         setSurvey(null);
         setErrorMessage("ไม่พบแบบประเมินที่เปิดใช้งานสำหรับกิจกรรมนี้ หรือแบบประเมินปิดรับคำตอบแล้ว");
