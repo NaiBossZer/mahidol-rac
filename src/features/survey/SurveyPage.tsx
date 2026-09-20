@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "re
 import { CheckCircle2, CircleAlert, Loader2, RefreshCw } from "lucide-react";
 import { getSurveyActivityId } from "./surveyDataContract";
 import {
+  getOpenSurveyActivities,
   getPublishedSurvey,
   getQuestionOptions,
   getSectionTitle,
@@ -40,6 +41,8 @@ export function SurveyPage() {
   const [survey, setSurvey] = useState<PublishedSurvey | null>(null);
   const [step, setStep] = useState<Step>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [surveyChoices, setSurveyChoices] = useState<OpenSurveyActivity[]>([]);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
 
   const [agreed, setAgreed] = useState(false);
   const [ageGroup, setAgeGroup] = useState("");
@@ -51,6 +54,7 @@ export function SurveyPage() {
   const [answers, setAnswers] = useState<Record<string, SurveyAnswerValue>>({});
 
   const activityId = useMemo(() => getSurveyActivityId(), []);
+  const effectiveActivityId = selectedActivityId ?? activityId;
 
   const groupedQuestions = useMemo(() => {
     if (!survey) return [];
@@ -63,11 +67,21 @@ export function SurveyPage() {
     return [...groups.entries()];
   }, [survey]);
 
-  async function loadSurvey() {
+  async function loadSurvey(requestedActivityId = effectiveActivityId) {
     setStep("loading");
     setErrorMessage(null);
     try {
-      const loaded = await getPublishedSurvey(activityId ?? "");
+      if (!requestedActivityId) {
+        const choices = await getOpenSurveyActivities();
+        setSurveyChoices(choices);
+        setSurvey(null);
+        setStep("survey");
+        if (choices.length === 0)
+          setErrorMessage("ไม่พบกิจกรรมที่มีแบบประเมินเปิดใช้งานอยู่ในขณะนี้");
+        return;
+      }
+
+      const loaded = await getPublishedSurvey(requestedActivityId);
       if (!loaded) {
         setSurvey(null);
         setErrorMessage(
@@ -93,7 +107,7 @@ export function SurveyPage() {
       return;
     }
     void loadSurvey();
-  }, [activityId]);
+  }, [activityId, selectedActivityId]);
 
   function updateAnswer(questionId: string, value: SurveyAnswerValue | undefined) {
     setErrorMessage(null);
@@ -198,6 +212,42 @@ export function SurveyPage() {
   }
 
   if (!survey) {
+    if (!effectiveActivityId && surveyChoices.length > 0) {
+      return (
+        <div className="min-h-screen bg-emerald-50/30 px-4 py-12">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-emerald-100 bg-white p-6 shadow-md sm:p-8">
+            <div className="text-center">
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                แบบประเมินกิจกรรม
+              </span>
+              <h1 className="mt-4 text-2xl font-extrabold text-slate-900">เลือกกิจกรรม</h1>
+              <p className="mt-2 text-sm text-slate-600">
+                เลือกกิจกรรมเพื่อเปิดแบบประเมินที่ใช้งานอยู่จากระบบกลาง
+              </p>
+            </div>
+            <div className="mt-6 space-y-3">
+              {surveyChoices.map((choice) => (
+                <button
+                  key={choice.activity_id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedActivityId(choice.activity_id);
+                    window.history.replaceState({}, "", `/survey?activity=${encodeURIComponent(choice.activity_id)}`);
+                  }}
+                  className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40"
+                >
+                  <p className="font-semibold text-slate-900">{choice.activity_title}</p>
+                  {choice.activity_date && (
+                    <p className="mt-1 text-xs text-slate-500">{choice.activity_date}</p>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-emerald-50/30 px-4 py-12">
         <div className="mx-auto max-w-2xl rounded-2xl border border-amber-200 bg-white p-8 text-center shadow-md">
