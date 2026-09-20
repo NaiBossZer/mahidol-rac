@@ -94,30 +94,25 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
     throw new Error("ระบบแบบประเมินยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ");
   }
 
-  const [
-    { data: activities, error: activityError },
-    { data: occurrences, error: occurrenceError },
-    { data: surveys, error: surveyError },
-  ] = await Promise.all([
-      supabase
-        .from("activities")
-        .select("id,title,activity_date,status")
-        .in("status", ["published", "completed"])
-        .order("activity_date", { ascending: false }),
-      supabase
-        .from("activity_occurrences")
-        .select("id,activity_id,occurrence_no,start_at,status")
-        .not("status", "in", "(cancelled,archived)")
-        .order("occurrence_no", { ascending: false }),
-      supabase
-        .from("occurrence_surveys")
-        .select("id,occurrence_id,enabled,open_at,close_at")
-        .eq("enabled", true)
-        .order("created_at", { ascending: false }),
-    ]);
-
+  const { data: activities, error: activityError } = await supabase
+    .from("activities")
+    .select("id,title,activity_date,status")
+    .in("status", ["published", "completed"])
+    .order("activity_date", { ascending: false });
   if (activityError) throw activityError;
+
+  const { data: occurrences, error: occurrenceError } = await supabase
+    .from("activity_occurrences")
+    .select("id,activity_id,occurrence_no,start_at,status")
+    .not("status", "in", "(cancelled,archived)")
+    .order("occurrence_no", { ascending: false });
   if (occurrenceError) throw occurrenceError;
+
+  const { data: surveys, error: surveyError } = await supabase
+    .from("occurrence_surveys")
+    .select("id,occurrence_id,enabled,open_at,close_at")
+    .eq("enabled", true)
+    .order("created_at", { ascending: false });
   if (surveyError) throw surveyError;
 
   const activityMap = new Map(
@@ -129,20 +124,19 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
       },
     ]),
   );
+
   const latestOccurrenceByActivity = new Map<string, (typeof occurrences)[number]>();
   for (const occurrence of occurrences ?? []) {
     const activityId = String(occurrence.activity_id);
-    if (!latestOccurrenceByActivity.has(activityId)) {
+    if (!latestOccurrenceByActivity.has(activityId))
       latestOccurrenceByActivity.set(activityId, occurrence);
-    }
   }
 
   const surveyByOccurrence = new Map<string, (typeof surveys)[number]>();
   for (const survey of surveys ?? []) {
     const occurrenceId = String(survey.occurrence_id);
-    if (!surveyByOccurrence.has(occurrenceId)) {
+    if (!surveyByOccurrence.has(occurrenceId))
       surveyByOccurrence.set(occurrenceId, survey);
-    }
   }
 
   const now = Date.now();
@@ -151,11 +145,16 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
       const activity = activityMap.get(activityId);
       const survey = surveyByOccurrence.get(String(occurrence.id));
       if (!activity || !survey) return [];
+
       const openAt = survey.open_at ? Date.parse(String(survey.open_at)) : null;
       const closeAt = survey.close_at ? Date.parse(String(survey.close_at)) : null;
-      if ((openAt !== null && now < openAt) || (closeAt !== null && now > closeAt)) {
+      if (
+        (openAt !== null && now < openAt) ||
+        (closeAt !== null && now > closeAt)
+      ) {
         return [];
       }
+
       return [
         {
           activity_id: activityId,
