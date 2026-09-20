@@ -228,7 +228,11 @@ export function SurveyPage() {
                   type="button"
                   onClick={() => {
                     setSelectedActivityId(choice.activity_id);
-                    window.history.replaceState({}, "", `/survey?activity=${encodeURIComponent(choice.activity_id)}`);
+                    window.history.replaceState(
+                      {},
+                      "",
+                      `/survey?activity=${encodeURIComponent(choice.activity_id)}`,
+                    );
                   }}
                   className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40"
                 >
