@@ -94,8 +94,11 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
     throw new Error("ระบบแบบประเมินยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ");
   }
 
-  const [{ data: activities, error: activityError }, { data: occurrences, error: occurrenceError }, { data: surveys, error: surveyError }] =
-    await Promise.all([
+  const [
+    { data: activities, error: activityError },
+    { data: occurrences, error: occurrenceError },
+    { data: surveys, error: surveyError },
+  ] = await Promise.all([
       supabase
         .from("activities")
         .select("id,title,activity_date,status")
@@ -129,14 +132,17 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
   const latestOccurrenceByActivity = new Map<string, (typeof occurrences)[number]>();
   for (const occurrence of occurrences ?? []) {
     const activityId = String(occurrence.activity_id);
-    if (!latestOccurrenceByActivity.has(activityId))
+    if (!latestOccurrenceByActivity.has(activityId)) {
       latestOccurrenceByActivity.set(activityId, occurrence);
+    }
   }
 
   const surveyByOccurrence = new Map<string, (typeof surveys)[number]>();
   for (const survey of surveys ?? []) {
     const occurrenceId = String(survey.occurrence_id);
-    if (!surveyByOccurrence.has(occurrenceId)) surveyByOccurrence.set(occurrenceId, survey);
+    if (!surveyByOccurrence.has(occurrenceId)) {
+      surveyByOccurrence.set(occurrenceId, survey);
+    }
   }
 
   const now = Date.now();
@@ -147,7 +153,9 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
       if (!activity || !survey) return [];
       const openAt = survey.open_at ? Date.parse(String(survey.open_at)) : null;
       const closeAt = survey.close_at ? Date.parse(String(survey.close_at)) : null;
-      if ((openAt !== null && now < openAt) || (closeAt !== null && now > closeAt)) return [];
+      if ((openAt !== null && now < openAt) || (closeAt !== null && now > closeAt)) {
+        return [];
+      }
       return [
         {
           activity_id: activityId,
