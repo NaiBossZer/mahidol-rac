@@ -6,6 +6,7 @@ import {
   getPublishedSurvey,
   getQuestionOptions,
   getSectionTitle,
+  type OpenSurveyActivity,
   type PublishedSurvey,
   type SurveyAnswerValue,
   saveSurveySubmission,
@@ -101,11 +102,6 @@ export function SurveyPage() {
   }
 
   useEffect(() => {
-    if (!activityId) {
-      setStep("survey");
-      setErrorMessage("ไม่พบรหัสกิจกรรม กรุณาเปิดแบบประเมินจากลิงก์ของกิจกรรม");
-      return;
-    }
     void loadSurvey();
   }, [activityId, selectedActivityId]);
 
