@@ -82,6 +82,84 @@ export function getQuestionOptions(question: SurveyQuestion) {
   return asOptions(question.options);
 }
 
+export type OpenSurveyActivity = {
+  activity_id: string;
+  activity_title: string;
+  activity_date: string | null;
+  survey_id: string;
+};
+
+export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error("ระบบแบบประเมินยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ");
+  }
+
+  const [{ data: activities, error: activityError }, { data: occurrences, error: occurrenceError }, { data: surveys, error: surveyError }] =
+    await Promise.all([
+      supabase
+        .from("activities")
+        .select("id,title,activity_date,status")
+        .in("status", ["published", "completed"])
+        .order("activity_date", { ascending: false }),
+      supabase
+        .from("activity_occurrences")
+        .select("id,activity_id,occurrence_no,start_at,status")
+        .not("status", "in", "(cancelled,archived)")
+        .order("occurrence_no", { ascending: false }),
+      supabase
+        .from("occurrence_surveys")
+        .select("id,occurrence_id,enabled,open_at,close_at")
+        .eq("enabled", true)
+        .order("created_at", { ascending: false }),
+    ]);
+
+  if (activityError) throw activityError;
+  if (occurrenceError) throw occurrenceError;
+  if (surveyError) throw surveyError;
+
+  const activityMap = new Map(
+    (activities ?? []).map((activity) => [
+      String(activity.id),
+      {
+        activity_title: String(activity.title ?? ""),
+        activity_date: activity.activity_date ? String(activity.activity_date) : null,
+      },
+    ]),
+  );
+  const latestOccurrenceByActivity = new Map<string, (typeof occurrences)[number]>();
+  for (const occurrence of occurrences ?? []) {
+    const activityId = String(occurrence.activity_id);
+    if (!latestOccurrenceByActivity.has(activityId))
+      latestOccurrenceByActivity.set(activityId, occurrence);
+  }
+
+  const surveyByOccurrence = new Map<string, (typeof surveys)[number]>();
+  for (const survey of surveys ?? []) {
+    const occurrenceId = String(survey.occurrence_id);
+    if (!surveyByOccurrence.has(occurrenceId)) surveyByOccurrence.set(occurrenceId, survey);
+  }
+
+  const now = Date.now();
+  return [...latestOccurrenceByActivity.entries()]
+    .flatMap(([activityId, occurrence]) => {
+      const activity = activityMap.get(activityId);
+      const survey = surveyByOccurrence.get(String(occurrence.id));
+      if (!activity || !survey) return [];
+      const openAt = survey.open_at ? Date.parse(String(survey.open_at)) : null;
+      const closeAt = survey.close_at ? Date.parse(String(survey.close_at)) : null;
+      if ((openAt !== null && now < openAt) || (closeAt !== null && now > closeAt)) return [];
+      return [
+        {
+          activity_id: activityId,
+          activity_title: activity.activity_title,
+          activity_date: activity.activity_date,
+          survey_id: String(survey.id),
+        },
+      ];
+    })
+    .sort((a, b) => a.activity_title.localeCompare(b.activity_title, "th"));
+}
+
 export async function getPublishedSurvey(activityId: string): Promise<PublishedSurvey | null> {
   if (!activityId) return null;
   if (!isSupabaseConfigured || !supabase) {
