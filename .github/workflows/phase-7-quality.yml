@@ -28,15 +28,6 @@ jobs:
       - name: Phase 8 architecture/security audit
         run: npm run audit:phase8
 
-      - name: Format files and push fixes
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          npx prettier --write .
-          git diff --no-ext-diff -- src/features/survey/surveyRepository.ts
-
-
       - name: Format check before lint
         run: npx prettier --check .
 
