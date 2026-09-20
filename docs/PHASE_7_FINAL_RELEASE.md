@@ -11,20 +11,24 @@ Phase 7 delivers an activity-based satisfaction assessment system for the Mahido
 ## Delivered
 
 ### 7.1 Audit
+
 - Baseline audit of survey, dashboard, activity administration, authentication and data flow.
 - Identified canonical `activity_id` as the event identity.
 
 ### 7.2 Data Contract
+
 - Survey contract version 7.2 introduced activity context.
 - Activity UUID is the canonical relationship key.
 
 ### 7.3 Supabase Persistence + Export
+
 - Supabase is the system of record for survey responses.
 - `public.survey_responses` stores the complete 14-item satisfaction response set.
 - Admin-only CSV export is available at `/admin/survey-export`.
 - CSV includes activity context, respondent dimensions, all ratings, feedback and PDPA consent.
 
 ### 7.4 Admin Activity / Satisfaction Control
+
 - Admin activity-level survey controls.
 - `survey_enabled` toggle.
 - `survey_open_at` / `survey_close_at` response window.
@@ -32,12 +36,14 @@ Phase 7 delivers an activity-based satisfaction assessment system for the Mahido
 - Database RLS enforces published activity + enabled survey + valid response window.
 
 ### 7.5 Event Filter + Executive Activity Context
+
 - Dashboard supports activity/event filtering by `activity_id`.
 - Deep link: `/dashboard?activity=<activity-id>`.
 - Executive activity context shows cover image, title, date, category and response count.
 - KPI and satisfaction analytics recalculate for the selected event.
 
 ### 7.6–7.9 Release Quality Gate
+
 - Repository quality gate added at `.github/workflows/phase-7-quality.yml`.
 - Every push to `main` and pull request runs:
   - `npm ci`

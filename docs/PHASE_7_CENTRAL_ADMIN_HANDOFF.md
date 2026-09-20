@@ -32,6 +32,7 @@ public.survey_responses
 ## Important schema correction
 
 The central Portal activity model uses:
+
 - `activities.id`
 - `activities.activity_date`
 - `activities.featured_image`

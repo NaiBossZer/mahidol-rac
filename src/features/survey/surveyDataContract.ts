@@ -1,9 +1,5 @@
 export const SURVEY_CONTRACT_VERSION = "8.0" as const;
 
-// Default activity used when the public /survey page is opened directly without
-// an activity query parameter. Activity-scoped links still take precedence.
-export const DEFAULT_SURVEY_ACTIVITY_ID = "6a6d682b-c1e1-4c0b-a798-0bd3a5c55881" as const;
-
 export interface SurveyActivityContext {
   activityId: string;
   activityTitle?: string;
@@ -39,7 +35,7 @@ export interface SurveySubmissionContract {
 export function getSurveyActivityId(search = window.location.search): string | null {
   const params = new URLSearchParams(search);
   const value = params.get("activity") ?? params.get("activity_id");
-  return value?.trim() || DEFAULT_SURVEY_ACTIVITY_ID;
+  return value?.trim() || null;
 }
 
 export function withSurveyActivityContext(url: string, context: SurveyActivityContext): string {

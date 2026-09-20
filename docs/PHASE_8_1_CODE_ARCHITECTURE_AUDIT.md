@@ -23,6 +23,7 @@ The Phase 7 handoff correctly identifies the Portal as the primary administratio
 These routes are guarded by `AdminRoute`, but their continued presence conflicts with the intended single-admin-boundary architecture unless they are explicitly retained as transitional compatibility routes.
 
 **Action for Phase 8.2/8.5:** decide and implement one of:
+
 1. redirect/deprecate the RAC admin routes to the Portal; or
 2. formally document them as temporary compatibility surfaces with a removal target.
 
@@ -79,17 +80,17 @@ The architecture is consistent with the Phase 7 design, but actual central Supab
 
 ## 3. Production-readiness checklist
 
-| Area | Status | Phase |
-|---|---|---|
-| Portal is intended primary admin boundary | PASS | 7 |
-| RAC legacy admin routes removed/redirected | OPEN | 8.5 |
-| Canonical `activities` schema used everywhere | FAIL | 8.3 |
-| Legacy Google Apps Script code removed | OPEN | 8.4 |
-| Browser uses anon Supabase key only | PASS (static audit) | 8.2 |
-| Central Supabase migrations applied | NOT VERIFIED | 8.2 |
-| Survey RLS verified in real DB | NOT VERIFIED | 8.2 |
-| Build/lint/smoke on current HEAD | NOT VERIFIED | 8.7 |
-| Vercel production deployment | BLOCKED/UNVERIFIED | 8.8 |
+| Area                                          | Status              | Phase |
+| --------------------------------------------- | ------------------- | ----- |
+| Portal is intended primary admin boundary     | PASS                | 7     |
+| RAC legacy admin routes removed/redirected    | OPEN                | 8.5   |
+| Canonical `activities` schema used everywhere | FAIL                | 8.3   |
+| Legacy Google Apps Script code removed        | OPEN                | 8.4   |
+| Browser uses anon Supabase key only           | PASS (static audit) | 8.2   |
+| Central Supabase migrations applied           | NOT VERIFIED        | 8.2   |
+| Survey RLS verified in real DB                | NOT VERIFIED        | 8.2   |
+| Build/lint/smoke on current HEAD              | NOT VERIFIED        | 8.7   |
+| Vercel production deployment                  | BLOCKED/UNVERIFIED  | 8.8   |
 
 ## 4. Security conclusions
 

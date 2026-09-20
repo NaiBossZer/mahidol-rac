@@ -64,22 +64,22 @@ These are intentionally outside the LAC knowledge hierarchy.
 
 ## Existing → target mapping
 
-| Existing feature | Target role | Phase 1 decision |
-|---|---|---|
-| HomePage | Exhibition entrance / story | Keep as shell; reduce content responsibility later |
-| HeroSection | Discovery | Keep |
-| MediaSection | Physical Room Experience | Keep |
-| LearningJourney | Learning path | Keep + connect to pages |
-| LacLifeCycle | Knowledge: Life Cycle | Keep + extract into page |
-| LampangLacMap | Lampang context | Keep + expand |
-| LacProductJourney | Product transformation | Keep + extract into page |
-| LacKnowledgeCards / Accordion | Knowledge index / deep content | Reposition into Knowledge architecture |
-| ActivitySection | Community / activity | Keep; separate from knowledge hierarchy |
-| SobprabLacLabGame | Learning Games | Move from Home |
-| LacBingoGame | Learning Games | Move from Home |
-| Dashboard | Utility | Keep |
-| Survey | Utility | Keep |
-| Auth / Login | Infrastructure | Defer |
+| Existing feature              | Target role                    | Phase 1 decision                                   |
+| ----------------------------- | ------------------------------ | -------------------------------------------------- |
+| HomePage                      | Exhibition entrance / story    | Keep as shell; reduce content responsibility later |
+| HeroSection                   | Discovery                      | Keep                                               |
+| MediaSection                  | Physical Room Experience       | Keep                                               |
+| LearningJourney               | Learning path                  | Keep + connect to pages                            |
+| LacLifeCycle                  | Knowledge: Life Cycle          | Keep + extract into page                           |
+| LampangLacMap                 | Lampang context                | Keep + expand                                      |
+| LacProductJourney             | Product transformation         | Keep + extract into page                           |
+| LacKnowledgeCards / Accordion | Knowledge index / deep content | Reposition into Knowledge architecture             |
+| ActivitySection               | Community / activity           | Keep; separate from knowledge hierarchy            |
+| SobprabLacLabGame             | Learning Games                 | Move from Home                                     |
+| LacBingoGame                  | Learning Games                 | Move from Home                                     |
+| Dashboard                     | Utility                        | Keep                                               |
+| Survey                        | Utility                        | Keep                                               |
+| Auth / Login                  | Infrastructure                 | Defer                                              |
 
 ## Phase 1 definition of done
 

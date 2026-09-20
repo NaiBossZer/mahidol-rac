@@ -3,7 +3,11 @@ import type { ReactNode } from "react";
 import { useAuth } from "./AuthProvider";
 
 function LoadingGate() {
-  return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-500">กำลังตรวจสอบสิทธิ์...</div>;
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-500">
+      กำลังตรวจสอบสิทธิ์...
+    </div>
+  );
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {

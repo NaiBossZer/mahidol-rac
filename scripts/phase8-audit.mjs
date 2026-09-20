@@ -5,10 +5,23 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../src/", import.meta.url));
 const forbidden = [
   { label: "Google Apps Script endpoint", pattern: /script\.google\.com\/macros\/s\//i },
-  { label: "legacy activity date column", pattern: /from\(["']activities["']\)[\s\S]{0,120}(?:select\([^)]*\bdate\b|order\(["']date["'])/i },
-  { label: "legacy activity cover_image column", pattern: /from\(["']activities["']\)[\s\S]{0,120}cover_image/i },
-  { label: "RAC activity admin route", pattern: /["'`]\/admin\/(?:activity(?:["'`]|\/)|activity-satisfaction|survey-export)/i },
-  { label: "service role credential in browser source", pattern: /service_role|SUPABASE_SERVICE_ROLE/i },
+  {
+    label: "legacy activity date column",
+    pattern:
+      /from\(["']activities["']\)[\s\S]{0,120}(?:select\([^)]*\bdate\b|order\(["']date["'])/i,
+  },
+  {
+    label: "legacy activity cover_image column",
+    pattern: /from\(["']activities["']\)[\s\S]{0,120}cover_image/i,
+  },
+  {
+    label: "RAC activity admin route",
+    pattern: /["'`]\/admin\/(?:activity(?:["'`]|\/)|activity-satisfaction|survey-export)/i,
+  },
+  {
+    label: "service role credential in browser source",
+    pattern: /service_role|SUPABASE_SERVICE_ROLE/i,
+  },
 ];
 
 async function walk(dir) {
@@ -17,7 +30,7 @@ async function walk(dir) {
   for (const entry of entries) {
     if (entry.name.startsWith(".") || entry.name === "node_modules") continue;
     const path = join(dir, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(path));
+    if (entry.isDirectory()) files.push(...(await walk(path)));
     else if (/\.(ts|tsx|js|jsx|mjs)$/.test(entry.name)) files.push(path);
   }
   return files;

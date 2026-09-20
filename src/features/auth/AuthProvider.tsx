@@ -84,21 +84,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo<AuthContextValue>(() => ({
-    session,
-    user: session?.user ?? null,
-    profile,
-    loading,
-    configured: isSupabaseConfigured,
-    isAuthenticated: Boolean(session?.user),
-    isAdmin: Boolean(profile?.active && ["admin", "dean", "deputy_dean", "finance_head", "section_head"].includes(profile.role)),
-    signOut: async () => {
-      if (supabase) await supabase.auth.signOut();
-      setSession(null);
-      setProfile(null);
-    },
-    refreshProfile,
-  }), [session, profile, loading]);
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      session,
+      user: session?.user ?? null,
+      profile,
+      loading,
+      configured: isSupabaseConfigured,
+      isAuthenticated: Boolean(session?.user),
+      isAdmin: Boolean(
+        profile?.active &&
+        ["admin", "dean", "deputy_dean", "finance_head", "section_head"].includes(profile.role),
+      ),
+      signOut: async () => {
+        if (supabase) await supabase.auth.signOut();
+        setSession(null);
+        setProfile(null);
+      },
+      refreshProfile,
+    }),
+    [session, profile, loading],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

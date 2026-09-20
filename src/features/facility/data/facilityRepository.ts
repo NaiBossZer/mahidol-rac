@@ -27,7 +27,8 @@ export async function getFacilitySummary(): Promise<FacilitySummary | null> {
   const openStatuses = new Set(["open", "pending", "in_progress", "assigned"]);
   return {
     buildings: buildings.count ?? 0,
-    openWorkOrders: orders.filter((row) => openStatuses.has(String(row.status).toLowerCase())).length,
+    openWorkOrders: orders.filter((row) => openStatuses.has(String(row.status).toLowerCase()))
+      .length,
     totalWorkOrders: orders.length,
     inspections: inspections.count ?? 0,
     updatedAt: new Date().toISOString(),

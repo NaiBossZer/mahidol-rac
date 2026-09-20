@@ -7,13 +7,19 @@ import { AuthProvider } from "./features/auth/AuthProvider";
 
 const HomePage = lazy(() => import("./routes/index").then((m) => ({ default: m.HomePage })));
 const BingoPage = lazy(() => import("./routes/bingo").then((m) => ({ default: m.BingoPage })));
-const SobprabLacLabPage = lazy(() => import("./routes/sobprab-lac-lab").then((m) => ({ default: m.SobprabLacLabPage })));
+const SobprabLacLabPage = lazy(() =>
+  import("./routes/sobprab-lac-lab").then((m) => ({ default: m.SobprabLacLabPage })),
+);
 const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.LoginPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
 const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
-const LacApplicationPage = lazy(() => import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })));
+const LacApplicationPage = lazy(() =>
+  import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })),
+);
 
-function RouteFallback() { return <div className="min-h-screen" aria-label="Loading" />; }
+function RouteFallback() {
+  return <div className="min-h-screen" aria-label="Loading" />;
+}
 
 function App() {
   return (
@@ -38,4 +44,8 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
