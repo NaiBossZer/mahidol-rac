@@ -135,8 +135,7 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
   const surveyByOccurrence = new Map<string, (typeof surveys)[number]>();
   for (const survey of surveys ?? []) {
     const occurrenceId = String(survey.occurrence_id);
-    if (!surveyByOccurrence.has(occurrenceId))
-      surveyByOccurrence.set(occurrenceId, survey);
+    if (!surveyByOccurrence.has(occurrenceId)) surveyByOccurrence.set(occurrenceId, survey);
   }
 
   const now = Date.now();
@@ -148,10 +147,7 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
 
       const openAt = survey.open_at ? Date.parse(String(survey.open_at)) : null;
       const closeAt = survey.close_at ? Date.parse(String(survey.close_at)) : null;
-      if (
-        (openAt !== null && now < openAt) ||
-        (closeAt !== null && now > closeAt)
-      ) {
+      if ((openAt !== null && now < openAt) || (closeAt !== null && now > closeAt)) {
         return [];
       }
 
