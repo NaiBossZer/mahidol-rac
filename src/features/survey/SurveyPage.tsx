@@ -236,7 +236,8 @@ export function SurveyPage() {
                   }}
                   className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40"
                 >
-                  <p className="font-semibold text-slate-900">{choice.activity_title}</p>
+                  <p className="font-semibold text-slate-900">{choice.survey_title}</p>
+                  <p className="mt-1 text-xs text-slate-500">{choice.activity_title}</p>
                   {choice.activity_date && (
                     <p className="mt-1 text-xs text-slate-500">{choice.activity_date}</p>
                   )}
@@ -284,7 +285,7 @@ export function SurveyPage() {
               แบบประเมินกิจกรรม
             </span>
             <h1 className="mt-3 text-2xl font-extrabold text-slate-900 sm:text-3xl">
-              {survey.activity_title}
+              {survey.title || survey.activity_title}
             </h1>
             <p className="mt-1 text-xs text-slate-600 sm:text-sm">{activityDate}</p>
             <p className="mt-2 text-xs text-slate-500">รอบกิจกรรมที่ {survey.occurrence_no}</p>
@@ -338,6 +339,7 @@ export function SurveyPage() {
             {survey.activity_title}
           </h1>
           <p className="mt-2 font-medium text-emerald-700">{activityDate}</p>
+          <p className="mt-1 text-xs text-slate-500">{survey.activity_title}</p>
           <p className="mt-1 text-xs text-slate-500">
             แบบประเมินรอบกิจกรรมที่ {survey.occurrence_no} · {survey.questions.length} คำถาม
           </p>
