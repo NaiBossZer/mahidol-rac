@@ -336,7 +336,7 @@ export function SurveyPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="rounded-2xl border border-emerald-100 border-t-8 border-t-emerald-600 bg-white p-6 shadow-md sm:p-8">
           <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
-            {survey.activity_title}
+            {survey.title || survey.activity_title}
           </h1>
           <p className="mt-2 font-medium text-emerald-700">{activityDate}</p>
           <p className="mt-1 text-xs text-slate-500">{survey.activity_title}</p>
