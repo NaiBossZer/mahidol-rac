@@ -18,6 +18,7 @@ export type SurveyQuestion = {
 export type PublishedSurvey = {
   id: string;
   occurrence_id: string;
+  title: string | null;
   anonymous: boolean;
   welcome_text: string | null;
   open_at: string | null;
@@ -87,6 +88,7 @@ export type OpenSurveyActivity = {
   activity_title: string;
   activity_date: string | null;
   survey_id: string;
+  survey_title: string;
 };
 
 export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
@@ -110,7 +112,7 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
 
   const { data: surveys, error: surveyError } = await supabase
     .from("occurrence_surveys")
-    .select("id,occurrence_id,enabled,open_at,close_at")
+    .select("id,occurrence_id,title,enabled,open_at,close_at")
     .eq("enabled", true)
     .order("created_at", { ascending: false });
   if (surveyError) throw surveyError;
@@ -157,6 +159,10 @@ export async function getOpenSurveyActivities(): Promise<OpenSurveyActivity[]> {
           activity_title: activity.activity_title,
           activity_date: activity.activity_date,
           survey_id: String(survey.id),
+          survey_title:
+            typeof survey.title === "string" && survey.title.trim()
+              ? survey.title.trim()
+              : activity.activity_title,
         },
       ];
     })
@@ -183,7 +189,7 @@ export async function getPublishedSurvey(activityId: string): Promise<PublishedS
 
   const { data: surveys, error: surveyError } = await supabase
     .from("occurrence_surveys")
-    .select("id,occurrence_id,anonymous,welcome_text,open_at,close_at,enabled,created_at")
+    .select("id,occurrence_id,title,anonymous,welcome_text,open_at,close_at,enabled,created_at")
     .eq("occurrence_id", occurrence.id)
     .eq("enabled", true)
     .order("created_at", { ascending: false })
@@ -216,6 +222,10 @@ export async function getPublishedSurvey(activityId: string): Promise<PublishedS
   const result: PublishedSurvey = {
     id: String(survey.id),
     occurrence_id: String(survey.occurrence_id),
+    title:
+      typeof survey.title === "string" && survey.title.trim()
+        ? survey.title.trim()
+        : String(activity.title ?? ""),
     anonymous: Boolean(survey.anonymous),
     welcome_text: typeof survey.welcome_text === "string" ? survey.welcome_text : null,
     open_at: survey.open_at ? String(survey.open_at) : null,
