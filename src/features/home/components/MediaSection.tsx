@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { RacContainer, RacCard } from "@/components/rac";
 import { homepageSectionImages } from "@/features/home/homepageSectionImages";
 
@@ -97,6 +99,12 @@ export function MediaSection({ activeTab, onTabChange }: MediaSectionProps) {
                     shadow-intensity="1"
                     style={{ width: "100%", height: "100%" }}
                   />
+                  <Link
+                    to="/digital-twin"
+                    className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-xl border border-white/25 bg-[#075340]/95 px-3 py-2 text-[10px] font-bold text-white shadow-lg backdrop-blur transition hover:bg-[#063F32] focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:text-xs"
+                  >
+                    เปิด Digital Twin <ArrowUpRight size={14} />
+                  </Link>
                   <div className="pointer-events-none absolute bottom-3 left-3 right-3 rounded-lg border border-white/20 bg-slate-900/80 px-3 py-1.5 text-center text-[10px] text-white shadow-md backdrop-blur-md sm:left-auto sm:right-3 sm:text-left sm:text-[11px]">
                     🖱️ คลิกและลากเพื่อหมุนดูโมเดล 3D แบบ 360°
                   </div>
