@@ -19,7 +19,7 @@ const GAME_LINKS = [
 
 export const AppNavbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<"knowledge" | "games" | null>(null);
+  const [openMenu, setOpenMenu] = useState<"games" | null>(null);
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -28,7 +28,7 @@ export const AppNavbar: React.FC = () => {
     setOpenMenu(null);
   };
 
-  const isKnowledgeActive = KNOWLEDGE_ITEMS.some((item) => location.pathname === item.href);
+  const isKnowledgeActive = location.pathname === "/knowledge" || KNOWLEDGE_ITEMS.some((item) => location.pathname === item.href);
   const isGameActive = GAME_LINKS.some((item) => location.pathname === item.href);
   const isApplicationActive = location.pathname === "/lac/application";
 
@@ -101,29 +101,13 @@ export const AppNavbar: React.FC = () => {
             >
               {t("nav.home")}
             </Link>
-            <div
-              className="relative shrink-0"
-              onMouseEnter={() => setOpenMenu("knowledge")}
-              onMouseLeave={() => setOpenMenu(null)}
+            <Link
+              to="/knowledge"
+              onClick={closeMenus}
+              className={isKnowledgeActive ? "whitespace-nowrap rounded-md bg-white/10 px-2 py-1.5 text-xs font-bold text-rac-gold 2xl:px-2.5" : "whitespace-nowrap rounded-md px-2 py-1.5 text-xs text-slate-200 transition hover:bg-white/10 hover:text-rac-gold 2xl:px-2.5"}
             >
-              {menuButton("knowledge", isKnowledgeActive, "nav.knowledge")}
-              {openMenu === "knowledge" && (
-                <div className="absolute right-0 top-full w-64 pt-2">
-                  <div className="rounded-xl border border-white/10 bg-rac-blue-deep/95 p-2 shadow-2xl backdrop-blur-xl">
-                    {KNOWLEDGE_ITEMS.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        onClick={closeMenus}
-                        className={`block rounded-lg px-2.5 py-2 text-xs transition ${location.pathname === item.href ? "bg-rac-lac/15 font-semibold text-cyan-300" : "text-slate-200 hover:bg-white/10 hover:text-white"}`}
-                      >
-                        {t(item.key)}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+              {t("nav.knowledge")}
+            </Link>
             <Link
               to="/lac/application"
               className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs transition 2xl:px-2.5 ${isApplicationActive ? "bg-white/10 font-bold text-rac-gold" : "text-slate-200 hover:bg-white/10 hover:text-rac-gold"}`}
@@ -190,36 +174,13 @@ export const AppNavbar: React.FC = () => {
               >
                 {t("nav.home")}
               </Link>
-              <div className="rounded-xl border border-white/5 bg-white/[0.02]">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setOpenMenu((value) => (value === "knowledge" ? null : "knowledge"))
-                  }
-                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold ${isKnowledgeActive ? "text-rac-gold" : "text-white"}`}
-                  aria-expanded={openMenu === "knowledge"}
-                >
-                  {t("nav.knowledge")}
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform ${openMenu === "knowledge" ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {openMenu === "knowledge" && (
-                  <div className="space-y-1 px-2 pb-2">
-                    {KNOWLEDGE_ITEMS.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        onClick={closeMenus}
-                        className={`block rounded-lg px-3 py-2 text-sm ${location.pathname === item.href ? "bg-rac-lac/15 text-cyan-300" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}
-                      >
-                        {t(item.key)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Link
+                to="/knowledge"
+                onClick={closeMenus}
+                className={isKnowledgeActive ? "rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-rac-gold" : "rounded-xl px-4 py-3 text-sm text-white hover:bg-white/10"}
+              >
+                {t("nav.knowledge")}
+              </Link>
               <Link
                 to="/lac/application"
                 onClick={closeMenus}
