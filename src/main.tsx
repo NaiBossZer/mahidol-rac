@@ -13,6 +13,9 @@ const SobprabLacLabPage = lazy(() =>
 const LoginPage = lazy(() => import("./routes/login").then((m) => ({ default: m.LoginPage })));
 const SurveyPage = lazy(() => import("./routes/survey").then((m) => ({ default: m.SurveyPage })));
 const LacPage = lazy(() => import("./routes/lac-page").then((m) => ({ default: m.LacPage })));
+const KnowledgeHubPage = lazy(() =>
+  import("./features/knowledge/KnowledgeHubPage").then((m) => ({ default: m.KnowledgeHubPage })),
+);
 const LacApplicationPage = lazy(() =>
   import("./routes/lac-application").then((m) => ({ default: m.LacApplicationPage })),
 );
@@ -34,6 +37,8 @@ function App() {
             <Route path="/bingo" element={<BingoPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/survey" element={<SurveyPage />} />
+            <Route path="/knowledge" element={<KnowledgeHubPage />} />
+            <Route path="/digital-twin" element={<Navigate to="/knowledge" replace />} />
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/admin/*" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
