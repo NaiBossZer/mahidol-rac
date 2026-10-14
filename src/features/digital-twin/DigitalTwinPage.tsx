@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,7 +11,7 @@ import {
   Leaf,
   LoaderCircle,
   MapPin,
-  Microscope,
+  Move3D,
   RotateCcw,
   Settings,
   Sprout,
@@ -168,8 +168,6 @@ export function DigitalTwinPage() {
     };
   }, []);
 
-  const activePosition = hotspotPositions[activeZone.id];
-
   const focusZone = (zone: LearningZone) => {
     setActiveZoneId(zone.id);
     const model = document.getElementById("digital-twin-model") as ModelViewerElement | null;
@@ -197,13 +195,13 @@ export function DigitalTwinPage() {
     if (nextZone) focusZone(nextZone);
   };
 
-  const viewerStatus = useMemo(() => {
-    if (modelError) return "ไม่สามารถโหลดโมเดลได้";
-    if (!modelReady) return "กำลังโหลดโมเดล 3 มิติ…";
-    return positionStatus === "calculated"
-      ? "อ่านขอบเขตโมเดลแล้ว · ตรวจตำแหน่งโซนกับพื้นที่จริงก่อนใช้งาน"
-      : "ใช้ตำแหน่งสำรอง · ต้องตรวจสอบตำแหน่งโซน";
-  }, [modelError, modelReady, positionStatus]);
+  const viewerStatus = modelError
+    ? "ไม่สามารถโหลดโมเดลได้"
+    : !modelReady
+      ? "กำลังโหลดโมเดล 3 มิติ…"
+      : positionStatus === "calculated"
+        ? "อ่านขอบเขตโมเดลแล้ว · ตรวจตำแหน่งโซนกับพื้นที่จริงก่อนใช้งาน"
+        : "ใช้ตำแหน่งสำรอง · ต้องตรวจสอบตำแหน่งโซน";
 
   return (
     <div className="min-h-screen bg-[#f4f7f5] text-slate-900">
@@ -253,7 +251,7 @@ export function DigitalTwinPage() {
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2 text-xs text-slate-500">
-            <Move3DIcon />
+            <Move3D size={17} aria-hidden="true" className="text-emerald-700" />
             <span>ลากเพื่อหมุน · ล้อเมาส์เพื่อซูม · ใช้สองนิ้วบนมือถือ</span>
           </div>
         </section>
@@ -538,6 +536,3 @@ export function DigitalTwinPage() {
   );
 }
 
-function Move3DIcon() {
-  return <span aria-hidden="true" className="text-emerald-700"><Microscope size={17} /></span>;
-}
