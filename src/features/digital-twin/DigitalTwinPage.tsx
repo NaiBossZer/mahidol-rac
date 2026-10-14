@@ -156,10 +156,7 @@ export function DigitalTwinPage() {
       document.head.appendChild(script);
     }
 
-    customElements
-      .whenDefined("model-viewer")
-      .then(attach)
-      .catch(markError);
+    customElements.whenDefined("model-viewer").then(attach).catch(markError);
 
     return () => {
       cancelled = true;
@@ -422,7 +419,10 @@ export function DigitalTwinPage() {
                 </h4>
                 <ul className="mt-3 space-y-3">
                   {activeZone.learningOutcomes.map((outcome) => (
-                    <li key={outcome} className="flex items-start gap-2.5 text-sm leading-6 text-slate-600">
+                    <li
+                      key={outcome}
+                      className="flex items-start gap-2.5 text-sm leading-6 text-slate-600"
+                    >
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600" />
                       <span>{outcome}</span>
                     </li>
@@ -433,7 +433,9 @@ export function DigitalTwinPage() {
               <div className="mt-6 border-t border-slate-100 pt-5">
                 <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
                   <span>ความคืบหน้าเส้นทางเรียนรู้</span>
-                  <span>{completedCount}/{LEARNING_ZONES.length} โซน</span>
+                  <span>
+                    {completedCount}/{LEARNING_ZONES.length} โซน
+                  </span>
                 </div>
                 <div
                   className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"
@@ -535,4 +537,3 @@ export function DigitalTwinPage() {
     </div>
   );
 }
-
