@@ -28,7 +28,9 @@ export const AppNavbar: React.FC = () => {
     setOpenMenu(null);
   };
 
-  const isKnowledgeActive = location.pathname === "/knowledge" || KNOWLEDGE_ITEMS.some((item) => location.pathname === item.href);
+  const isKnowledgeActive =
+    location.pathname === "/knowledge" ||
+    KNOWLEDGE_ITEMS.some((item) => location.pathname === item.href);
   const isGameActive = GAME_LINKS.some((item) => location.pathname === item.href);
   const isApplicationActive = location.pathname === "/lac/application";
 
@@ -104,7 +106,11 @@ export const AppNavbar: React.FC = () => {
             <Link
               to="/knowledge"
               onClick={closeMenus}
-              className={isKnowledgeActive ? "whitespace-nowrap rounded-md bg-white/10 px-2 py-1.5 text-xs font-bold text-rac-gold 2xl:px-2.5" : "whitespace-nowrap rounded-md px-2 py-1.5 text-xs text-slate-200 transition hover:bg-white/10 hover:text-rac-gold 2xl:px-2.5"}
+              className={
+                isKnowledgeActive
+                  ? "whitespace-nowrap rounded-md bg-white/10 px-2 py-1.5 text-xs font-bold text-rac-gold 2xl:px-2.5"
+                  : "whitespace-nowrap rounded-md px-2 py-1.5 text-xs text-slate-200 transition hover:bg-white/10 hover:text-rac-gold 2xl:px-2.5"
+              }
             >
               {t("nav.knowledge")}
             </Link>
@@ -177,7 +183,11 @@ export const AppNavbar: React.FC = () => {
               <Link
                 to="/knowledge"
                 onClick={closeMenus}
-                className={isKnowledgeActive ? "rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-rac-gold" : "rounded-xl px-4 py-3 text-sm text-white hover:bg-white/10"}
+                className={
+                  isKnowledgeActive
+                    ? "rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-rac-gold"
+                    : "rounded-xl px-4 py-3 text-sm text-white hover:bg-white/10"
+                }
               >
                 {t("nav.knowledge")}
               </Link>

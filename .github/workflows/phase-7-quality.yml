@@ -28,15 +28,6 @@ jobs:
       - name: Phase 8 architecture/security audit
         run: npm run audit:phase8
 
-      - name: Generate formatter output for knowledge library review
-        run: |
-          npx prettier --write src/features/knowledge/KnowledgeHubPage.tsx src/layout/AppNavbar.tsx
-          echo "KNOWLEDGE_HUB_FORMATTED_BEGIN"
-          cat src/features/knowledge/KnowledgeHubPage.tsx
-          echo "KNOWLEDGE_HUB_FORMATTED_END"
-          echo "KNOWLEDGE_NAV_FORMATTED_BEGIN"
-          cat src/layout/AppNavbar.tsx
-          echo "KNOWLEDGE_NAV_FORMATTED_END"
       - name: Format check before lint
         run: npx prettier --check .
 

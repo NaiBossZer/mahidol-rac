@@ -54,12 +54,54 @@ const KNOWLEDGE_ARTICLES: {
   icon: ZoneIcon;
   tag: string;
 }[] = [
-  { number: "01", title: "ครั่งคืออะไร?", description: "ทำความเข้าใจแมลงครั่ง ต้นพิงอาศัย และเรซินธรรมชาติ", href: "/lac/what-is-lac", icon: "book", tag: "พื้นฐาน" },
-  { number: "02", title: "วงจรชีวิตครั่ง", description: "ติดตามการเปลี่ยนแปลงของแมลงครั่งตั้งแต่ระยะเริ่มต้นจนถึงตัวเต็มวัย", href: "/lac/life-cycle", icon: "bug", tag: "ชีววิทยา" },
-  { number: "03", title: "ระบบนิเวศและต้นพิงอาศัย", description: "เรียนรู้ความสัมพันธ์ระหว่างแมลงครั่ง พืชอาศัย และสภาพแวดล้อม", href: "/lac/habitat", icon: "sprout", tag: "นิเวศวิทยา" },
-  { number: "04", title: "ต้นพิงอาศัย", description: "ทำความรู้จักต้นไม้ที่ครั่งอาศัยและใช้เป็นแหล่งน้ำเลี้ยง", href: "/lac/host-plants", icon: "leaf", tag: "พืชอาศัย" },
-  { number: "05", title: "การเพาะเลี้ยงครั่ง", description: "เรียนรู้แนวทางการเตรียมพันธุ์ การดูแล และการเก็บเกี่ยว", href: "/lac/lac-farming", icon: "settings", tag: "การเพาะเลี้ยง" },
-  { number: "06", title: "จากครั่งสู่การใช้ประโยชน์", description: "สำรวจการใช้ประโยชน์และการต่อยอดจากทรัพยากรครั่ง", href: "/lac/application", icon: "flask", tag: "การประยุกต์ใช้" },
+  {
+    number: "01",
+    title: "ครั่งคืออะไร?",
+    description: "ทำความเข้าใจแมลงครั่ง ต้นพิงอาศัย และเรซินธรรมชาติ",
+    href: "/lac/what-is-lac",
+    icon: "book",
+    tag: "พื้นฐาน",
+  },
+  {
+    number: "02",
+    title: "วงจรชีวิตครั่ง",
+    description: "ติดตามการเปลี่ยนแปลงของแมลงครั่งตั้งแต่ระยะเริ่มต้นจนถึงตัวเต็มวัย",
+    href: "/lac/life-cycle",
+    icon: "bug",
+    tag: "ชีววิทยา",
+  },
+  {
+    number: "03",
+    title: "ระบบนิเวศและต้นพิงอาศัย",
+    description: "เรียนรู้ความสัมพันธ์ระหว่างแมลงครั่ง พืชอาศัย และสภาพแวดล้อม",
+    href: "/lac/habitat",
+    icon: "sprout",
+    tag: "นิเวศวิทยา",
+  },
+  {
+    number: "04",
+    title: "ต้นพิงอาศัย",
+    description: "ทำความรู้จักต้นไม้ที่ครั่งอาศัยและใช้เป็นแหล่งน้ำเลี้ยง",
+    href: "/lac/host-plants",
+    icon: "leaf",
+    tag: "พืชอาศัย",
+  },
+  {
+    number: "05",
+    title: "การเพาะเลี้ยงครั่ง",
+    description: "เรียนรู้แนวทางการเตรียมพันธุ์ การดูแล และการเก็บเกี่ยว",
+    href: "/lac/lac-farming",
+    icon: "settings",
+    tag: "การเพาะเลี้ยง",
+  },
+  {
+    number: "06",
+    title: "จากครั่งสู่การใช้ประโยชน์",
+    description: "สำรวจการใช้ประโยชน์และการต่อยอดจากทรัพยากรครั่ง",
+    href: "/lac/application",
+    icon: "flask",
+    tag: "การประยุกต์ใช้",
+  },
 ];
 
 const DEFAULT_CENTER: Vector3 = { x: 0, y: 0, z: 0 };
@@ -83,7 +125,7 @@ function buildHotspotMap(center: Vector3, dimensions: Vector3) {
   ) as Record<string, Vector3>;
 }
 
-export function DigitalTwinPage() {
+export function KnowledgeHubPage() {
   const [activeZoneId, setActiveZoneId] = useState(LEARNING_ZONES[0].id);
   const [autoRotate, setAutoRotate] = useState(true);
   const [modelReady, setModelReady] = useState(false);
@@ -225,14 +267,17 @@ export function DigitalTwinPage() {
         <section className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-3xl">
             <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-semibold text-emerald-800">
-              <span className="rounded-full bg-emerald-100 px-3 py-1">KNOWLEDGE LIBRARY · DIGITAL TWIN</span>
+              <span className="rounded-full bg-emerald-100 px-3 py-1">
+                KNOWLEDGE LIBRARY · DIGITAL TWIN
+              </span>
               <span className="text-slate-500">6 โซนการเรียนรู้</span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               คลังความรู้ครั่งครบวงจร
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
-              สำรวจโมเดลห้องเรียนรู้ 3 มิติ เลือกโซนที่สนใจ และเปิดบทเรียนที่เกี่ยวข้องได้จากหน้าเดียว
+              สำรวจโมเดลห้องเรียนรู้ 3 มิติ เลือกโซนที่สนใจ
+              และเปิดบทเรียนที่เกี่ยวข้องได้จากหน้าเดียว
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2 text-xs text-slate-500">
@@ -246,7 +291,9 @@ export function DigitalTwinPage() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
               <div>
                 <p className="text-sm font-bold text-slate-800">แผนผังห้องเรียนรู้ 3 มิติ</p>
-                <p className="mt-0.5 text-xs text-slate-500">โมเดล 3 มิติของห้องเรียนรู้ที่ใช้เป็นแผนที่นำทางไปยังองค์ความรู้</p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  โมเดล 3 มิติของห้องเรียนรู้ที่ใช้เป็นแผนที่นำทางไปยังองค์ความรู้
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -520,8 +567,12 @@ export function DigitalTwinPage() {
         <section aria-labelledby="knowledge-articles-title" className="space-y-3">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">Explore the knowledge library</p>
-              <h2 id="knowledge-articles-title" className="text-xl font-bold text-slate-900">บทเรียนและสื่อในคลังความรู้</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">
+                Explore the knowledge library
+              </p>
+              <h2 id="knowledge-articles-title" className="text-xl font-bold text-slate-900">
+                บทเรียนและสื่อในคลังความรู้
+              </h2>
             </div>
             <p className="text-xs text-slate-500">เลือกอ่านเนื้อหาเชิงลึกในแต่ละหัวข้อ</p>
           </div>
@@ -534,12 +585,23 @@ export function DigitalTwinPage() {
                   to={article.href}
                   className="group flex min-w-0 items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-600/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800"><ArticleIcon size={21} /></span>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
+                    <ArticleIcon size={21} />
+                  </span>
                   <span className="min-w-0 flex-1">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-800">บทเรียน {article.number} · {article.tag}</span>
-                    <span className="mt-1 block text-sm font-bold leading-5 text-slate-900">{article.title}</span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-500">{article.description}</span>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-800">เปิดบทเรียน <ArrowRight size={14} className="transition group-hover:translate-x-0.5" /></span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-800">
+                      บทเรียน {article.number} · {article.tag}
+                    </span>
+                    <span className="mt-1 block text-sm font-bold leading-5 text-slate-900">
+                      {article.title}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      {article.description}
+                    </span>
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-800">
+                      เปิดบทเรียน{" "}
+                      <ArrowRight size={14} className="transition group-hover:translate-x-0.5" />
+                    </span>
                   </span>
                 </Link>
               );
