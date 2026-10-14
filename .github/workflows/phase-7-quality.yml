@@ -28,6 +28,13 @@ jobs:
       - name: Phase 8 architecture/security audit
         run: npm run audit:phase8
 
+      - name: Generate formatter output for Digital Twin review
+        run: |
+          npx prettier --write src/features/digital-twin/DigitalTwinPage.tsx
+          echo "DIGITAL_TWIN_FORMATTED_BEGIN"
+          cat src/features/digital-twin/DigitalTwinPage.tsx
+          echo "DIGITAL_TWIN_FORMATTED_END"
+
       - name: Format check before lint
         run: npx prettier --check .
 
