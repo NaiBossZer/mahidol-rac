@@ -1,20 +1,20 @@
 # Digital Twin MVP — Phase 0–3
 
-Branch: \`feature/digital-twin-learning-zones\`
+Branch: `feature/digital-twin-learning-zones`
 
 ## Current findings
 
-- The repository already contains \`public/rac-room3d.glb\`.
-- The home page previously used \`model-viewer\` 3.4.0 from Google's CDN to display the model with camera controls.
+- The repository already contains `public/rac-room3d.glb`.
+- The home page previously used `model-viewer` 3.4.0 from Google's CDN to display the model with camera controls.
 - The new page reuses that GLB and browser component instead of introducing a second 3D engine.
-- Runtime model bounds are read using \`getDimensions()\` and \`getBoundingBoxCenter()\` when the GLB loads. Hotspot positions are generated as relative offsets from these bounds.
-- The six learning topics are structured in \`src/features/digital-twin/data/zones.ts\` and can be adjusted without rewriting the page.
+- Runtime model bounds are read using `getDimensions()` and `getBoundingBoxCenter()` when the GLB loads. Hotspot positions are generated as relative offsets from these bounds.
+- The six learning topics are structured in `src/features/digital-twin/data/zones.ts` and can be adjusted without rewriting the page.
 
 ## Calibration limitation
 
-The GLB binary was confirmed to exist in the repository, but this source review did not decode or visually inspect its geometry, axes, camera framing, or room plan. Therefore the hotspot offsets in \`zones.ts\` are initial placement estimates only. Calculating a model bounding box makes the offsets scale-aware; it does not infer the semantic location of an exhibit.
+The GLB binary was confirmed to exist in the repository, but this source review did not decode or visually inspect its geometry, axes, camera framing, or room plan. Therefore the hotspot offsets in `zones.ts` are initial placement estimates only. Calculating a model bounding box makes the offsets scale-aware; it does not infer the semantic location of an exhibit.
 
-Before treating this as production-ready, open the Preview URL and calibrate the \`modelPosition.x\`, \`modelPosition.z\`, and \`modelPosition.height\` values in \`zones.ts\` against the actual exhibit locations in the room model. Record the final zone mapping from a reference floor plan or an annotated screenshot.
+Before treating this as production-ready, open the Preview URL and calibrate the `modelPosition.x`, `modelPosition.z`, and `modelPosition.height` values in `zones.ts` against the actual exhibit locations in the room model. Record the final zone mapping from a reference floor plan or an annotated screenshot.
 
 ## Phase 0 — model audit
 
@@ -25,10 +25,10 @@ Before treating this as production-ready, open the Preview URL and calibrate the
 
 ## Phase 1 — Digital Twin viewer
 
-- [x] Add dedicated \`/digital-twin\` route.
+- [x] Add dedicated `/digital-twin` route.
 - [x] Reuse the existing model with rotation, zoom, camera controls and a reset action.
 - [x] Add a clear loading state and a model-load error state.
-- [x] Keep \`main\` unchanged; all work stays on the feature branch.
+- [x] Keep `main` unchanged; all work stays on the feature branch.
 
 ## Phase 2 — learning zones
 
@@ -46,10 +46,10 @@ Before treating this as production-ready, open the Preview URL and calibrate the
 
 ## Validation before merge
 
-1. Run \`npm run typecheck\`.
-2. Run \`npm run lint\`.
-3. Run \`npm run build\`.
-4. Inspect \`/digital-twin\` on desktop and mobile.
+1. Run `npm run typecheck`.
+2. Run `npm run lint`.
+3. Run `npm run build`.
+4. Inspect `/digital-twin` on desktop and mobile.
 5. Confirm the GLB loads and the camera works.
 6. Verify hotspot alignment with the room layout and adjust the data offsets.
 7. Confirm the home page's existing video and 3D tabs still work.
