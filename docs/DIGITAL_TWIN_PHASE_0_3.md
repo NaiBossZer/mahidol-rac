@@ -1,4 +1,4 @@
-# Digital Twin MVP — Phase 0–3
+# Knowledge Library with Embedded Digital Twin — Phase 0–3
 
 Branch: `feature/digital-twin-learning-zones`
 
@@ -6,7 +6,8 @@ Branch: `feature/digital-twin-learning-zones`
 
 - The repository already contains `public/rac-room3d.glb`.
 - The home page previously used `model-viewer` 3.4.0 from Google's CDN to display the model with camera controls.
-- The new page reuses that GLB and browser component instead of introducing a second 3D engine.
+- The new Knowledge Library route (`/knowledge`) embeds that GLB and browser component instead of introducing a second 3D engine or a separate Digital Twin page.
+- The legacy `/digital-twin` path redirects to `/knowledge`.
 - Runtime model bounds are read using `getDimensions()` and `getBoundingBoxCenter()` when the GLB loads. Hotspot positions are generated as relative offsets from these bounds.
 - The six learning topics are structured in `src/features/digital-twin/data/zones.ts` and can be adjusted without rewriting the page.
 
@@ -25,7 +26,8 @@ Before treating this as production-ready, open the Preview URL and calibrate the
 
 ## Phase 1 — Digital Twin viewer
 
-- [x] Add dedicated `/digital-twin` route.
+- [x] Add `/knowledge` with the Digital Twin viewer embedded in the Knowledge Library.
+- [x] Redirect the legacy `/digital-twin` path to `/knowledge`.
 - [x] Reuse the existing model with rotation, zoom, camera controls and a reset action.
 - [x] Add a clear loading state and a model-load error state.
 - [x] Keep `main` unchanged; all work stays on the feature branch.
