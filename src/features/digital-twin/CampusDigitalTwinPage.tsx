@@ -95,9 +95,11 @@ function SiteMarker({ zone, selected, showLabel, onSelect }: { zone: SiteZone; s
         <sphereGeometry args={[selected ? 0.22 : 0.14, 16, 12]} />
         <meshStandardMaterial color={selected ? "#f4b942" : KIND_COLOR[zone.kind]} emissive={selected ? "#f4b942" : "#000000"} emissiveIntensity={selected ? 0.35 : 0} />
       </mesh>
-      <Html position={[0, 0.55, 0]} center distanceFactor={13} style={{ pointerEvents: "none" }}>
-        <div className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold shadow-md ${selected ? "border-amber-300 bg-amber-400 text-slate-950" : "border-white/80 bg-slate-900/75 text-white"}`}>{zone.id}</div>
-      </Html>
+      {showLabel && (
+        <Html position={[0, 0.55, 0]} center distanceFactor={13} style={{ pointerEvents: "none" }}>
+          <div className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold shadow-md ${selected ? "border-amber-300 bg-amber-400 text-slate-950" : "border-white/80 bg-slate-900/75 text-white"}`}>{zone.id}</div>
+        </Html>
+      )}
     </group>
   );
 }
