@@ -37,7 +37,7 @@ function App() {
             <Route path="/bingo" element={<BingoPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/survey" element={<SurveyPage />} />
-            <Route path="/knowledge" element={<KnowledgeHubPage />} />
+            <Route path="/knowledge" element={<KnowledgeHubPage />} />\n            <Route path="/campus-digital-twin" element={<CampusDigitalTwinPage />} />
             <Route path="/digital-twin" element={<Navigate to="/knowledge" replace />} />
             <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/admin/*" element={<Navigate to="/" replace />} />

@@ -280,9 +280,11 @@ export function KnowledgeHubPage() {
               และเปิดบทเรียนที่เกี่ยวข้องได้จากหน้าเดียว
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2 text-xs text-slate-500">
-            <Move3D size={17} aria-hidden="true" className="text-emerald-700" />
-            <span>ลากเพื่อหมุน · ล้อเมาส์เพื่อซูม · ใช้สองนิ้วบนมือถือ</span>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <Link to="/campus-digital-twin" className="inline-flex items-center gap-2 rounded-xl bg-emerald-800 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-900">
+              <Move3D size={15} aria-hidden="true" /> สำรวจโมเดลทั้งศูนย์
+            </Link>
+            <span className="text-xs text-slate-500">ห้องเรียนรู้ · 3 มิติ</span>
           </div>
         </section>
 
