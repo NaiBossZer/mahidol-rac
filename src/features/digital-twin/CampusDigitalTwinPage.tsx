@@ -87,7 +87,7 @@ function Building({ zone, active, onSelect }: { zone: SiteZone; active: boolean;
   );
 }
 
-function SiteMarker({ zone, selected, onSelect }: { zone: SiteZone; selected: boolean; onSelect: () => void }) {
+function SiteMarker({ zone, selected, showLabel, onSelect }: { zone: SiteZone; selected: boolean; showLabel: boolean; onSelect: () => void }) {
   const p = point(zone);
   return (
     <group position={[p.x, zone.kind === "water" ? 0.22 : 0.1, p.z]}>
@@ -102,7 +102,7 @@ function SiteMarker({ zone, selected, onSelect }: { zone: SiteZone; selected: bo
   );
 }
 
-function CampusScene({ selectedId, onSelect }: { selectedId: number; onSelect: (id: number) => void }) {
+function CampusScene({ selectedId, showLabels, onSelect }: { selectedId: number; showLabels: boolean; onSelect: (id: number) => void }) {
   const treePositions = useMemo(() => Array.from({ length: 72 }, (_, i) => {
     const angle = i * 2.399;
     const radius = 7.3 + (i % 7) * 0.38;
@@ -145,7 +145,7 @@ function CampusScene({ selectedId, onSelect }: { selectedId: number; onSelect: (
             {Array.from({ length: 5 }, (_, j) => <Tree key={j} x={(j % 3 - 1) * 0.42} z={(Math.floor(j / 3) - 0.5) * 0.58} scale={0.52 + (i % 3) * 0.08} />)}
           </group>;
         })}
-        {SITE_ZONES.map(zone => <SiteMarker key={zone.id} zone={zone} selected={selectedId === zone.id} onSelect={() => onSelect(zone.id)} />)}
+        {SITE_ZONES.map(zone => <SiteMarker key={zone.id} zone={zone} selected={selectedId === zone.id} showLabel={showLabels} onSelect={() => onSelect(zone.id)} />)}
       </group>
       <ContactShadows position={[0, -0.18, 0]} opacity={0.28} scale={22} blur={2.5} far={8} />
       <OrbitControls makeDefault minDistance={8} maxDistance={24} maxPolarAngle={Math.PI / 2.08} minPolarAngle={0.25} enableDamping dampingFactor={0.08} />
@@ -187,7 +187,7 @@ export function CampusDigitalTwinPage() {
             <div className="absolute left-3 top-3 z-10 flex items-center gap-2 rounded-xl border border-white/80 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm"><Compass size={15} className="text-emerald-800" /> มุมมองพื้นที่ 3 มิติ · ลากเพื่อหมุน / scroll เพื่อซูม</div>
             <button onClick={() => setShowLabels(v => !v)} className="absolute right-3 top-3 z-10 rounded-xl border border-white/80 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm">{showLabels ? "ซ่อนป้ายชื่อ" : "แสดงป้ายชื่อ"}</button>
             <Canvas shadows camera={{ position: [13, 15, 17], fov: 40 }}>
-              <CampusScene selectedId={selectedId} onSelect={setSelectedId} />
+              <CampusScene selectedId={selectedId} showLabels={showLabels} onSelect={setSelectedId} />
             </Canvas>
             <div className="absolute bottom-3 left-3 rounded-xl border border-white/80 bg-white/90 px-3 py-2 text-[10px] text-slate-600 shadow-sm">ต้นแบบเชิงแนวคิด · ตำแหน่งและมิติอาคารยังไม่ใช่แบบสำรวจจริง</div>
             <div className="absolute bottom-3 right-3 flex flex-wrap justify-end gap-2 rounded-xl border border-white/80 bg-white/90 p-2 shadow-sm">
